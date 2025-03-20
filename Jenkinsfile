@@ -44,9 +44,10 @@ pipeline {
                     mkdir -p /home/ubuntu/knockknock/frontend
 
                     # 프론트엔드 .env 파일 생성 (필요한 경우)
-                    cat > /home/ubuntu/knockknock/frontend/frontend.env << EOL
-        # 필요한 환경 변수 설정
-        EOL
+                    cat > /home/ubuntu/knockknock/frontend/frontend.env <<-EOL
+                        # 필요한 환경 변수 설정
+                    EOL
+
 
                     # 배포 디렉토리로 이동 후 스크립트 실행
                     cd /home/ubuntu/knockknock/frontend && ./scripts/deploy.sh
