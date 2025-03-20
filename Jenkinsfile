@@ -40,6 +40,20 @@ pipeline {
             steps {
                 echo '프론트엔드 배포 실행 중...'
                 sh '''
+                            # 디버깅을 위해 현재 작업 디렉토리 출력
+                            pwd
+
+                            # 디렉토리 구조 확인
+                            ls -la /home/ubuntu/knockknock/frontend
+                            ls -la /home/ubuntu/knockknock/frontend/scripts
+
+                            # 스크립트가 존재하고 실행 권한이 있는지 확인
+                            chmod +x /home/ubuntu/knockknock/frontend/scripts/deploy.sh
+
+                            # 전체 경로로 스크립트 실행
+                            /home/ubuntu/knockknock/frontend/scripts/deploy.sh
+                        '''
+                sh '''
                     # 배포 대상 디렉토리 존재 여부 확인 후 생성
                     mkdir -p /home/ubuntu/knockknock/frontend
 
