@@ -41,7 +41,7 @@ pipeline {
                 echo '프론트엔드 배포 실행 중...'
                 sh '''
                     # 배포 대상 디렉토리 존재 여부 확인 후 생성
-                    mkdir -p /home/ubuntu/knockknock/
+                    mkdir -p /home/ubuntu/knockknock/frontend
 
                     # 실행 권한 부여
                     chmod +x /home/ubuntu/knockknock/frontend/scripts/deploy.sh
