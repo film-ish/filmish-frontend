@@ -49,8 +49,7 @@ pipeline {
         EOL
 
                     # 배포 디렉토리로 이동 후 스크립트 실행
-                    cd /home/ubuntu/knockknock/frontend
-                    ./scripts/deploy.sh
+                    cd /home/ubuntu/knockknock/frontend && ./scripts/deploy.sh
                 '''
             }
         }
