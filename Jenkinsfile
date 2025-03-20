@@ -1,7 +1,7 @@
 pipeline {
     agent any
-     tools {
-            nodejs 'nodejs-22.12.0' // Jenkins에서 설정한 Node.js 설치의 이름으로 변경하세요
+    tools {
+        nodejs 'nodejs-22.12.0' // Jenkins에서 설정한 Node.js 설치의 이름으로 변경하세요
     }
     stages {
         stage('NPM Build') {
@@ -40,30 +40,8 @@ pipeline {
             steps {
                 echo '프론트엔드 배포 실행 중...'
                 sh '''
-                            # 디버깅을 위해 현재 작업 디렉토리 출력
-                            pwd
-
-                            # 디렉토리 구조 확인
-                            ls -la /home/ubuntu/knockknock/frontend
-                            ls -la /home/ubuntu/knockknock/frontend/scripts
-
-                            # 스크립트가 존재하고 실행 권한이 있는지 확인
-                            chmod +x /home/ubuntu/knockknock/frontend/scripts/deploy.sh
-
-                            # 전체 경로로 스크립트 실행
-                            /home/ubuntu/knockknock/frontend/scripts/deploy.sh
-                        '''
-                sh '''
-                    # 배포 대상 디렉토리 존재 여부 확인 후 생성
-                    mkdir -p /home/ubuntu/knockknock/frontend
-
-                    # 프론트엔드 .env 파일 생성
-                    cat > /home/ubuntu/knockknock/frontend/frontend.env << EOL
-# 필요한 환경 변수 설정
-EOL
-
-                    # 배포 스크립트 실행
-                    cd /home/ubuntu/knockknock/frontend && ./scripts/deploy.sh
+                    # 배포 스크립트 직접 실행 (chmod 없이 실행)
+                    /home/ubuntu/knockknock/frontend/scripts/deploy.sh
                 '''
             }
         }
