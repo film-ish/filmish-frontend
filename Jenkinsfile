@@ -1,7 +1,7 @@
 pipeline {
     agent any
      tools {
-            nodejs 'NodeJS' // Jenkins에서 설정한 Node.js 설치의 이름으로 변경하세요
+            nodejs 'nodejs-22.12.0' // Jenkins에서 설정한 Node.js 설치의 이름으로 변경하세요
     }
     stages {
         stage('NPM Build') {
