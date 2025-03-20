@@ -57,38 +57,37 @@ EOL
         success {
             script {
                 def branchInfo = env.CHANGE_TARGET ? "**${env.GIT_BRANCH} ➡ ${env.CHANGE_TARGET}** (Merge)" : "**${env.GIT_BRANCH}** (Push)"
-                def message = """
-    ### ✅ 프론트엔드 빌드 성공! 🎉
+                def message = """✅ *프론트엔드 빌드 성공!* 🎉
     ---
-    🚀 **프로젝트**: *KNOCK-KNOCK FRONT*
+    🔹 **프로젝트**: *KNOCK-KNOCK FRONT*
     🌿 **브랜치**: ${branchInfo}
     🔗 [빌드 로그 확인](${env.BUILD_URL})
     """
                 mattermostSend(
                     endpoint: 'https://meeting.ssafy.com/hooks/wuqodhw37jnejccnc1bsjso7pc',
                     channel: 'gang',
-                    message: message
+                    message: message.trim()
                 )
             }
         }
         failure {
             script {
                 def branchInfo = env.CHANGE_TARGET ? "**${env.GIT_BRANCH} ➡ ${env.CHANGE_TARGET}** (Merge)" : "**${env.GIT_BRANCH}** (Push)"
-                def message = """
-    ### ❌ 프론트엔드 빌드 실패... 🚨
+                def message = """❌ *프론트엔드 빌드 실패...* 🚨
     ---
     ⚠ **프로젝트**: *KNOCK-KNOCK FRONT*
     🌿 **브랜치**: ${branchInfo}
-    📌 **조치 필요!**
+    ❗ **조치 필요!**
     🔗 [빌드 로그 확인](${env.BUILD_URL})
     """
                 mattermostSend(
                     endpoint: 'https://meeting.ssafy.com/hooks/wuqodhw37jnejccnc1bsjso7pc',
                     channel: 'gang',
-                    message: message
+                    message: message.trim()
                 )
             }
         }
     }
+
 
 }
