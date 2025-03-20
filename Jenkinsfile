@@ -43,9 +43,6 @@ pipeline {
                     # 배포 대상 디렉토리 존재 여부 확인 후 생성
                     mkdir -p /home/ubuntu/knockknock/frontend
 
-                    # 실행 권한 부여
-                    chmod +x /home/ubuntu/knockknock/frontend/scripts/deploy.sh
-
                     # 프론트엔드 .env 파일 생성
                     cat > /home/ubuntu/knockknock/frontend/frontend.env << EOL
 # 필요한 환경 변수 설정
