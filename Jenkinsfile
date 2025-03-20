@@ -49,7 +49,7 @@ pipeline {
 EOL
 
                     # 배포 스크립트 실행
-                    cd /home/ubuntu/knockknock/frontend && ./scripts/deploy.sh
+                    /home/ubuntu/knockknock/frontend/scripts/deploy.sh
                 '''
             }
         }
