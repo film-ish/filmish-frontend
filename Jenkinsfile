@@ -40,8 +40,17 @@ pipeline {
             steps {
                 echo '프론트엔드 배포 실행 중...'
                 sh '''
-                    # 배포 스크립트 직접 실행 (chmod 없이 실행)
-                    /home/ubuntu/knockknock/frontend/scripts/deploy.sh
+                    # 배포 대상 디렉토리 존재 여부 확인 후 생성
+                    mkdir -p /home/ubuntu/knockknock/frontend
+
+                    # 프론트엔드 .env 파일 생성 (필요한 경우)
+                    cat > /home/ubuntu/knockknock/frontend/frontend.env << EOL
+        # 필요한 환경 변수 설정
+        EOL
+
+                    # 배포 디렉토리로 이동 후 스크립트 실행
+                    cd /home/ubuntu/knockknock/frontend
+                    ./scripts/deploy.sh
                 '''
             }
         }
