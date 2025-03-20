@@ -39,18 +39,6 @@ pipeline {
         stage('배포') {
             steps {
                 echo '프론트엔드 배포 실행 중...'
-
-                sh '''
-                            # 디버깅 정보
-                            whoami
-                            ls -la /home/ubuntu/knockknock/frontend/scripts/
-                            file /home/ubuntu/knockknock/frontend/scripts/deploy.sh
-                            cat /home/ubuntu/knockknock/frontend/scripts/deploy.sh
-
-                            # bash를 명시적으로 사용
-                            bash /home/ubuntu/knockknock/frontend/scripts/deploy.sh
-                '''
-
                 sh '''
                     # 배포 대상 디렉토리 존재 여부 확인 후 생성
                     mkdir -p /home/ubuntu/knockknock/frontend
@@ -61,7 +49,7 @@ pipeline {
 EOL
 
                     # 배포 스크립트 실행
-                    /home/ubuntu/knockknock/frontend/scripts/deploy.sh
+                    cd /home/ubuntu/knockknock/frontend && ./scripts/deploy.sh
                 '''
             }
         }
