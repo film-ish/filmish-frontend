@@ -1,17 +1,9 @@
 pipeline {
     agent any
-     tools {
-            nodejs 'nodejs-22.12.0' // Jenkins에서 설정한 Node.js 설치의 이름으로 변경하세요
+    tools {
+        nodejs 'nodejs-22.12.0' // Jenkins에서 설정한 Node.js 설치의 이름
     }
     stages {
-        stage('NPM Build') {
-            steps {
-                echo '프론트엔드 빌드 실행 중...'
-                sh 'npm install'
-                sh 'npm run build'
-            }
-        }
-
         stage('Docker 이미지 생성') {
             steps {
                 echo 'Docker 이미지 생성 중...'
