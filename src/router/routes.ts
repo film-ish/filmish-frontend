@@ -1,3 +1,5 @@
+// routes.ts
 export const ROUTES = {
   HOME: '/',
-} as const;
+  GENRE_RECOMMENDATIONS: '/genre-recommendations',
+};
