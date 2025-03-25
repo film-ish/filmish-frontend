@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router';
 import { ROUTES } from './routes';
 import Home from '../pages/home/Home.tsx';
-import MainLayout from "../layouts/MainLayOut.tsx";
+import MainLayout from "../layouts/MainLayout.tsx";
 
 const AppRoutes = () => {
   return (
