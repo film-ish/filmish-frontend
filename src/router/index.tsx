@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router';
 import { ROUTES } from './routes';
-import Home from '../pages/Home';
+import Home from '../pages/home/Home.tsx';
 
 const AppRoutes = () => {
   return (
