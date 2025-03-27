@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout.tsx";
 import List from "../pages/genre/List.tsx";
 import Detail from "../pages/genre/Detail.tsx";
 import Recommendations from "../pages/genre/Recommendations.tsx";
+import Commercial from "../pages/commercial/Commercial.tsx";
 
 const AppRoutes = () => {
     return (
@@ -17,6 +18,8 @@ const AppRoutes = () => {
                     <Route path={ROUTES.GENRE.DETAIL} element={<Detail/>}/>
                     <Route path={`${ROUTES.GENRE.DETAIL}/${ROUTES.GENRE.RECOMMENDATIONS}`} element={<Recommendations/>}/>
                 </Route>
+
+                <Route path={ROUTES.COMMERCIAL} element={<Commercial/>}/>
             </Routes>
         </MainLayout>
     );
