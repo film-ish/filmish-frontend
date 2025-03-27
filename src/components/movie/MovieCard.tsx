@@ -2,7 +2,7 @@ import { Star } from 'lucide-react';
 import MoviePoster from './MoviePoster';
 
 interface MovieCardProps {
-  width?: number;
+  width?: number | string;
   posterSrc: string;
   title: string;
   rating: number;
