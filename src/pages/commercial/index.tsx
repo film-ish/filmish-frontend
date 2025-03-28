@@ -124,4 +124,4 @@ const Main = () => {
     );
 };
 
-export default Commercial;
+export default Main;
