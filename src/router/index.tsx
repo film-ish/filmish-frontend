@@ -2,10 +2,10 @@ import {Routes, Route} from 'react-router';
 import {ROUTES} from './routes';
 import Home from '../pages/home/Home.tsx';
 import MainLayout from "../layouts/MainLayout.tsx";
-import List from "../pages/genre/List.tsx";
 import Detail from "../pages/genre/Detail.tsx";
 import Recommendations from "../pages/genre/Recommendations.tsx";
-import Commercial from "../pages/commercial/Commercial.tsx";
+import CommercialMain from "../pages/commercial";
+import GenreMain from "../pages/genre";
 
 const AppRoutes = () => {
     return (
@@ -14,12 +14,12 @@ const AppRoutes = () => {
                 <Route path={ROUTES.HOME} element={<Home/>}/>
 
                 <Route path={ROUTES.GENRE.ROOT}>
-                    <Route index element={<List/>}/>
+                    <Route index element={<GenreMain/>}/>
                     <Route path={ROUTES.GENRE.DETAIL} element={<Detail/>}/>
                     <Route path={`${ROUTES.GENRE.DETAIL}/${ROUTES.GENRE.RECOMMENDATIONS}`} element={<Recommendations/>}/>
                 </Route>
 
-                <Route path={ROUTES.COMMERCIAL} element={<Commercial/>}/>
+                <Route path={ROUTES.COMMERCIAL} element={<CommercialMain/>}/>
             </Routes>
         </MainLayout>
     );
