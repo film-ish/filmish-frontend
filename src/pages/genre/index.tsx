@@ -44,7 +44,7 @@ const genreMoviesMap = allGenres.reduce((acc, genre) => {
     return acc;
 }, {} as Record<string, MovieProps[]>);
 
-const List = () => {
+const Main = () => {
     const [activeGenre, setActiveGenre] = useState<string | null>(null);
     const [likedMovies, setLikedMovies] = useState<Record<string, boolean>>({});
     const headerRef = useRef<HTMLDivElement>(null);
@@ -272,4 +272,4 @@ const List = () => {
     );
 };
 
-export default List;
+export default Main;
