@@ -12,7 +12,7 @@ interface MovieProps {
     image: string;
 }
 
-const Commercial = () => {
+const Main = () => {
     const [likedMovies, setLikedMovies] = useState<Record<string, boolean>>({});
     const [recommendedMovies, setRecommendedMovies] = useState<MovieProps[]>([]);
 
