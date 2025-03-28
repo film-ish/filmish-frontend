@@ -1,5 +1,62 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@import 'tailwindcss';
+
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-gray-0: #fafafa;
+  --color-gray-1: #f7f8f9;
+  --color-gray-2: #f0f0f0;
+  --color-gray-3: #dbdbdb;
+  --color-gray-4: #c2c2c2;
+  --color-gray-5: #8d8d8d;
+  --color-gray-6: #363636;
+  --color-gray-7: #2b2b2b;
+  --color-gray-8: #1a1a1a;
+  --color-black: #000000;
+  --color-cherry-blush: #ff5e5e;
+  --color-rose-cloud: #be1a1a;
+
+  /* Typography */
+  --text-heading-xxl: 56px;
+  --text-heading-xl: 48px;
+  --text-heading-lg: 40px;
+  --text-heading-md: 32px;
+  --text-heading-xs: 28px;
+
+  --text-heading-xxl--line-height: 64px;
+  --text-heading-xl--line-height: 56px;
+  --text-heading-lg--line-height: 48px;
+  --text-heading-md--line-height: 40px;
+  --text-heading-xs--line-height: 36px;
+
+  --text-label-xxl: 24px;
+  --text-label-xl: 18px;
+  --text-label-lg: 16px;
+  --text-label-md: 14px;
+  --text-label-sm: 12px;
+
+  --text-label-xxl--line-height: 32px;
+  --text-label-xl--line-height: 26px;
+  --text-label-lg--line-height: 24px;
+  --text-label-md--line-height: 22px;
+  --text-label-sm--line-height: 20px;
+
+  --text-paragraph-xxl: 24px;
+  --text-paragraph-xl: 18px;
+  --text-paragraph-lg: 16px;
+  --text-paragraph-md: 14px;
+  --text-paragraph-sm: 12px;
+
+  --text-paragraph-xxl--line-height: 36px;
+  --text-paragraph-xl--line-height: 28px;
+  --text-paragraph-lg--line-height: 24px;
+  --text-paragraph-md--line-height: 20px;
+  --text-paragraph-xs--line-height: 20px;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Pretendard, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -13,56 +70,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
 button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  cursor: pointer;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+    color: var(--color-white);
+    background-color: var(--color-gray-8);
   }
 }

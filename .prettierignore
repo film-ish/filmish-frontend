@@ -1,0 +1,36 @@
+# 빌드 출력 디렉토리
+/build
+/dist
+
+# 의존성 디렉토리
+/node_modules
+
+# 로그 파일
+*.log
+
+# 환경 설정 파일
+.env
+.env.local
+.env.*.local
+
+# 캐시 디렉토리
+.cache
+
+# 에디터 설정 파일
+.vscode
+.idea
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
+
+# 패키지 매니저 파일
+package-lock.json
+yarn.lock
+
+# 특정 파일 형식
+*.min.js
+*.min.css
+
+# 특정 파일
+some-file-to-ignore.js

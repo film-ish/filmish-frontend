@@ -1,8 +1,9 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   server: {
     proxy: {
       '/api': {
@@ -16,7 +17,7 @@ export default defineConfig({
 
         // 로컬 개발 시 백엔드를 로컬에서 실행하는 경우 아래 주소로 변경하세요:
         // target: 'http://localhost:8080',
-      }
-    }
-  }
-})
+      },
+    },
+  },
+});
