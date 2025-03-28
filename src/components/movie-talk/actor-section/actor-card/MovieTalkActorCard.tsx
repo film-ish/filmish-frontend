@@ -1,4 +1,4 @@
-import { StarIcon } from "lucide-react";
+import { FilmIcon } from "lucide-react";
 
 interface Actor {
   id: number;
@@ -14,18 +14,24 @@ interface MovieTalkActorCardProps {
 
 const MovieTalkActorCard = ({ actor }: MovieTalkActorCardProps) => {
   return (
-    <div className="bg-[#2A2A2A] p-3 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow h-full flex flex-col">
-      <div className="relative pb-[100%] mb-3 bg-[#383838] rounded-md overflow-hidden">
-        <div className="absolute flex items-center justify-center w-full h-full">
-          <span className="text-white text-sm">사진 100%</span>
-        </div>
+    <div className="relative w-[400px] h-[550px] rounded-xl overflow-hidden shadow-xl">
+      {/* 배경 이미지 */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${actor.photoUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'})`,
+        }}
+      >
+        {/* 그라데이션 오버레이 */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
       </div>
-      <div className="text-white">
-        <p className="font-bold">{actor.name}</p>
-        <div className="flex items-center gap-1 mt-1">
-          <StarIcon className="text-yellow-400 w-4 h-4 fill-yellow-400" />
-          <span className="text-xs">{actor.rating.toFixed(1)}</span>
-          <span className="text-xs text-gray-400">({actor.count})</span>
+
+      {/* 배우 정보 */}
+      <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+        <h3 className="text-3xl font-light mb-3">{actor.name}</h3>
+        <div className="flex items-center gap-3">
+          <FilmIcon className="w-4 h-4" />
+          <span className="text-gray-3 text-xl">{actor.count}개의 작품</span>
         </div>
       </div>
     </div>
