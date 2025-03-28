@@ -72,7 +72,8 @@ const Main = () => {
         <div className="bg-black text-white min-h-screen pb-16">
             {/* 헤더 */}
             <div className="sticky top-0 bg-black z-10 p-4 border-b border-gray-8 mx-5">
-                <div className="flex items-center mx-4">
+                <div className="flex justify-end items-center mx-4">
+                    <h1 className="mr-2">다음</h1>
                     <Link to={`/genre`} className="text-white mr-3">
                         <ChevronRight size={24}/>
                     </Link>
