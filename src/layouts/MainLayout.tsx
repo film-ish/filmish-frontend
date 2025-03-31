@@ -6,8 +6,8 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <div className="min-h-screen bg-black overflow-x-hidden">
-      <div className="max-w-[1680px] mx-auto">
+    <div className="min-h-screen bg-gray-8 overflow-x-hidden">
+      <div className="mx-[6.25%]">
         {children}
       </div>
     </div>
