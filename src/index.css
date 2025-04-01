@@ -13,7 +13,6 @@
   --color-gray-6: #363636;
   --color-gray-7: #2b2b2b;
   --color-gray-8: #1a1a1a;
-  --color-black: #000000;
   --color-cherry-blush: #ff5e5e;
   --color-rose-cloud: #be1a1a;
 
@@ -53,6 +52,13 @@
   --text-paragraph-lg--line-height: 24px;
   --text-paragraph-md--line-height: 20px;
   --text-paragraph-xs--line-height: 20px;
+}
+
+@font-face {
+  font-family: 'HakgyoansimChulseokbuTTF-B';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimChulseokbuTTF-B.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
 }
 
 @keyframes infiniteSlideOriginal {
@@ -161,5 +167,25 @@ button:hover {
 }
 
 .custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 필포그래피 스크롤바 커스텀 스타일 */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-4);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A3A3A3;
+}
+
+::-webkit-scrollbar-button {
   display: none;
 }
