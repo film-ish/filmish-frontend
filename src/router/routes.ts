@@ -9,4 +9,5 @@ export const ROUTES = {
     RECOMMENDATIONS: 'recommendations' // 상대 경로
   },
   LOGIN: '/login',  
+  SIGN_UP: '/sign-up',
 } as const;

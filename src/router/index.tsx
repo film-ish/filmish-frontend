@@ -8,6 +8,7 @@ import Detail from "../pages/genre/Detail.tsx";
 import Recommendations from "../pages/genre/Recommendations.tsx";
 import MovieTalkDetail from '../pages/movie-talk/movie-talk-detail/MovieTalkDetail.tsx';
 import Login from '../pages/login/Login.tsx';
+import SignUp from '../pages/sign-up/SignUp.tsx';
 const AppRoutes = () => {
     return (
         <MainLayout>
@@ -22,6 +23,7 @@ const AppRoutes = () => {
                     <Route path={`${ROUTES.GENRE.DETAIL}/${ROUTES.GENRE.RECOMMENDATIONS}`} element={<Recommendations />} />
                 </Route>
                 <Route path={ROUTES.LOGIN} element={<Login />} />
+                <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
             </Routes>
         </MainLayout>
     );
