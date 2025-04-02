@@ -5,7 +5,7 @@ import { ChevronRight, CircleAlert } from 'lucide-react';
 
 const Home = () => {
   return (
-    <div className="flex flex-col gap-20 py-12">
+    <div className="flex flex-col gap-20">
       {/* Best Review 섹션 */}
       <section className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw]">
         <BestReview />
@@ -21,7 +21,9 @@ const Home = () => {
             </button>
           </div>
 
-          <button className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">더보기 <ChevronRight className="w-4 h-4" /></button>
+          <button className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
+            더보기 <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
         <div className="relative w-[calc(100vw-6.25%)] overflow-hidden">
           <PersonalRecommend />
@@ -32,7 +34,9 @@ const Home = () => {
       <section className="relative">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xl font-bold tracking-tight">좋아요 TOP 10</h2>
-          <button className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">더보기 <ChevronRight className="w-4 h-4" /></button>
+          <button className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
+            더보기 <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
         <div className="relative w-[calc(100vw-6.25%)] overflow-hidden">
           <TopTen />
@@ -43,7 +47,9 @@ const Home = () => {
       <section className="relative">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xl font-bold tracking-tight">평점 TOP 10</h2>
-          <button className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">더보기 <ChevronRight className="w-4 h-4" /></button>
+          <button className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
+            더보기 <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
         <div className="relative w-[calc(100vw-6.25%)] overflow-hidden">
           <TopTen />
