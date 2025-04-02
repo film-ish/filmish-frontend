@@ -1,15 +1,15 @@
 import { ReactNode } from 'react';
+import Header from '../components/header/Header';
 
 interface MainLayoutProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-8 overflow-x-hidden">
-      <div className="mx-[6.25%]">
-        {children}
-      </div>
+      <Header />
+      <div className="mx-[6.25%]">{children}</div>
     </div>
   );
 };
