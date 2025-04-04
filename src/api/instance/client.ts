@@ -9,7 +9,7 @@ export const apiClient = axios.create({
 // 요청 인터셉터 설정
 apiClient.interceptors.request.use(
   (config) => {
-    const { accessToken } = useAuthStore();
+    const { accessToken } = useAuthStore.getState();
 
     if (accessToken) {
       config.headers.access = accessToken;
@@ -30,7 +30,7 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const { setAccessToken } = useAuthStore();
+      const { setAccessToken } = useAuthStore.getState();
 
       try {
         const { headers } = await apiClient.post('/users/reissue');
