@@ -9,6 +9,8 @@ interface ButtonProps {
   textColor?: 'white' | 'gray-4' | 'cherry-blush';
   onClick: () => void;
   children: React.ReactNode;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const Button = ({
@@ -20,6 +22,8 @@ const Button = ({
   textColor = 'white',
   onClick,
   children,
+  disabled = false,
+  type = 'button',
 }: ButtonProps) => {
   const bgColorVariants = {
     white: 'bg-white',
@@ -38,13 +42,16 @@ const Button = ({
   const shapeClass = shape === 'rounded-full' ? 'rounded-full' : 'rounded-[10px]';
   const sizeClass = size === 'small' ? 'h-[30px]' : size === 'large' ? 'h-[50px]' : 'h-[40px]';
   const variantClass = variant === 'outlined' ? 'border border-gray-4 text-gray-4 bg-transparent' : '';
+  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : '';
 
   const bgColorClass = bgColorVariants[bgColor];
   const textColorClass = textColorVariants[textColor];
 
   return (
     <button
-      className={`font-medium text-sm transition-all px-[15px] w-fit ${shapeClass} ${sizeClass} ${variantClass} ${bgColorClass} ${textColorClass} ${className}`}
+      type={type}
+      disabled={disabled}
+      className={`font-medium text-sm transition-all px-[15px] w-fit ${shapeClass} ${sizeClass} ${variantClass} ${bgColorClass} ${textColorClass} ${disabledClass} ${className}`}
       onClick={onClick}>
       {children}
     </button>
