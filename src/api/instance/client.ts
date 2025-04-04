@@ -12,7 +12,7 @@ apiClient.interceptors.request.use(
     const { accessToken } = useAuthStore();
 
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.access = accessToken;
     }
 
     return config;
@@ -30,24 +30,22 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      const { setAccessToken } = useAuthStore();
 
       try {
-        const { setAccessToken } = useAuthStore();
-
-        const { headers } = await axiosInstance.post('/users/reissue');
+        const { headers } = await apiClient.post('/users/reissue');
         const newAccessToken = headers.access;
 
         setAccessToken(newAccessToken);
 
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        originalRequest.headers.access = newAccessToken;
 
         return apiClient(originalRequest);
-      } catch (refreshError) {
-        tokenStorage.remove();
-        throw refreshError;
+      } catch (error) {
+        setAccessToken("");
+        throw error;
       }
     }
-
     return Promise.reject(error);
   },
 );
