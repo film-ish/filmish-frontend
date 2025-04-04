@@ -1,18 +1,22 @@
+import { User } from 'lucide-react';
+
 interface ProfileImageProps {
   src: string;
   size?: number;
+  onClick?: () => void;
 }
 
-const ProfileImage = ({ src, size = 36 }: ProfileImageProps) => {
+const ProfileImage = ({ src, size = 36, onClick }: ProfileImageProps) => {
   return (
     <div
-      className="flex items-center justify-center relative rounded-full aspect-square overflow-hidden bg-white"
+      onClick={onClick}
+      className="shrink-0 flex items-center justify-center relative rounded-full aspect-square overflow-hidden bg-gray-4"
       style={{ width: `${size}px` }}>
-      <img
-        className="object-cover w-full h-full"
-        src={src ? src : '/profile.png'}
-        alt="profile image"
-      />
+      {src ? (
+        <img className="object-cover w-full h-full" src={src ? src : '/profile.png'} alt="profile image" />
+      ) : (
+        <User />
+      )}
     </div>
   );
 };
