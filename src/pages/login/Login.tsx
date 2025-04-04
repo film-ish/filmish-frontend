@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Film } from 'lucide-react';
 // Zustand 사용자 스토어 훅 임포트
 import { useUserStore } from '../../store/userStore';
+import { login } from "../../api/login/loginApi.ts";
+import {useAuthStore} from "../../store/authStore.ts";
 
 // Login 컴포넌트 정의
 const Login = () => {
@@ -11,6 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   // Zustand 스토어에서 사용자 정보 업데이트 함수(setUser) 가져오기
   const { setUser } = useUserStore();
+  const { setAccessToken } = useAuthStore();
   // 로그인 폼 데이터 (email, password)를 위한 상태 관리
   const [formData, setFormData] = useState({
     email: '',
@@ -29,33 +32,26 @@ const Login = () => {
   };
 
   // 폼 제출 시 호출되는 핸들러
-  const handleSubmit = (e: React.FormEvent) => {
-    // 기본 폼 제출 동작(페이지 새로고침) 방지
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 실제 백엔드 API를 호출하는 로그인 로직 구현 필요
-    console.log('Login attempt:', formData);
-    // 임시로 로그인 성공 처리 함수 호출 (테스트용)
-    handleLoginSuccess();
+    try {
+      const response = await login(formData);
+      const accessToken = response.headers?.access;
+      console.log(accessToken);
+
+      if (accessToken) {
+        setAccessToken(accessToken);
+      }
+
+      setUser(response.data);
+      navigate('/');
+    } catch (error) {
+      console.error('로그인 실패:', error);
+    }
   };
 
-  // 로그인 성공 시 호출되는 함수 (현재는 임시 데이터 사용)
-  const handleLoginSuccess = () => {
-    // 실제로는 API 응답으로부터 받아온 사용자 데이터를 사용해야 함
-    const userData = {
-      id: 1,
-      email: 'user1@ssafy.com',
-      nickname: '닉네임',
-      headImage: null,
-    };
-    // Zustand 스토어의 setUser 액션을 호출하여 사용자 상태 업데이트
-    // 이 액션은 persist 미들웨어를 통해 IndexedDB에도 데이터를 저장
-    setUser(userData);
-    console.log('로그인 성공 및 사용자 정보 저장됨');
-    // 로그인 성공 후 메인 페이지 등으로 이동하는 로직 추가 가능
-    // navigate('/');
-  };
 
-  // JSX 반환: 로그인 폼 UI 렌더링
+
   return (
     <div className="-mt-[3.75rem] min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-gray-800">
       <div className="max-w-md w-full space-y-8 bg-gray-2/10 backdrop-blur-lg p-10 rounded-2xl shadow-2xl">
