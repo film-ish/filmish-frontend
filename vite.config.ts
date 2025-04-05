@@ -10,7 +10,7 @@ export default defineConfig({
         // 백엔드 API 서버 주소 - EC2 서버 주소
         // 프론트엔드에서 '/api/...'로 시작하는 모든 요청은 이 서버로 프록시됩니다
         // target: 'http://j12d207.p.ssafy.io:8080',
-        target: 'http://192.168.100.157:8080',
+        target: 'https://ddokddok.duckdns.org',
 
         // changeOrigin: true - 호스트 헤더를 타겟 URL의 호스트로 변경
         // CORS 이슈 방지를 위해 필요한 설정입니다
