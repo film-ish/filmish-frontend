@@ -8,6 +8,7 @@ export const ROUTES = {
     DETAIL: ':genre', // 상대 경로
     RECOMMENDATIONS: 'recommendations' // 상대 경로
   },
-  LOGIN: '/login',  
+  COMMERCIAL: '/commercial',
+  LOGIN: '/login',
   SIGN_UP: '/sign-up',
 } as const;

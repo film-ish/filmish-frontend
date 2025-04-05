@@ -170,7 +170,7 @@ const List = () => {
             {/* 장르 헤더 섹션 */}
             <div
                 ref={headerRef}
-                className="sticky top-0 bg-black z-10 p-4 border-b border-gray-8"
+                className="sticky top-0 bg-black z-10 p-4 border-b border-gray-8 z-100"
             >
                 <h1 className="text-xl font-bold mb-2 mx-10">장르별 추천</h1>
                 <div className="flex flex-wrap py-2 mx-10">

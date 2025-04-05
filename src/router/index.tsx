@@ -9,6 +9,7 @@ import Recommendations from "../pages/genre/Recommendations.tsx";
 import MovieTalkDetail from '../pages/movie-talk/movie-talk-detail/MovieTalkDetail.tsx';
 import Login from '../pages/login/Login.tsx';
 import SignUp from '../pages/sign-up/SignUp.tsx';
+import CommercialMain from "../pages/commercial";
 const AppRoutes = () => {
     return (
         <MainLayout>
@@ -24,6 +25,7 @@ const AppRoutes = () => {
                 </Route>
                 <Route path={ROUTES.LOGIN} element={<Login />} />
                 <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
+                <Route path={ROUTES.COMMERCIAL} element={<CommercialMain/>}/>
             </Routes>
         </MainLayout>
     );
