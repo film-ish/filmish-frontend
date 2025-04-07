@@ -9,8 +9,8 @@ interface Movie {
   year: string;
   duration: string;
   rating: number;
-  imageUrl: string;
-  genres: string[];
+  img: string;
+  genre: Array<{ id: number; name: string }>;
   runningTime: number;
 }
 
@@ -24,7 +24,7 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
     containScroll: 'trimSnaps',
     dragFree: true
   });
-  
+
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
 
@@ -47,11 +47,11 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
         <div className="flex gap-6">
           {movies.map((movie) => (
             <div key={movie.id} className="flex-[0_0_calc((100%-5rem)/6)]">
-              <MovieCard  
-                poster={movie.imageUrl || '/public/no-poster.png'}
+              <MovieCard
+                poster={movie.img || '/public/no-poster.png'}
                 title={movie.title}
                 rating={movie.rating}
-                genres={movie.genres}
+                genres={movie.genre ? [movie.genre.map(g => g.name).join(', ')] : []}
                 runningTime={movie.runningTime}
                 liked={false}
                 onLike={() => {}}
@@ -64,4 +64,4 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
   );
 };
 
-export default PersonalRecommend; 
+export default PersonalRecommend;

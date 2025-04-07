@@ -11,8 +11,6 @@ interface UseMovieRecommendationsProps {
 }
 
 const DEFAULT_CACHE_DURATION = 5 * 60 * 1000; // 기본 5분
-const ETC_GENRE_ID = 999999; // '그외' 장르의 ID
-const ETC_GENRE_NAME = '그외'; // '그외' 장르의 이름
 
 // 영화 추천 데이터 관리를 위한 커스텀 훅
 export const useMovieRecommendations = ({
