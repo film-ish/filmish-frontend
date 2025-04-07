@@ -13,14 +13,14 @@ interface MovieCardProps {
   iconType?: 'star' | 'heart';
 }
 
-const MovieCard = ({ 
-  width = 225, 
-  poster, 
-  title, 
-  genres, 
-  runningTime, 
-  rating, 
-  liked, 
+const MovieCard = ({
+  width = 225,
+  poster,
+  title,
+  genres,
+  runningTime,
+  rating,
+  liked,
   onLike,
   iconType = 'star'
 }: MovieCardProps) => {
@@ -38,12 +38,12 @@ const MovieCard = ({
           ) : (
             <Star fill="#FF5E5E" size={14} strokeWidth={0} />
           )}
-          {rating === 0 ? "0" : rating}
+            {rating >= 0 ? rating : ""}
         </div>
       </div>
 
       <div className="flex items-center text-gray-4 text-label-md font-light">
-        {genres} • {runningTime}분
+        {genres}{runningTime > 0 ? ` • ${runningTime}분` : ''}
       </div>
     </div>
   );
