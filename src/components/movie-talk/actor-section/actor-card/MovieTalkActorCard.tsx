@@ -5,7 +5,7 @@ interface Actor {
   name: string;
   photoUrl: string;
   rating: number;
-  count: number;
+  indieCnt: number;
 }
 
 interface MovieTalkActorCardProps {
@@ -19,7 +19,7 @@ const MovieTalkActorCard = ({ actor }: MovieTalkActorCardProps) => {
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${actor.photoUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'})`,
+          backgroundImage: `url(${actor.photoUrl || '/no-poster-long.png'})`,
         }}
       >
         {/* 그라데이션 오버레이 */}
@@ -31,7 +31,7 @@ const MovieTalkActorCard = ({ actor }: MovieTalkActorCardProps) => {
         <h3 className="text-3xl font-light mb-3">{actor.name}</h3>
         <div className="flex items-center gap-3">
           <FilmIcon className="w-4 h-4" />
-          <span className="text-gray-3 text-xl">{actor.count}개의 작품</span>
+          <span className="text-gray-3 text-xl">{actor.indieCnt}개 작품</span>
         </div>
       </div>
     </div>

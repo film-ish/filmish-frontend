@@ -35,12 +35,19 @@ persistQueryClient({
   queryClient, // 상태를 지속시킬 QueryClient 인스턴스
   persister: idbQueryPersister, // 사용할 퍼시스터 (IndexedDB 기반 커스텀 퍼시스터)
   maxAge: 1000 * 60 * 60 * 24, // 캐시 데이터의 최대 유효 기간 (24시간)
-  buster: 'app-version-1', // 캐시 무효화를 위한 문자열
+  buster: 'app-version-' + Date.now(), // 캐시 무효화를 위한 문자열 (버전 업데이트)
   // 오류 발생 시 캐시를 무시하고 새로 데이터를 가져오도록 설정
   dehydrateOptions: {
     shouldDehydrateQuery: (query) => {
-      // 오류가 있는 쿼리는 지속화하지 않음
-      return query.state.status !== 'error';
+      // 오류가 있는 쿼리나 직렬화할 수 없는 데이터를 포함한 쿼리는 저장하지 않음
+      try {
+        // 직렬화 테스트 - 직렬화할 수 없는 데이터가 있으면 예외 발생
+        JSON.stringify(query);
+        return query.state.status !== 'error';
+      } catch (e) {
+        console.warn('직렬화할 수 없는 쿼리 무시:', query.queryKey);
+        return false;
+      }
     },
   },
 });

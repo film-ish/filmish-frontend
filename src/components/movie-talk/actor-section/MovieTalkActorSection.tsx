@@ -2,8 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { FilmIcon } from 'lucide-react';
 import MovieTalkActorCard from "./actor-card/MovieTalkActorCard";
+import { useQuery } from '@tanstack/react-query';
+import { getActors } from '../../../api/actor/getActor';
 
-const MovieTalkActorSection = () => {
+interface MovieTalkActorSectionProps {
+  currentPage?: number;
+}
+
+const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'center',
     containScroll: false,
@@ -15,20 +21,16 @@ const MovieTalkActorSection = () => {
     inViewThreshold: 0.7,
   });
   const [centerIndex, setCenterIndex] = useState(0);
-  
-  const actors = [
-    { id: 1, name: '김싸피', photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80', rating: 4.5, count: 15, recentWork: '귀울임' },
-    { id: 2, name: '이싸피', photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80', rating: 4.2, count: 12, recentWork: '귀울임' },
-    { id: 3, name: '박싸피', photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80', rating: 4.7, count: 18, recentWork: '귀울임' },
-    { id: 4, name: '최싸피', photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80', rating: 4.1, count: 10, recentWork: '귀울임' },
-    { id: 5, name: '정싸피', photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80', rating: 4.8, count: 20, recentWork: '귀울임' },
-    { id: 6, name: '강싸피', photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80', rating: 4.3, count: 14 },
-    { id: 7, name: '조싸피', photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80', rating: 4.6, count: 16 },
-    { id: 8, name: '윤싸피', photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80', rating: 4.4, count: 13 },
-    { id: 9, name: '장싸피', photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80', rating: 4.4, count: 13 },
-    { id: 10, name: '한싸피', photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80', rating: 4.4, count: 13 },
-  ];
+  const pageSize = 10;
 
+  // 페이지에 따른 배우 데이터 가져오기
+  const { data: actors, isLoading } = useQuery({
+    queryKey: ['actors', currentPage - 1], // API는 0부터 시작하므로 1을 빼줌
+    queryFn: () => getActors(currentPage - 1, pageSize),
+    staleTime: 5 * 60 * 1000, // 5분
+  });
+
+  // 캐러셀 이벤트 설정
   useEffect(() => {
     if (emblaApi) {
       const onSelect = () => {
@@ -45,6 +47,18 @@ const MovieTalkActorSection = () => {
     }
   }, [emblaApi]);
 
+  // 페이지가 변경되면 캐러셀 초기화
+  useEffect(() => {
+    if (emblaApi) {
+      // 페이지 변경 시 캐러셀 초기화
+      setTimeout(() => {
+        emblaApi.scrollTo(0);
+        setCenterIndex(0);
+        emblaApi.reInit();
+      }, 100);
+    }
+  }, [currentPage, emblaApi]);
+
   const handlePrevClick = () => {
     if (emblaApi) {
       emblaApi.scrollPrev();
@@ -56,6 +70,26 @@ const MovieTalkActorSection = () => {
       emblaApi.scrollNext();
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="relative w-full mx-auto px-4">
+        <div className="flex justify-center items-center py-20">
+          <p className="text-white">배우 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!actors || actors.length === 0) {
+    return (
+      <div className="relative w-full mx-auto px-4">
+        <div className="flex justify-center items-center py-20">
+          <p className="text-white">표시할 배우 정보가 없습니다.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full mx-auto px-4">
@@ -94,9 +128,9 @@ const MovieTalkActorSection = () => {
               paddingRight: 'calc(50% - 200px)',
               gap: '1.5rem'
             }}>
-              {actors.map((actor, index) => (
+              {actors.map((actor: any, index: number) => (
                 <div 
-                  key={actor.id} 
+                  key={`actor-${actor.id}-${index}`} 
                   className={`embla__slide relative flex-[0_0_400px] actor-card ${index === centerIndex ? 'center' : ''}`}
                   data-index={index}
                 >
@@ -112,10 +146,10 @@ const MovieTalkActorSection = () => {
                       <h3 className="text-3xl font-light">{actor.name}</h3>
                       <div className="flex items-center gap-1">
                         <FilmIcon className="w-4 h-4" />
-                        <span className="text-sm">15 작품</span>
+                        <span className="text-sm">{actor.indieCnt}개 작품</span>
                       </div>
                     </div>
-                    <span className="text-2xl font-light text-gray-5">최근 작품: {actor.recentWork}</span>
+                    <span className="text-2xl font-light text-gray-5">작품: [{actor.movieTitle}]...</span>
                   </div>
                 </div>
               ))}

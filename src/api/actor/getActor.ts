@@ -1,10 +1,10 @@
 import { apiClient } from '../instance/client';
 
-const getActors = async (pageNum: number = 0, pageSize: number = 10) => {
+const getActors = async (page: number, size: number) => {
   const response = await apiClient.get(
-    `/makers?pageNum=${pageNum}&pageSize=${pageSize}`
+    `/makers?page=${page}&size=${size}`
   );
-  return response.data.data.content; 
+  return response.data.data.content;
 };
 
 export { getActors };
