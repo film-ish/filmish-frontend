@@ -2,15 +2,15 @@ import MovieInfo from './MovieInfo';
 import SliderControls from './SliderControls';
 import SliderNavigation from './SliderNavigation';
 
-interface MovieData {
+interface Movie {
   id: number;
   title: string;
   rating: number;
-  posterUrl: string;
+  stillcut: string;
 }
 
 interface MovieSliderProps {
-  movies: MovieData[];
+  movies: Movie[];
   currentSlide: number;
   onSlideChange: (index: number) => void;
 }
@@ -39,16 +39,32 @@ const MovieSlider = ({ movies, currentSlide, onSlideChange }: MovieSliderProps) 
               index === currentSlide ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <img
-              src={movie.posterUrl}
-              alt={movie.title}
-              className="w-full h-full object-cover rounded-xl bg-gray-5"
-            />
-            <MovieInfo
-              title={movie.title}
-              rating={movie.rating}
-              onDetailClick={() => handleDetailClick(movie.id)}
-            />
+            <div className="relative w-full h-full">
+              <img
+                src={movie.stillcut || '/public/no-poster.png'}
+                alt={movie.title}
+                className="w-full h-full object-cover rounded-xl bg-gray-6"
+              />
+              <div 
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  borderRadius: '0.75rem',
+                  zIndex: 5
+                }}
+              />
+            </div>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10 }}>
+              <MovieInfo
+                title={movie.title}
+                rating={movie.rating}
+                onDetailClick={() => handleDetailClick(movie.id)}
+              />
+            </div>
           </div>
         ))}
       </div>
@@ -59,10 +75,14 @@ const MovieSlider = ({ movies, currentSlide, onSlideChange }: MovieSliderProps) 
           onSlideChange={onSlideChange}
         />
       </div>
-      <SliderNavigation
-        onPrevClick={handlePrevSlide}
-        onNextClick={handleNextSlide}
-      />
+      <div className="z-[30]" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+        <div style={{ position: 'relative', height: '100%', pointerEvents: 'auto' }}>
+          <SliderNavigation
+            onPrevClick={handlePrevSlide}
+            onNextClick={handleNextSlide}
+          />
+        </div>
+      </div>
     </div>
   );
 };

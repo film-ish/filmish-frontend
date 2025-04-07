@@ -16,6 +16,16 @@ const queryClient = new QueryClient({
       // 가비지 컬렉션 시간 설정 (캐시된 데이터가 사용되지 않을 때 메모리에서 제거되기까지의 시간)
       // 예: 24시간 (밀리초 단위)
       gcTime: 1000 * 60 * 60 * 24,
+      // 데이터가 오래된 것으로 간주되기까지의 시간 (이 시간 동안은 데이터를 다시 가져오지 않음)
+      staleTime: 1000 * 60 * 60 * 10, // 10시간
+      // 컴포넌트가 마운트될 때마다 데이터를 다시 가져올지 여부
+      refetchOnMount: true,
+      // 창이 포커스될 때 데이터를 다시 가져올지 여부
+      refetchOnWindowFocus: true,
+      // 오류 발생 시 재시도 횟수
+      retry: 3,
+      // 오류 발생 시 재시도 간격 (밀리초)
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
   },
 });
@@ -24,8 +34,15 @@ const queryClient = new QueryClient({
 persistQueryClient({
   queryClient, // 상태를 지속시킬 QueryClient 인스턴스
   persister: idbQueryPersister, // 사용할 퍼시스터 (IndexedDB 기반 커스텀 퍼시스터)
-  // maxAge: 1000 * 60 * 60 * 24, // 선택적: 캐시 데이터의 최대 유효 기간 (기본값은 gcTime)
-  // buster: 'app-version-1',     // 선택적: 캐시 무효화를 위한 문자열 (앱 버전 변경 등)
+  maxAge: 1000 * 60 * 60 * 24, // 캐시 데이터의 최대 유효 기간 (24시간)
+  buster: 'app-version-1', // 캐시 무효화를 위한 문자열
+  // 오류 발생 시 캐시를 무시하고 새로 데이터를 가져오도록 설정
+  dehydrateOptions: {
+    shouldDehydrateQuery: (query) => {
+      // 오류가 있는 쿼리는 지속화하지 않음
+      return query.state.status !== 'error';
+    },
+  },
 });
 
 // 메인 애플리케이션 컴포넌트
