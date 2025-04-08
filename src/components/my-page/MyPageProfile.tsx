@@ -13,7 +13,7 @@ const MyPageProfile = () => {
     onChangeNickname,
     tempProfileImage,
     fileInputRef,
-    handleProfileImageChange,
+    handleFileInputChange,
     onClickProfileImage,
     onClickEditButton,
     onClickCancelButton,
@@ -23,8 +23,13 @@ const MyPageProfile = () => {
   return (
     <div className="flex justify-between gap-2 items-center">
       <div className="flex gap-2 items-center">
-        <ProfileImage src={tempProfileImage ? tempProfileImage : user.headImage} onClick={onClickProfileImage} />
-        <input ref={fileInputRef} hidden type="file" accept="image/*" onChange={handleProfileImageChange} />
+        <button
+          className={isEditing ? 'hover:opacity-80' : ''}
+          style={{ cursor: isEditing ? 'pointer' : 'default' }}
+          onClick={onClickProfileImage}>
+          <ProfileImage src={tempProfileImage ? tempProfileImage : user.headImage} />
+        </button>
+        <input ref={fileInputRef} hidden type="file" accept="image/*" onChange={handleFileInputChange} />
 
         <div className="flex flex-col">
           {isEditing ? (
