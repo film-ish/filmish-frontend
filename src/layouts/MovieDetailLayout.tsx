@@ -6,7 +6,6 @@ import Tag from '../components/common/Tag';
 import MovieDetailTap from '../components/movie-detail/MovieDetailTap';
 import formatRating from '../utils/rating';
 import { movieService } from '../api/movie';
-import { useEffect } from 'react';
 
 const MovieDetailLayout = () => {
   const movieId = Number(useParams().movieId);
@@ -15,22 +14,7 @@ const MovieDetailLayout = () => {
     queryKey: ['movie', movieId],
     queryFn: async () => {
       const response = await movieService.getMovieDetail(movieId);
-
-      console.log(response);
-
-      const stillcuts = response.data.stillcuts;
-      const newStillcuts = [];
-
-      stillcuts.forEach((item) => {
-        newStillcuts.push(Object.values(item));
-      });
-
-      const newResponse = {
-        ...response.data,
-        stillcuts: newStillcuts,
-      };
-
-      return newResponse;
+      return response.data;
     },
     staleTime: 10 * 1000,
     enabled: !!movieId,
@@ -52,7 +36,9 @@ const MovieDetailLayout = () => {
   return (
     <div
       className="relative w-screen h-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] -mt-[3.75rem] p-[70px] bg-cover bg-center overflow-hidden"
-      style={{ backgroundImage: `url(${movieQuery.data?.stillcuts[0]})` }}>
+      style={{
+        backgroundImage: movieQuery.data?.stillcuts[0] ? `url(${movieQuery.data?.stillcuts[0]})` : '/no-poster.png',
+      }}>
       <div className="absolute inset-0 bg-black/50" />
 
       <div className="w-full h-full relative z-10 flex">
