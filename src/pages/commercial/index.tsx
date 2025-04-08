@@ -89,10 +89,10 @@ const Main = () => {
         // 이미 좋아요한 상태인지 확인
         const isCurrentlyLiked = likedMovies[movieId];
 
-        // 좋아요 개수가 3개를 초과하지 않도록 제한
+        // 좋아요 개수가 5개를 초과하지 않도록 제한
         const likedCount = Object.values(likedMovies).filter(Boolean).length;
-        if (!isCurrentlyLiked && likedCount >= 3) {
-            console.log('좋아요는 최대 3개까지만 가능합니다.');
+        if (!isCurrentlyLiked && likedCount >= 5) {
+            console.log('좋아요는 최대 5개까지만 가능합니다.');
             return;
         }
 
@@ -105,9 +105,9 @@ const Main = () => {
 
     // 좋아요 목록 제출
     const submitLikedMovies = async () => {
-        // 좋아요한 영화가 3개가 아닌 경우 알림
-        if (likedMovieIds.length !== 3) {
-            alert('좋아요한 영화를 3개 선택해주세요.');
+        // 좋아요한 영화가 5개가 아닌 경우 알림
+        if (likedMovieIds.length !== 5) {
+            alert('좋아요한 영화를 5개 선택해주세요.');
             return;
         }
 
@@ -201,10 +201,10 @@ const Main = () => {
             <div className="px-4 mb-8 mt-25">
                 <div className="mb-4 mx-10 flex flex-col items-center text-center mb-15">
                     <h2 className="text-3xl font-bold mb-3">영화 좋아요</h2>
-                    <h2 className="text-sm text-gray-4">관심있는 영화 3개를 골라 주세요</h2>
+                    <h2 className="text-sm text-gray-4">관심있는 영화 5개를 골라 주세요</h2>
                     <h2 className="text-sm text-gray-4">관심 있는 상업영화를 통해 독립영화를 추천해드려요</h2>
                     <div className="mt-2 text-sm text-gray-4 mb-4">
-                        선택된 영화: {Object.values(likedMovies).filter(Boolean).length}/3
+                        선택된 영화: {Object.values(likedMovies).filter(Boolean).length}/5
                     </div>
 
                     {/* 제출 버튼 */}
@@ -212,10 +212,10 @@ const Main = () => {
                         variant="filled"
                         shape="rounded"
                         size="medium"
-                        bgColor={likedMovieIds.length === 3 ? "white" : "gray-6"}
-                        textColor={likedMovieIds.length === 3 ? "cherry-blush" : "white"}
+                        bgColor={likedMovieIds.length === 5 ? "white" : "gray-6"}
+                        textColor={likedMovieIds.length === 5 ? "cherry-blush" : "white"}
                         onClick={submitLikedMovies}
-                        disabled={likedMovieIds.length !== 3 || isSubmitting}
+                        disabled={likedMovieIds.length !== 5 || isSubmitting}
                         className="px-8 py-2"
                     >
                         {isSubmitting ? '제출 중...' : '선택 완료'}

@@ -7,8 +7,8 @@ const getCommercialMovies = async () => {
 };
 
 // 좋아요한 상업 영화 목록 가져오기
-const getLikedCommercialMovies = async () => {
-    const response = await apiClient.get('/movies/liked-commercial');
+const isLikedCommercialMovies = async () => {
+    const response = await apiClient.get('/movies/like-commercials');
     return response.data;
 };
 
@@ -22,6 +22,6 @@ const submitLikedCommercialMovies = async (commercialIds: number[]) => {
 
 export {
     getCommercialMovies,
-    getLikedCommercialMovies,
+    isLikedCommercialMovies,
     submitLikedCommercialMovies
 };
