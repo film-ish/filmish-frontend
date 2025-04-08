@@ -45,7 +45,7 @@ const Login = () => {
         setAccessToken(accessToken);
       }
 
-      setUser(response.data);
+      setUser(response.data.data);
 
       // 상업 영화 좋아요 여부 확인
       try {
