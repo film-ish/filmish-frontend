@@ -12,7 +12,7 @@ const MovieReviewsPage = () => {
 
   const { createReview } = useReview(movieId, reviewId);
 
-  const [showReviewForm, setShowReviewForm] = useState(!reviews.pages[0].length);
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
   return (
     <>
@@ -28,7 +28,7 @@ const MovieReviewsPage = () => {
           </Button>
         </div>
 
-        {showReviewForm && (
+        {(showReviewForm || reviews.pages[0].length === 0) && (
           <ReviewForm
             onClickCancel={() => {
               setShowReviewForm(false);
@@ -38,9 +38,18 @@ const MovieReviewsPage = () => {
           />
         )}
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 pb-20">
+          <div className="w-full h-[1px] bg-gray-6" />
+
           {reviews.pages.map((page) => {
-            return page.map((review) => <ReviewCard key={review.id} review={review} />);
+            return page.map((review, index) => {
+              return (
+                <>
+                  <ReviewCard key={review.id} review={review} />
+                  {index !== page.length - 1 && <div className="w-full h-[1px] bg-gray-6" />}
+                </>
+              );
+            });
           })}
         </div>
       </div>
