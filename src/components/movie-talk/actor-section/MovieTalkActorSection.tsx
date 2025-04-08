@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { FilmIcon, Search, X } from 'lucide-react';
+import { FilmIcon } from 'lucide-react';
 import MovieTalkActorCard from "./actor-card/MovieTalkActorCard";
 import { useQuery } from '@tanstack/react-query';
 import { getActors, searchActor } from '../../../api/actor/getActor';
+import ActorSearch from './ActorSearch';
 
 interface MovieTalkActorSectionProps {
   currentPage?: number;
@@ -21,139 +22,25 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
     inViewThreshold: 0.7,
   });
   const [centerIndex, setCenterIndex] = useState(0);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
   const pageSize = 10;
-  const [isComposing, setIsComposing] = useState(false);
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const [isSearchRendered, setIsSearchRendered] = useState(false);
-
-  // 디바운스 효과 적용 (검색어 입력 후 500ms 후에 검색 실행)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
-  // 검색창 표시/숨김 토글 시 애니메이션 처리
-  useEffect(() => {
-    if (isSearchVisible) {
-      // 검색창이 표시되면 먼저 렌더링하고 약간의 지연 후 확장 애니메이션 시작
-      setIsSearchRendered(true);
-      const timer = setTimeout(() => {
-        setIsSearchExpanded(true);
-      }, 50);
-      return () => clearTimeout(timer);
-    } else if (isClosing) {
-      // 검색창이 닫히는 중이면 축소 애니메이션 후 완전히 숨김
-      const timer = setTimeout(() => {
-        setIsSearchExpanded(false);
-        // 애니메이션이 끝난 후 렌더링 상태 해제
-        setTimeout(() => {
-          setIsSearchRendered(false);
-          setIsClosing(false);
-        }, 300);
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [isSearchVisible, isClosing]);
-
-  // 검색창 외부 클릭 감지
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        isSearchVisible && 
-        searchContainerRef.current && 
-        !searchContainerRef.current.contains(event.target as Node) &&
-        searchInputRef.current &&
-        !searchInputRef.current.contains(event.target as Node)
-      ) {
-        // 즉시 숨기지 않고 애니메이션 후 숨김
-        setIsClosing(true);
-        // 애니메이션이 끝난 후 검색창 숨김
-        setTimeout(() => {
-          setIsSearchVisible(false);
-        }, 350);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSearchVisible]);
-
-  // 검색창 표시/숨김 토글
-  const toggleSearch = () => {
-    if (isSearchVisible) {
-      // 검색창이 열려있으면 닫기 애니메이션 시작
-      setIsClosing(true);
-      // 애니메이션이 끝난 후 검색창 숨김
-      setTimeout(() => {
-        setIsSearchVisible(false);
-      }, 350);
-    } else {
-      // 검색창이 닫혀있으면 표시
-      setIsSearchVisible(true);
-    }
-    
-    if (!isSearchVisible && searchInputRef.current) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
-    }
-  };
-
-  // 검색어 변경 핸들러
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  // 한글 입력 시작 시 호출
-  const handleCompositionStart = () => {
-    setIsComposing(true);
-  };
-
-  // 한글 입력 완료 시 호출
-  const handleCompositionEnd = () => {
-    setIsComposing(false);
-    // 입력이 완료된 후 검색어 업데이트
-    if (searchInputRef.current) {
-      setSearchTerm(searchInputRef.current.value);
-    }
-  };
-
-  // 검색어 초기화
-  const clearSearch = () => {
-    setSearchTerm('');
-    setDebouncedSearchTerm('');
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  };
 
   // 검색 결과 가져오기 (2글자 이상일 때만 검색 실행)
   const { data: searchResults, isLoading: isSearchLoading } = useQuery({
-    queryKey: ['actors', 'search', debouncedSearchTerm],
+    queryKey: ['actors', 'search', searchTerm],
     queryFn: async () => {
-      console.log('검색어:', debouncedSearchTerm);
-      const results = await searchActor(debouncedSearchTerm);
+      console.log('검색어:', searchTerm);
+      const results = await searchActor(searchTerm);
       console.log('검색 결과:', results);
       return results;
     },
-    enabled: debouncedSearchTerm.length >= 2 && !isComposing, // 2글자 이상이고 한글 입력 중이 아닐 때만 검색 실행
+    enabled: searchTerm.length >= 2,
     staleTime: 1000 * 60 * 60, // 1시간
   });
 
   // 페이지에 따른 배우 데이터 가져오기
   const { data: actors, isLoading } = useQuery({
-    queryKey: ['actors', currentPage - 1], // API는 0부터 시작하므로 1을 빼줌
+    queryKey: ['actors', currentPage - 1],
     queryFn: async () => {
       const results = await getActors(currentPage - 1, pageSize);
       console.log('페이지 배우 데이터:', results);
@@ -171,7 +58,7 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
       };
 
       emblaApi.on('select', onSelect);
-      onSelect(); // 초기 선택 상태 설정
+      onSelect();
 
       return () => {
         emblaApi.off('select', onSelect);
@@ -182,8 +69,6 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
   // 페이지가 변경되면 캐러셀 초기화
   useEffect(() => {
     if (emblaApi) {
-      console.log(searchResults);
-      // 페이지 변경 시 캐러셀 초기화
       setTimeout(() => {
         emblaApi.scrollTo(0);
         setCenterIndex(0);
@@ -204,7 +89,6 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
     }
   };
 
-  // 특정 슬라이드로 이동하는 함수
   const handleSlideClick = (index: number) => {
     if (emblaApi) {
       emblaApi.scrollTo(index);
@@ -231,41 +115,12 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
     );
   }
 
-  // 검색 중일 때 로딩 표시 (2글자 이상일 때만)
-  if (isSearchLoading && debouncedSearchTerm.length >= 2) {
+  if (isSearchLoading && searchTerm.length >= 2) {
     return (
       <div className="relative w-full mx-auto px-4">
         <div className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-hidden px-4">
           <div className="absolute top-10 right-4 flex gap-4 z-10 mr-[120px]">
-            <div 
-              ref={searchContainerRef}
-              className={`flex items-center bg-gray-6 rounded-full px-4 py-2 shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
-                isSearchExpanded ? 'w-[300px]' : 'w-[40px]'
-              }`}
-            >
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onCompositionStart={handleCompositionStart}
-                onCompositionEnd={handleCompositionEnd}
-                placeholder="배우 이름 검색..."
-                className={`outline-none bg-transparent text-gray-800 transition-all duration-300 ${
-                  isSearchExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'
-                }`}
-              />
-              {searchTerm && (
-                <button 
-                  onClick={clearSearch}
-                  className={`text-gray-500 hover:text-gray-700 ml-2 transition-all duration-300 ${
-                    isSearchExpanded ? 'opacity-100' : 'opacity-0'
-                  }`}
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
+            <ActorSearch onSearch={setSearchTerm} />
             <button 
               onClick={handlePrevClick}
               className="p-2 rounded-full bg-gray-7 hover:bg-gray-6"
@@ -291,41 +146,12 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
     );
   }
 
-  // 검색 결과가 없을 때 빈 화면 표시 (2글자 이상일 때만)
-  if (debouncedSearchTerm.length >= 2 && (!searchResults || searchResults.length === 0)) {
+  if (searchTerm.length >= 2 && (!searchResults || searchResults.length === 0)) {
     return (
       <div className="relative w-full mx-auto px-4">
         <div className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-hidden px-4">
           <div className="absolute top-10 right-4 flex gap-4 z-10 mr-[120px]">
-            <div 
-              ref={searchContainerRef}
-              className={`flex items-center bg-gray-6 rounded-full px-4 py-2 shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
-                isSearchExpanded ? 'w-[300px]' : 'w-[40px]'
-              }`}
-            >
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onCompositionStart={handleCompositionStart}
-                onCompositionEnd={handleCompositionEnd}
-                placeholder="배우 이름 검색..."
-                className={`outline-none bg-transparent text-gray-800 transition-all duration-300 ${
-                  isSearchExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'
-                }`}
-              />
-              {searchTerm && (
-                <button 
-                  onClick={clearSearch}
-                  className={`text-gray-500 hover:text-gray-700 ml-2 transition-all duration-300 ${
-                    isSearchExpanded ? 'opacity-100' : 'opacity-0'
-                  }`}
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
+            <ActorSearch onSearch={setSearchTerm} />
             <button 
               onClick={handlePrevClick}
               className="p-2 rounded-full bg-gray-7 hover:bg-gray-6"
@@ -344,59 +170,21 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
             </button>
           </div>
           <div className="flex justify-center items-center py-40">
-            <p className="text-white text-xl">"{debouncedSearchTerm}"에 대한 검색 결과가 없습니다.</p>
+            <p className="text-white text-xl">"{searchTerm}"에 대한 검색 결과가 없습니다.</p>
           </div>
         </div>
       </div>
     );
   }
 
-  // 검색 결과가 있으면 검색 결과만 표시, 없으면 기존 배우 목록 표시
-  const displayActors = debouncedSearchTerm.length >= 2 && searchResults ? searchResults : actors;
+  const displayActors = searchTerm.length >= 2 && searchResults ? searchResults : actors;
   console.log('표시할 배우 데이터:', displayActors);
 
   return (
     <div className="relative w-full mx-auto px-4">
       <div className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-hidden px-4">
         <div className="absolute top-10 right-4 flex gap-4 z-10 mr-[120px]">
-          {isSearchRendered ? (
-            <div 
-              ref={searchContainerRef}
-              className={`flex items-center bg-gray-6 rounded-full px-4 py-2 shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
-                isSearchExpanded ? 'w-[300px]' : 'w-[40px]'
-              }`}
-            >
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onCompositionStart={handleCompositionStart}
-                onCompositionEnd={handleCompositionEnd}
-                placeholder="배우 이름 검색..."
-                className={`outline-none bg-transparent text-gray-800 transition-all duration-300 ${
-                  isSearchExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'
-                }`}
-              />
-              {searchTerm && (
-                <button 
-                  onClick={clearSearch}
-                  className={`text-gray-500 hover:text-gray-700 ml-2 transition-all duration-300 ${
-                    isSearchExpanded ? 'opacity-100' : 'opacity-0'
-                  }`}
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
-          ) : (
-            <button 
-              onClick={toggleSearch}
-              className="p-2 rounded-full bg-gray-7 hover:bg-gray-6"
-            >
-              <Search className="w-6 h-6" />
-            </button>
-          )}
+          <ActorSearch onSearch={setSearchTerm} />
           <button 
             onClick={handlePrevClick}
             className="p-2 rounded-full bg-gray-7 hover:bg-gray-6"

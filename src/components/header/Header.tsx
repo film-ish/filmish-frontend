@@ -1,10 +1,11 @@
-import { Bell, Search, X } from 'lucide-react';
+import { Bell, Search, X, LogOut, User } from 'lucide-react';
 import ProfileImage from '../common/ProfileImage';
 import { Link, useLocation, useNavigate } from 'react-router';
 import NavItem from './NavItem';
 import { ROUTES } from '../../router/routes';
 import { useState, useRef, useEffect } from 'react';
 import { useUserStore } from '../../store/userStore';
+import { logout } from '../../api/logout/logoutApi';
 
 const Header = () => {
   const location = useLocation();
@@ -16,7 +17,9 @@ const Header = () => {
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const profileModalRef = useRef<HTMLDivElement>(null);
 
   // 검색창이 열릴 때 자동으로 포커스
   useEffect(() => {
@@ -24,6 +27,20 @@ const Header = () => {
       searchInputRef.current.focus();
     }
   }, [isSearchOpen]);
+
+  // 프로필 모달 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileModalRef.current && !profileModalRef.current.contains(event.target as Node)) {
+        setIsProfileModalOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
@@ -38,6 +55,20 @@ const Header = () => {
       setIsSearchOpen(false);
       navigate(`/search?keyword=${encodeURIComponent(searchKeyword.trim())}`);
     }
+  };
+
+  const toggleProfileModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsProfileModalOpen(!isProfileModalOpen);
+  };
+
+  const handleLogout = async () => {
+    // 로그아웃 로직 구현
+    await logout();
+    setIsProfileModalOpen(false);
+    navigate(ROUTES.HOME);
+    window.location.reload(); // 페이지 새로고침으로 상태 초기화
   };
 
   const commonNavItems = [
@@ -62,8 +93,40 @@ const Header = () => {
   const userNavItems = user.isLoggedIn
     ? [
         {
-          pathname: ROUTES.MY_PAGE.ROOT,
-          children: <ProfileImage src={user.headImage} />,
+          pathname: '#',
+          children: (
+            <div className="relative">
+              <div 
+                onClick={toggleProfileModal}
+                className="cursor-pointer"
+              >
+                <ProfileImage src={user.headImage || '/no-poster.png'} />
+              </div>
+              
+              {isProfileModalOpen && (
+                <div 
+                  ref={profileModalRef}
+                  className="absolute right-0 mt-2 w-48 bg-gray-7 rounded-lg shadow-lg py-2 z-50"
+                >
+                  <Link 
+                    to={ROUTES.MY_PAGE.ROOT} 
+                    className="flex items-center px-4 py-2 text-white hover:bg-gray-6"
+                    onClick={() => setIsProfileModalOpen(false)}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    마이페이지
+                  </Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    로그아웃
+                  </button>
+                </div>
+              )}
+            </div>
+          ),
         },
       ]
     : [

@@ -59,21 +59,21 @@
   --animate-slideout: slideout 0.5s forwards;
 }
 
-@keyframes slidein {
+@keyframes infiniteSlideOriginal {
   0% {
-    transform: translateX(100%);
+    transform: translateX(0);
   }
   100% {
-    transform: translateX(0);
+    transform: translateX(calc(-427px * 10));
   }
 }
 
-@keyframes slideout {
+@keyframes infiniteSlideDuplicate {
   0% {
-    transform: translateX(0);
+    transform: translateX(calc(-427px * 10));
   }
   100% {
-    transform: translateX(100%);
+    transform: translateX(0);
   }
 }
 
@@ -125,4 +125,40 @@ button:hover {
     color: var(--color-white);
     background-color: var(--color-gray-8);
   }
+}
+
+.animate-infiniteSlideOriginal {
+  animation: infiniteSlideOriginal 40s linear infinite;
+}
+
+.animate-infiniteSlideDuplicate {
+  animation: infiniteSlideDuplicate 40s linear infinite;
+}
+
+.actor-card-container {
+  display: flex;
+  gap: 1.5rem;
+  transition: all 0.5s ease;
+  align-items: center;
+}
+
+.actor-card {
+  transform: translateY(0);
+  opacity: 0.4;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform, opacity;
+  filter: grayscale(50%);
+}
+
+.actor-card.center {
+  transform: translateY(-80px);
+  opacity: 1;
+  filter: grayscale(0%);
+  z-index: 10;
+}
+
+.actor-card:not(.center):hover {
+  opacity: 0.7;
+  transform: translateY(-10px);
+  filter: grayscale(20%);
 }
