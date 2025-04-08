@@ -34,7 +34,5 @@ export const ROUTES = {
   },
   HOME_MORE: {
     RECOMMENDATIONS: '/home/recommendations',
-    TOP_RATED: '/home/top-rated',
-    TOP_LIKED: '/home/top-liked'
   },
 } as const;

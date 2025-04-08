@@ -16,8 +16,6 @@ import MovieReviewsPage from '../pages/movie-detail/review/MovieReviewsPage.tsx'
 import ReviewDetailPage from '../pages/movie-detail/review/ReivewDetailPage.tsx';
 
 import HomeRecommendations from '../pages/home/more/HomeRecommendations.tsx';
-import HomeTopRated from '../pages/home/more/HomeTopRated.tsx';
-import HomeTopLiked from '../pages/home/more/HomeTopLiked.tsx';
 import CommercialMain from '../pages/commercial';
 import Search from '../pages/search/Search';
 import SearchMore from '../pages/search/SearchMore';
@@ -57,8 +55,6 @@ const AppRoutes = () => {
 
         {/* 홈 더보기 페이지 라우트 */}
         <Route path={ROUTES.HOME_MORE.RECOMMENDATIONS} element={<HomeRecommendations />} />
-        <Route path={ROUTES.HOME_MORE.TOP_RATED} element={<HomeTopRated />} />
-        <Route path={ROUTES.HOME_MORE.TOP_LIKED} element={<HomeTopLiked />} />
 
         <Route path={ROUTES.MY_PAGE.ROOT} element={<MyPageLayout />}>
           <Route index element={<Navigate to={ROUTES.MY_PAGE.RATINGS} replace />} />

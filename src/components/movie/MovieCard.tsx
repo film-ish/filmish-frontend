@@ -1,5 +1,6 @@
 import { Star, Heart } from 'lucide-react';
 import MoviePoster from './MoviePoster';
+import { useNavigate } from 'react-router-dom';
 
 export interface Movie {
   id: number;
@@ -21,19 +22,24 @@ interface MovieCardProps {
   onLike?: () => void;
 }
 
+ 
+
 const MovieCard = ({ width = 225, movie, isLoggedIn, iconType = 'star', isLiked, onLike }: MovieCardProps) => {
   if (!movie) {
     return null;
   }
 
   const { title, posterPath, rating, genres, runningTime } = movie;
-
+  const navigate = useNavigate(); 
+  const onClick = () => {
+    navigate(`/movies/${movie.id}`);
+}
   // genres가 문자열 배열인 경우 문자열로 변환
   const genresText = Array.isArray(genres) ? genres.join(', ') : genres;
 
   return (
     <div className="flex flex-col gap-[5px] min-w-[150px]" style={{ width: width }}>
-      <div className="relative">
+      <div className="relative" onClick={onClick}>
         <MoviePoster posterSrc={posterPath} liked={isLiked} onLike={onLike} />
       </div>
 
