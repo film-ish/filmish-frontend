@@ -52,10 +52,6 @@ const MyPageRatingList = () => {
                     </div>
                   ))}
                 </div>
-
-                <button className="text-gray-400 hover:text-white">
-                  <Pencil size={20} />
-                </button>
               </div>
 
               <p className="text-white text-paragraph-lg">{movie.content}</p>
