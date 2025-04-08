@@ -14,7 +14,13 @@ const MovieDetailLayout = () => {
     queryKey: ['movie', movieId],
     queryFn: async () => {
       const response = await movieService.getMovieDetail(movieId);
-      return response.data;
+
+      const posters = response.data.posters?.map((poster) => poster.replace('망함', ''));
+
+      return {
+        ...response.data,
+        posters,
+      };
     },
     staleTime: 10 * 1000,
     enabled: !!movieId,
@@ -26,7 +32,7 @@ const MovieDetailLayout = () => {
       runningTime: 0,
       averageRating: 0,
       type: '',
-      poster: null,
+      posters: ['/no-poster.png'],
       stillcuts: [],
       makers: [],
       keywords: '',
@@ -37,7 +43,7 @@ const MovieDetailLayout = () => {
     <div
       className="relative w-screen h-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] -mt-[3.75rem] p-[70px] bg-cover bg-center overflow-hidden"
       style={{
-        backgroundImage: movieQuery.data?.stillcuts[0] ? `url(${movieQuery.data?.stillcuts[0]})` : '/no-poster.png',
+        backgroundImage: movieQuery.data?.stillcuts?.[0] ? `url(${movieQuery.data.stillcuts[0]})` : '',
       }}>
       <div className="absolute inset-0 bg-black/50" />
 
@@ -45,7 +51,7 @@ const MovieDetailLayout = () => {
         {/* 좌측 화면 */}
         <div className="w-full flex flex-col gap-4 self-end">
           <MoviePoster
-            posterSrc={movieQuery.data?.poster || movieQuery.data?.stillcuts[0]}
+            posterSrc={movieQuery.data?.posters?.[0] || movieQuery.data?.stillcuts?.[0]}
             width={250}
             liked={false}
             onLike={() => {}}
