@@ -4,10 +4,16 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import NavItem from './NavItem';
 import { ROUTES } from '../../router/routes';
 import { useState, useRef, useEffect } from 'react';
+import { useUserStore } from '../../store/userStore';
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const user = useUserStore();
+
+  console.log(user);
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -53,12 +59,23 @@ const Header = () => {
     // },
   ];
 
-  const userNavItems = [
-    {
-      pathname: 'ROUTES.MY_PAGE',
-      children: <ProfileImage src="https://dummyimage.com/50x50/000/fff" />,
-    },
-  ];
+  const userNavItems = user.isLoggedIn
+    ? [
+        {
+          pathname: 'ROUTES.MY_PAGE',
+          children: <ProfileImage src={user.headImage} />,
+        },
+      ]
+    : [
+        {
+          pathname: ROUTES.LOGIN,
+          children: '로그인',
+        },
+        {
+          pathname: ROUTES.SIGN_UP,
+          children: '회원가입',
+        },
+      ];
 
   return (
     <nav
@@ -87,7 +104,9 @@ const Header = () => {
           <li className="relative mr-4 flex items-center justify-center w-10 h-10">
             <div className="absolute right-0 flex items-center">
               {isSearchOpen ? (
-                <form onSubmit={handleSearch} className="flex items-center bg-gray-700 rounded-full overflow-hidden transition-all duration-300 ease-in-out w-64">
+                <form
+                  onSubmit={handleSearch}
+                  className="flex items-center bg-gray-700 rounded-full overflow-hidden transition-all duration-300 ease-in-out w-64">
                   <input
                     ref={searchInputRef}
                     type="text"
@@ -96,25 +115,23 @@ const Header = () => {
                     placeholder="영화 검색..."
                     className="bg-transparent text-white py-2 px-4 w-full outline-none"
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={toggleSearch}
-                    className="p-2 text-white hover:text-gray-300 transition-colors"
-                  >
+                    className="p-2 text-white hover:text-gray-300 transition-colors">
                     <X size={20} />
                   </button>
                 </form>
               ) : (
-                <button 
+                <button
                   onClick={toggleSearch}
-                  className="p-2 text-white hover:text-gray-300 transition-colors flex items-center justify-center"
-                >
+                  className="p-2 text-white hover:text-gray-300 transition-colors flex items-center justify-center">
                   <Search size={24} />
                 </button>
               )}
             </div>
           </li>
-          
+
           {/* 프로필 */}
           {userNavItems.map((item) => (
             <NavItem key={item.pathname} pathname={item.pathname}>
