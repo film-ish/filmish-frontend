@@ -24,11 +24,7 @@ const MoviePoster = ({ posterSrc, width, liked, onLike }: MoviePosterProps) => {
     <div
       className="bg-gray-8 relative w-full rounded-[10px] overflow-hidden aspect-[1/1.42] flex items-center justify-center"
       style={{ width: width }}>
-      <img
-        className="object-cover h-full"
-        src={posterSrc ? posterSrc : '/public/no-poster-long.png'}
-        alt="poster image"
-      />
+      <img className="object-cover h-full" src={posterSrc ? posterSrc : '/no-poster-long.png'} alt="poster image" />
       {likedState !== undefined && onLike && <LikeButton liked={likedState} onClick={onClickLike} />}
     </div>
   );
