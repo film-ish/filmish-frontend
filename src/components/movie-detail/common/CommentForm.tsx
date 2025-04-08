@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import ProfileImage from '../../common/ProfileImage';
 import Button from '../../common/Button';
 import { Star, StarHalf } from 'lucide-react';
+import { useUserStore } from '../../../store/userStore';
 
 interface CommentFormProps {
   onSubmit: (content: string, rating?: number) => void;
@@ -32,6 +33,7 @@ const CommentForm = ({
   initialContent = '',
   initialRating = 0,
 }: CommentFormProps) => {
+  const { headImage } = useUserStore();
   const [content, setContent] = useState(initialContent);
   const [rating, setRating] = useState(initialRating);
   const [hoverRating, setHoverRating] = useState(0);
@@ -109,7 +111,7 @@ const CommentForm = ({
   return (
     <form className={`flex flex-col gap-2 ${className}`} onSubmit={handleSubmit}>
       <div className="flex gap-2 items-center">
-        <ProfileImage src="" />
+        <ProfileImage src={headImage} />
         <div className="flex-1 flex flex-col gap-2">
           {showRating && (
             <div
