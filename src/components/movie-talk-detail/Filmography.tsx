@@ -8,10 +8,9 @@ interface FilmographyItem {
 }
 
 interface FilmographyProps {
-  items: FilmographyItem[];
-}
+items?: FilmographyItem[];}
 
-const Filmography = ({ items }: FilmographyProps) => {
+const Filmography = ({ items = [] }: FilmographyProps) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const { onMouseDown, onMouseMove, onMouseUp, onMouseLeave } = useDraggable(scrollerRef);
 
