@@ -10,7 +10,7 @@ interface MoviePosterProps {
 const MoviePoster = ({ posterSrc, width, liked, onLike }: MoviePosterProps) => {
   return (
     <div
-      className="relative w-full rounded-[10px] overflow-hidden aspect-[1/1.42] flex items-center justify-center"
+      className="bg-gray-8 relative w-full rounded-[10px] overflow-hidden aspect-[1/1.42] flex items-center justify-center"
       style={{ width: width }}>
       <img
         className="object-cover h-full"

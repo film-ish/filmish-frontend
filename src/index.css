@@ -88,6 +88,17 @@
     [&::-webkit-scrollbar-thumb]:border-black/80
     [&::-webkit-scrollbar-thumb]:bg-gray-4;
   }
+
+  .chatbot-scrollbar {
+    @apply overflow-y-auto
+    [&::-webkit-scrollbar]:bg-transparent
+    [&::-webkit-scrollbar]:w-[10px]
+    [&::-webkit-scrollbar-track]:border-transparent
+    [&::-webkit-scrollbar-thumb]:rounded-full
+    [&::-webkit-scrollbar-thumb]:border-[1px]
+    [&::-webkit-scrollbar-thumb]:border-gray-2
+    [&::-webkit-scrollbar-thumb]:bg-gray-4;
+  }
 }
 
 :root {
