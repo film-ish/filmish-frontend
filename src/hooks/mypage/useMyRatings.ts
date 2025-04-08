@@ -12,7 +12,7 @@ const useMyRatings = (userId: number) => {
     getNextPageParam: (lastPage, pages) => {
       return lastPage.nextPage;
     },
-    enabled: !!userId,
+    enabled: userId === 0 || !!userId,
   });
 
   return {
