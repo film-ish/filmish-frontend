@@ -19,7 +19,7 @@ export const ROUTES = {
       DETAIL: ':reviewId',
     },
   },
-  RATING_RECOMMENDATION: '/rating-recommendation',
+  RATES: '/rates',
   INDIE_CINEMA: '/indie-cinema',
   SEARCH: '/search',
   SEARCH_MORE: '/search/more',

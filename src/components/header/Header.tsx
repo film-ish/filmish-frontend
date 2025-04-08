@@ -84,7 +84,7 @@ const Header = () => {
       children: '장르별 추천',
     },
     {
-      pathname: 'ROUTES.MOVIE_RATING',
+      pathname: ROUTES.RATES,
       children: '평점별 영화',
     },
     {

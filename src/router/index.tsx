@@ -25,6 +25,7 @@ import QnaPage from '../pages/my-page/QnaPage.tsx';
 import LikePage from '../pages/my-page/LikePage.tsx';
 import MyReviewsPage from '../pages/my-page/ReviewsPage.tsx';
 import MyCommentsPage from '../pages/my-page/CommentsPage.tsx';
+import Rate from "../pages/rate";
 
 const AppRoutes = () => {
   return (
@@ -64,6 +65,7 @@ const AppRoutes = () => {
           <Route path={ROUTES.MY_PAGE.COMMENTS} element={<MyCommentsPage />} />
           <Route path={ROUTES.MY_PAGE.LIKES} element={<LikePage />} />
         </Route>
+        <Route path={ROUTES.RATES} element={<Rate />} />
       </Routes>
     </MainLayout>
   );
