@@ -22,6 +22,7 @@ export const ROUTES = {
   RATING_RECOMMENDATION: '/rating-recommendation',
   INDIE_CINEMA: '/indie-cinema',
   SEARCH: '/search',
+  SEARCH_MORE: '/search/more',
   NOTIFICATION: '/notification',
   MY_PAGE: {
     ROOT: '/mypage',

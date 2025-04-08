@@ -20,6 +20,7 @@ import HomeTopRated from '../pages/home/more/HomeTopRated.tsx';
 import HomeTopLiked from '../pages/home/more/HomeTopLiked.tsx';
 import CommercialMain from '../pages/commercial';
 import Search from '../pages/search/Search';
+import SearchMore from '../pages/search/SearchMore';
 import MyPageLayout from '../layouts/MyPageLayout.tsx';
 import RatingsPage from '../pages/my-page/RatingsPage.tsx';
 import QnaPage from '../pages/my-page/QnaPage.tsx';
@@ -35,6 +36,7 @@ const AppRoutes = () => {
         <Route path={ROUTES.MOVIE_TALK} element={<MovieTalk />} />
         <Route path={ROUTES.MOVIE_TALK_DETAIL} element={<MovieTalkDetail />} />
         <Route path={ROUTES.SEARCH} element={<Search />} />
+        <Route path={ROUTES.SEARCH_MORE} element={<SearchMore />} />
 
         <Route path={ROUTES.GENRE.ROOT}>
           <Route index element={<List />} />
