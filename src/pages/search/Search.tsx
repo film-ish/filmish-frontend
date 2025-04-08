@@ -1,0 +1,338 @@
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { searchApi } from '../../api/header/searchIcon';
+import MovieCard from '../../components/movie/MovieCard';
+import { useAuthStore } from '../../store/authStore';
+import { Film } from 'lucide-react';
+import React from 'react';
+
+// 오류 경계 컴포넌트
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error, errorInfo: null };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    this.setState({
+      error,
+      errorInfo
+    });
+  }
+
+  render(): React.ReactNode {
+    if (this.state.hasError) {
+      return (
+        <div className="container mx-auto px-4 pt-24 pb-12">
+          <h1 className="text-3xl font-bold mb-8">오류가 발생했습니다</h1>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <p>검색 기능을 사용하는 중 오류가 발생했습니다. 페이지를 새로고침하거나 다시 시도해주세요.</p>
+            {/* 개발 환경에서만 오류 상세 정보 표시 */}
+            {typeof window !== 'undefined' && window.location.hostname === 'localhost' && (
+              <details className="mt-2">
+                <summary>오류 상세 정보</summary>
+                <pre className="mt-2 text-xs overflow-auto p-2 bg-gray-100 rounded">
+                  {this.state.error && this.state.error.toString()}
+                  {this.state.errorInfo && this.state.errorInfo.componentStack}
+                </pre>
+              </details>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+interface MovieResult {
+  id: number;
+  title: string;
+  poster: string;
+  pubDate: string;
+  runningTime: number;
+  value: number;
+  genre: { id: number; name: string }[];
+}
+
+interface ActorResult {
+  id: string;
+  name: string;
+  image: string | null;
+  filmography: string[];
+  qnaNum: number;
+}
+
+interface DirectorResult {
+  id: string;
+  name: string;
+  image: string | null;
+  filmography: string[];
+  qnaNum: number;
+}
+
+interface SearchResults {
+  movies: MovieResult[];
+  actors: ActorResult[];
+  directors: DirectorResult[];
+  genreMovies: MovieResult[];
+  keywordMovies: MovieResult[];
+}
+
+const SearchContent = () => {
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get('keyword') || '';
+  const [searchResults, setSearchResults] = useState<SearchResults>({
+    movies: [],
+    actors: [],
+    directors: [],
+    genreMovies: [],
+    keywordMovies: []
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const { isLoggedIn } = useAuthStore();
+
+  useEffect(() => {
+    const fetchSearchResults = async () => {
+      if (!keyword.trim()) {
+        setSearchResults({
+          movies: [],
+          actors: [],
+          directors: [],
+          genreMovies: [],
+          keywordMovies: []
+        });
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await searchApi(keyword);
+        
+        if (response && response.data) {
+          // API 응답 구조 확인 및 데이터 설정
+          const data = response.data;
+          
+          setSearchResults({
+            movies: data.movies || [],
+            actors: data.actors || [],
+            directors: data.directors || [],
+            genreMovies: data.genreMovies || [],
+            keywordMovies: data.keywordMovies || []
+          });
+        } else {
+          setSearchResults({
+            movies: [],
+            actors: [],
+            directors: [],
+            genreMovies: [],
+            keywordMovies: []
+          });
+        }
+      } catch (err) {
+        setError('검색 중 오류가 발생했습니다. 다시 시도해주세요.');
+        setSearchResults({
+          movies: [],
+          actors: [],
+          directors: [],
+          genreMovies: [],
+          keywordMovies: []
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSearchResults();
+  }, [keyword]);
+
+  // 모든 영화 결과를 합침
+  const allMovies = [
+    ...searchResults.movies,
+    ...searchResults.genreMovies,
+    ...searchResults.keywordMovies
+  ];
+
+  // 중복 제거 (id 기준)
+  const uniqueMovies = allMovies.filter((movie, index, self) =>
+    index === self.findIndex((m) => m.id === movie.id)
+  );
+
+  return (
+    <div className="container mx-auto px-4 pt-24 pb-12">
+      <h1 className="text-3xl font-bold mb-8">통합 검색</h1>
+      
+      {/* 검색어 표시 */}
+      {keyword && (
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold">
+            "{keyword}" 검색 결과
+          </h2>
+        </div>
+      )}
+
+      {/* 로딩 상태 */}
+      {isLoading && (
+        <div className="flex justify-center items-center h-40">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      )}
+
+      {/* 오류 상태 */}
+      {error && (
+        <div className="text-red-500 text-center py-8">{error}</div>
+      )}
+
+      {/* 검색 결과 없음 */}
+      {!isLoading && !error && keyword && 
+       uniqueMovies.length === 0 && 
+       searchResults.actors.length === 0 && 
+       searchResults.directors.length === 0 && (
+        <div className="text-center py-12 text-gray-400">
+          검색 결과가 없습니다. 다른 키워드로 검색해보세요.
+        </div>
+      )}
+
+      {/* 영화 검색 결과 */}
+      {uniqueMovies.length > 0 && (
+        <div className="mb-12">
+          <h3 className="text-lg font-semibold mb-4">
+            영화 ({uniqueMovies.length}개)
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {uniqueMovies.map((movie) => (
+              <MovieCard
+                key={movie.id}
+                movie={{
+                  id: movie.id,
+                  title: movie.title,
+                  posterPath: movie.poster || '/no-poster.png',
+                  rating: movie.value || 0,
+                  likes: 0,
+                  genres: movie.genre ? movie.genre.map(g => g.name) : [],
+                  runningTime: movie.runningTime || 0,
+                  pubDate: movie.pubDate || '',
+                }}
+                isLoggedIn={isLoggedIn}
+                iconType="star"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 배우 검색 결과 */}
+      {searchResults.actors && searchResults.actors.length > 0 && (
+        <div className="mb-12">
+          <h3 className="text-lg font-semibold mb-4">
+            배우 ({searchResults.actors.length}개)
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            {searchResults.actors.map((actor) => (
+              <div key={actor.id} className="flex flex-col items-center">
+                <div className="w-32 h-32 rounded-full overflow-hidden mb-2 bg-gray-700">
+                  <img 
+                    src={actor.image || actor.image === null ? '/no-profile-long.png' : actor.image} 
+                    alt={actor.name} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/no-profile-long.png';
+                    }}
+                  />
+                </div>
+                <div className="text-center">
+                  <h4 className="font-semibold text-white">{actor.name}</h4>
+                  <p className="flex items-center gap-1 text-sm text-gray-400">
+                    <Film size={16} />
+                    {actor.filmography ? actor.filmography.length : 0} 작품
+                  </p>
+                  {actor.filmography && actor.filmography.length > 0 && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {actor.filmography.slice(0, 2).join(', ')}
+                      {actor.filmography.length > 2 ? ' 외' : ''}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 감독 검색 결과 */}
+      {searchResults.directors && searchResults.directors.length > 0 && (
+        <div className="mb-12">
+          <h3 className="text-lg font-semibold mb-4">
+            감독 ({searchResults.directors.length}개)
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            {searchResults.directors.map((director) => (
+              <div key={director.id} className="flex flex-col items-center">
+                <div className="w-32 h-32 rounded-full overflow-hidden mb-2 bg-gray-700">
+                  <img 
+                    src={director.image || director.image === null ? '/no-profile-long.png' : director.image} 
+                    alt={director.name} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/no-profile-long.png';
+                    }}
+                  />
+                </div>
+                <div className="text-center">
+                  <h4 className="font-semibold text-white">{director.name}</h4>
+                  <p className="text-sm text-gray-400">
+                    {director.filmography ? director.filmography.length : 0} 작품
+                  </p>
+                  {director.filmography && director.filmography.length > 0 && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {director.filmography.slice(0, 2).join(', ')}
+                      {director.filmography.length > 2 ? ' 외' : ''}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 초기 상태 */}
+      {!isLoading && !error && !keyword && (
+        <div className="text-center py-12 text-gray-400">
+          검색어를 입력하세요.
+        </div>
+      )}
+    </div>
+  );
+};
+
+// 오류 경계로 감싸진 Search 컴포넌트
+const Search = () => {
+  return (
+    <ErrorBoundary>
+      <SearchContent />
+    </ErrorBoundary>
+  );
+};
+
+export default Search; 

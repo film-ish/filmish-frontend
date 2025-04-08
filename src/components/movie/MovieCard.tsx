@@ -1,14 +1,15 @@
 import { Star, Heart } from 'lucide-react';
 import MoviePoster from './MoviePoster';
 
-interface Movie {
+export interface Movie {
   id: number;
   title: string;
   posterPath: string;
   rating: number;
   likes: number;
-  genres: string[];
+  genres: string[] | string;
   runningTime: number;
+  pubDate: string;
 }
 
 interface MovieCardProps {
@@ -29,6 +30,9 @@ const MovieCard = ({
   }
 
   const { title, posterPath, rating, genres, runningTime } = movie;
+  
+  // genres가 문자열 배열인 경우 문자열로 변환
+  const genresText = Array.isArray(genres) ? genres.join(', ') : genres;
 
   return (
     <div className="flex flex-col gap-[5px] min-w-[150px]" style={{ width: width }}>
@@ -54,7 +58,7 @@ const MovieCard = ({
       </div>
 
       <div className="flex items-center text-gray-4 text-label-md font-light">
-        {genres}{runningTime > 0 ? ` • ${runningTime}분` : ''}
+        {genresText}{runningTime > 0 ? ` • ${runningTime}분` : ''}
       </div>
     </div>
   );

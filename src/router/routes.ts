@@ -34,6 +34,13 @@ export const ROUTES = {
   HOME_MORE: {
     RECOMMENDATIONS: '/home/recommendations',
     TOP_RATED: '/home/top-rated',
+<<<<<<< Updated upstream
     TOP_LIKED: '/home/top-liked',
   },
 } as const;
+=======
+    TOP_LIKED: '/home/top-liked'
+  },
+  SEARCH: '/search',
+} as const;
+>>>>>>> Stashed changes
