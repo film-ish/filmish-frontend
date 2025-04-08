@@ -17,27 +17,24 @@ interface MovieCardProps {
   movie: Movie;
   isLoggedIn: boolean;
   iconType?: 'star' | 'heart';
+  isLiked?: boolean;
+  onLike?: () => void;
 }
 
-const MovieCard = ({
-  width = 225,
-  movie,
-  isLoggedIn,
-  iconType = 'star'
-}: MovieCardProps) => {
+const MovieCard = ({ width = 225, movie, isLoggedIn, iconType = 'star', isLiked, onLike }: MovieCardProps) => {
   if (!movie) {
     return null;
   }
 
   const { title, posterPath, rating, genres, runningTime } = movie;
-  
+
   // genres가 문자열 배열인 경우 문자열로 변환
   const genresText = Array.isArray(genres) ? genres.join(', ') : genres;
 
   return (
     <div className="flex flex-col gap-[5px] min-w-[150px]" style={{ width: width }}>
       <div className="relative">
-        <MoviePoster posterSrc={posterPath} liked={false} onLike={() => {}} />
+        <MoviePoster posterSrc={posterPath} liked={isLiked} onLike={onLike} />
       </div>
 
       <div className="flex items-center justify-between text-label-xl">
@@ -58,7 +55,8 @@ const MovieCard = ({
       </div>
 
       <div className="flex items-center text-gray-4 text-label-md font-light">
-        {genresText}{runningTime > 0 ? ` • ${runningTime}분` : ''}
+        {genresText}
+        {runningTime > 0 ? ` • ${runningTime}분` : ''}
       </div>
     </div>
   );

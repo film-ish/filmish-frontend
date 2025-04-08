@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import LikeButton from './LikeButton';
 
 interface MoviePosterProps {
@@ -8,6 +9,17 @@ interface MoviePosterProps {
 }
 
 const MoviePoster = ({ posterSrc, width, liked, onLike }: MoviePosterProps) => {
+  const [likedState, setLikedState] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    setLikedState(liked);
+  }, [liked]);
+
+  const onClickLike = () => {
+    setLikedState(!likedState);
+    onLike?.();
+  };
+
   return (
     <div
       className="bg-gray-8 relative w-full rounded-[10px] overflow-hidden aspect-[1/1.42] flex items-center justify-center"
@@ -17,7 +29,7 @@ const MoviePoster = ({ posterSrc, width, liked, onLike }: MoviePosterProps) => {
         src={posterSrc ? posterSrc : '/public/no-poster-long.png'}
         alt="poster image"
       />
-      {liked !== undefined && onLike && <LikeButton liked={liked} onClick={onLike} />}
+      {likedState !== undefined && onLike && <LikeButton liked={likedState} onClick={onClickLike} />}
     </div>
   );
 };
