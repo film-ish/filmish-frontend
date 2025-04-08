@@ -2,16 +2,17 @@ import { ChevronDown, Dot, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
 import CommentInput from './CommentInput';
 
-interface CommentProps {
+interface QnaProps {
+  id: number;
   author: string;
   content: string;
   timestamp: string;
-  replies?: CommentProps[];
+  replies?: QnaProps[];
   isReply?: boolean;
   onAddReply?: (content: string) => void;
 }
 
-const Comment = ({ author, content, timestamp, replies, isReply = false, onAddReply }: CommentProps) => {
+const Qna = ({ id, author, content, timestamp, replies, isReply = false, onAddReply }: QnaProps) => {
   const [showReplies, setShowReplies] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
 
@@ -83,7 +84,7 @@ const Comment = ({ author, content, timestamp, replies, isReply = false, onAddRe
         {showReplies && replies && replies.length > 0 && (
           <div className="space-y-4">
             {replies.map((reply, index) => (
-              <Comment 
+              <Qna 
                 key={index} 
                 {...reply} 
                 isReply={true}
