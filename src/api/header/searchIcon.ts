@@ -40,7 +40,7 @@ interface SearchResponse {
 
 const searchApi = async (keyword: string): Promise<SearchResponse> => {
   try {
-    const response = await apiClient.get(`/knockknock?data=${encodeURIComponent(keyword)}`);
+    const response = await apiClient.get(`/knockknock?data=${keyword}`);
     
     // 응답 구조 확인 및 데이터 반환
     if (response.data && response.data.code === 'Ok' && response.data.data) {

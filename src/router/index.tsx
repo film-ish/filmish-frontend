@@ -34,6 +34,7 @@ const AppRoutes = () => {
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.MOVIE_TALK} element={<MovieTalk />} />
         <Route path={ROUTES.MOVIE_TALK_DETAIL} element={<MovieTalkDetail />} />
+        <Route path={ROUTES.SEARCH} element={<Search />} />
 
         <Route path={ROUTES.GENRE.ROOT}>
           <Route index element={<List />} />

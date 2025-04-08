@@ -11,6 +11,7 @@ interface Movie {
   img: string;
   genre: Array<{ id: number; name: string }>;
   runningTime: number;
+  pubDate: string;
 }
 
 const HomeRecommendations = () => {
@@ -96,7 +97,8 @@ const HomeRecommendations = () => {
             rating: movie.rates || 0,
             likes: 0, // 좋아요 수는 API에서 제공하지 않는 것으로 보임
             genres: movie.genre ? movie.genre.map(g => g.name) : [],
-            runningTime: movie.runningTime || 0
+            runningTime: movie.runningTime || 0,
+            pubDate: movie.pubDate || ''
           };
           
           return (

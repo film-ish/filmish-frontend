@@ -5,6 +5,7 @@ import NavItem from './NavItem';
 import { ROUTES } from '../../router/routes';
 import { useState, useRef, useEffect } from 'react';
 import { useUserStore } from '../../store/userStore';
+import { useAuthStore } from '../../store/authStore';
 import { logout } from '../../api/logout/logoutApi';
 
 const Header = () => {
@@ -12,8 +13,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const user = useUserStore();
-
-  console.log(user);
+  const auth = useAuthStore();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -53,7 +53,7 @@ const Header = () => {
     e.preventDefault();
     if (searchKeyword.trim()) {
       setIsSearchOpen(false);
-      navigate(`/search?keyword=${encodeURIComponent(searchKeyword.trim())}`);
+      navigate(`/search?keyword=${searchKeyword.trim()}`);
     }
   };
 
@@ -64,11 +64,18 @@ const Header = () => {
   };
 
   const handleLogout = async () => {
-    // 로그아웃 로직 구현
-    await logout();
-    setIsProfileModalOpen(false);
-    navigate(ROUTES.HOME);
-    window.location.reload(); // 페이지 새로고침으로 상태 초기화
+    try {
+      // 로그아웃 API 호출 시도
+      await logout();
+    } catch (error) {
+      console.error('로그아웃 중 오류 발생:', error);
+    } finally {
+      // API 호출 성공 여부와 관계없이 indexedDB 상태 초기화
+      user.clearUser();
+      auth.clearAuth();
+      setIsProfileModalOpen(false);
+      navigate(ROUTES.HOME); // 페이지 새로고침으로 상태 초기화
+    }
   };
 
   const commonNavItems = [
@@ -108,14 +115,16 @@ const Header = () => {
                   ref={profileModalRef}
                   className="absolute right-0 mt-2 w-48 bg-gray-7 rounded-lg shadow-lg py-2 z-50"
                 >
-                  <Link 
-                    to={ROUTES.MY_PAGE.ROOT} 
-                    className="flex items-center px-4 py-2 text-white hover:bg-gray-6"
-                    onClick={() => setIsProfileModalOpen(false)}
+                  <button 
+                    onClick={() => {
+                      setIsProfileModalOpen(false);
+                      navigate(ROUTES.MY_PAGE.ROOT);
+                    }}
+                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6"
                   >
                     <User className="w-4 h-4 mr-2" />
                     마이페이지
-                  </Link>
+                  </button>
                   <button 
                     onClick={handleLogout}
                     className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6"
@@ -165,17 +174,17 @@ const Header = () => {
         <ul className="flex items-center">
           {/* 검색 아이콘 및 검색창 */}
           <li className="relative mr-4 flex items-center justify-center w-10 h-10">
-            <div className="absolute right-0 flex items-center">
+            <div className={`absolute right-0 flex items-center transition-all duration-300 ${isSearchOpen ? 'w-[200px]' : 'w-[30px]'}`}>
               {isSearchOpen ? (
                 <form
                   onSubmit={handleSearch}
-                  className="flex items-center bg-gray-700 rounded-full overflow-hidden transition-all duration-300 ease-in-out w-64">
+                  className="flex items-center bg-gray-5 rounded-full overflow-hidden w-64">
                   <input
                     ref={searchInputRef}
                     type="text"
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder="영화 검색..."
+                    placeholder="통합 검색..."
                     className="bg-transparent text-white py-2 px-4 w-full outline-none"
                   />
                   <button
