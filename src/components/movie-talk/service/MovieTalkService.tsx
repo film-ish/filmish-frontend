@@ -2,17 +2,17 @@ import { Film, Users, Calendar } from "lucide-react";
 
 const MovieTalkService = () => {
   return (
-    <div className="py-20 bg-gray-8 w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw]">
+    <div className="py-20 bg-gray-6 w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw]">
       <h2 className="text-4xl font-bold text-center mb-4">서비스 특징</h2>
       <p className="text-center text-gray-5 mb-16">
         독립 영화 배우, 감독들의 정보와 팬 커뮤니티를 제공하는 서비스입니다. 다양한 기능을 통해 배우와 관람을 연결합니다.
       </p>
       
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* 독립 영화 중심 필모그래피 */}
-          <div className="bg-gray-7 rounded-2xl p-8">
-            <div className="bg-white rounded-lg w-12 h-12 flex items-center justify-center mb-6">
+          <div className="bg-gray-7 border border-gray-3 rounded-2xl p-8">
+            <div className="border-gray-3 border rounded-lg w-12 h-12 flex items-center justify-center mb-6">
               <Film className="w-6 h-6 text-black" />
             </div>
             <h3 className="text-2xl font-bold mb-6">독립 영화 중심 필모그래피</h3>
@@ -27,8 +27,8 @@ const MovieTalkService = () => {
           </div>
 
           {/* 팬 커뮤니티 */}
-          <div className="bg-gray-7 rounded-2xl p-8">
-            <div className="bg-white rounded-lg w-12 h-12 flex items-center justify-center mb-6">
+          <div className="bg-gray-7 border border-gray-3 rounded-2xl p-8">
+            <div className="border-gray-3 border rounded-lg w-12 h-12 flex items-center justify-center mb-6">
               <Users className="w-6 h-6 text-black" />
             </div>
             <h3 className="text-2xl font-bold mb-6">팬 커뮤니티</h3>
@@ -43,8 +43,8 @@ const MovieTalkService = () => {
           </div>
 
           {/* 영화제 정보 */}
-          <div className="bg-gray-7 rounded-2xl p-8">
-            <div className="bg-white rounded-lg w-12 h-12 flex items-center justify-center mb-6">
+          <div className="bg-gray-7 border border-gray-3 rounded-2xl p-8">
+            <div className="border-gray-3 border rounded-lg w-12 h-12 flex items-center justify-center mb-6">
               <Calendar className="w-6 h-6 text-black" />
             </div>
             <h3 className="text-2xl font-bold mb-6">영화제 정보</h3>

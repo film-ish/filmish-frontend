@@ -10,6 +10,10 @@ import MovieTalkDetail from '../pages/movie-talk/movie-talk-detail/MovieTalkDeta
 import Login from '../pages/login/Login.tsx';
 import SignUp from '../pages/sign-up/SignUp.tsx';
 import CommercialMain from "../pages/commercial";
+import HomeRecommendations from "../pages/home/more/HomeRecommendations.tsx";
+import HomeTopRated from "../pages/home/more/HomeTopRated.tsx";
+import HomeTopLiked from "../pages/home/more/HomeTopLiked.tsx";
+
 const AppRoutes = () => {
     return (
         <MainLayout>
@@ -26,6 +30,11 @@ const AppRoutes = () => {
                 <Route path={ROUTES.LOGIN} element={<Login />} />
                 <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
                 <Route path={ROUTES.COMMERCIAL} element={<CommercialMain/>}/>
+                
+                {/* 홈 더보기 페이지 라우트 */}
+                <Route path={ROUTES.HOME_MORE.RECOMMENDATIONS} element={<HomeRecommendations />} />
+                <Route path={ROUTES.HOME_MORE.TOP_RATED} element={<HomeTopRated />} />
+                <Route path={ROUTES.HOME_MORE.TOP_LIKED} element={<HomeTopLiked />} />
             </Routes>
         </MainLayout>
     );

@@ -1,18 +1,25 @@
 import axios from 'axios';
-import { useAuthStore } from '../../store/authStore';
+import { idbStorage } from '../../lib/idbStorage';
 
 export const apiClient = axios.create({
   baseURL: '/api/v1',
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 });
 
 // 요청 인터셉터 설정
 apiClient.interceptors.request.use(
-  (config) => {
-    const { accessToken } = useAuthStore.getState();
+  async (config) => {
+    if (config.url === '/users/reissue') return config;
 
-    if (accessToken) {
-      config.headers.access = accessToken;
+    const authStorage = await idbStorage.getItem('auth-storage');
+
+    if (authStorage) {
+      const { accessToken } = JSON.parse(authStorage).state;
+
+      if (accessToken) {
+        config.headers.access = accessToken;
+      }
     }
 
     return config;
@@ -23,29 +30,19 @@ apiClient.interceptors.request.use(
 );
 
 // 응답 인터셉터 설정
-apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+apiClient.interceptors.response.use(async (response) => {
+  if (response.data.code == 'AUTH_ERROR' && response.data.message == 'Token is expired') {
+    const originalRequest = response.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const { setAccessToken } = useAuthStore.getState();
+    const { headers } = await apiClient.get('/users/reissue');
+    const newAccessToken = headers.access;
 
-      try {
-        const { headers } = await apiClient.post('/users/reissue');
-        const newAccessToken = headers.access;
+    await idbStorage.setItem('auth-storage', JSON.stringify({ state: { accessToken: newAccessToken } }));
 
-        setAccessToken(newAccessToken);
+    originalRequest.headers.access = newAccessToken;
 
-        originalRequest.headers.access = newAccessToken;
+    return apiClient(originalRequest);
+  }
 
-        return apiClient(originalRequest);
-      } catch (error) {
-        setAccessToken("");
-        throw error;
-      }
-    }
-    return Promise.reject(error);
-  },
-);
+  return response;
+});

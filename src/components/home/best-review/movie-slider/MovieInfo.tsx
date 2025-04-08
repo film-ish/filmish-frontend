@@ -2,18 +2,20 @@ import { StarIcon } from "lucide-react";
 
 interface MovieInfoProps {
   title: string;
-  rating: number;
+  rating: number | null | undefined;
   onDetailClick: () => void;
 }
 
 const MovieInfo = ({ title, rating, onDetailClick }: MovieInfoProps) => {
+  const displayRating = rating === null || rating === undefined ? "0" : rating === 0 ? "0" : rating.toFixed(1);
+
   return (
     <div className="absolute bottom-5 left-0 right-0 py-10 px-20">
       <h3 className="text-white text-3xl font-bold mb-2">{title}</h3>
       <div className="flex flex-col items-start justify-between gap-4">
         <div className="flex items-center">
-          <StarIcon size={20} color="#ff5e5e" fill="#ff5e5e" className="mr-1" />   
-          <span className="text-white">{rating.toFixed(1)}</span>
+          <StarIcon size={20} color="#ff5e5e" fill="#ff5e5e" className="mr-1" />
+          <span className="text-white">{displayRating}</span>
         </div>
         <button
           onClick={onDetailClick}

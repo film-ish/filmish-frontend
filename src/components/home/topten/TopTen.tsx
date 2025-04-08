@@ -1,21 +1,25 @@
 import { useState, useCallback, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaCarouselType } from 'embla-carousel';
 import MovieCard from "../../movie/MovieCard";
 
-interface MovieData {
+interface Movie {
   id: number;
   title: string;
-  year: string;
-  duration: string;
-  rating: number;
-  imageUrl: string;
-  genre: string;
+  pubDate: string | null;
+  poster: string | null;
   runningTime: number;
+  genres: string[];
+  value: number;
 }
 
-const TopTen = () => {
+interface TopTenProps {
+  movies: Movie[];
+  isLoggedIn: boolean;
+  iconType?: 'star' | 'heart';
+}
+
+const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
@@ -24,109 +28,6 @@ const TopTen = () => {
   
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
-
-  const movies: MovieData[] = [
-    {
-      id: 1,
-      title: "수능을 치다면",
-      year: "2023",
-      duration: "108분",
-      rating: 4.8,
-      imageUrl: "/images/movie1.jpg",
-      genre: "액션",
-      runningTime: 108
-    },
-    {
-      id: 2,
-      title: "메다!",
-      year: "2024",
-      duration: "105분",
-      rating: 4.8,
-      imageUrl: "/images/movie2.jpg",
-      genre: "액션",
-      runningTime: 105
-    },
-    {
-      id: 3,
-      title: "메달리기",
-      year: "2024",
-      duration: "105분",
-      rating: 4.8,
-      imageUrl: "/images/movie3.jpg",
-      genre: "액션",
-      runningTime: 105
-    },
-    {
-      id: 4,
-      title: "스틸워터 밸리 번지",
-      year: "2024",
-      duration: "105분",
-      rating: 4.8,
-      imageUrl: "/images/movie4.jpg",
-      genre: "액션",
-      runningTime: 105
-    },
-    {
-      id: 5,
-      title: "해야 할 일",
-      year: "2024",
-      duration: "102분",
-      rating: 4.8,
-      imageUrl: "/images/movie5.jpg",
-      genre: "액션",
-      runningTime: 102
-    },
-    {
-      id: 6,
-      title: "마블 시티",
-      year: "2024",
-      duration: "115분",
-      rating: 4.7,
-      imageUrl: "/images/movie6.jpg",
-      genre: "액션",
-      runningTime: 115
-    },
-    {
-      id: 7,
-      title: "블루 아일랜드",
-      year: "2024",
-      duration: "98분",
-      rating: 4.9,
-      imageUrl: "/images/movie7.jpg",
-      genre: "액션",
-      runningTime: 98
-    },
-    {
-      id: 8,
-      title: "레드 선셋",
-      year: "2024",
-      duration: "112분",
-      rating: 4.6,
-      imageUrl: "/images/movie8.jpg",
-      genre: "액션",
-      runningTime: 112
-    },
-    {
-      id: 9,
-      title: "퍼플 나이트",
-      year: "2024",
-      duration: "103분",
-      rating: 4.8,
-      imageUrl: "/images/movie9.jpg",
-      genre: "액션",
-      runningTime: 103
-    },
-    {
-      id: 10,
-      title: "그린 포레스트",
-      year: "2024",
-      duration: "107분",
-      rating: 4.7,
-      imageUrl: "/images/movie10.jpg",
-      genre: "액션",
-      runningTime: 107
-    }
-  ];
 
   const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
     setPrevBtnEnabled(emblaApi.canScrollPrev());
@@ -141,26 +42,81 @@ const TopTen = () => {
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
 
+  console.log('TopTen 렌더링:', { movies, isLoggedIn, iconType });
+
   return (
-    <div className="relative">
-      <div className="overflow-hidden" ref={emblaRef}>
+    <div className="relative mb-10">
+      <div className="overflow-hidden relative" ref={emblaRef}>
         <div className="flex gap-6">
-          {movies.map((movie) => (
-            <div key={movie.id} className="flex-[0_0_calc((100%-5rem)/6)]">
-            <MovieCard  
-              posterSrc={movie.imageUrl}
-              title={movie.title}
-              rating={movie.rating}
-              genre={movie.genre}
-              runningTime={movie.runningTime}
-              liked={false}
-              onLike={() => {}}
-              />
-          </div>
-        ))}
+          {movies.map((movie) => {
+            // API 응답 데이터 구조에 맞게 변환
+            const formattedMovie = {
+              id: movie.id,
+              title: movie.title,
+              posterPath: movie.poster || '/no-poster-long.png',
+              rating: movie.value || 0,
+              likes: 0, // 좋아요 수는 API에서 제공하지 않는 것으로 보임
+              genres: movie.genres || [],
+              runningTime: movie.runningTime || 0
+            };
+            
+            return (
+              <div key={movie.id} className="flex-[0_0_calc((100%-5rem)/6)]">
+                <MovieCard
+                  movie={formattedMovie}
+                  isLoggedIn={isLoggedIn}
+                  iconType={iconType}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
-      
+      {!isLoggedIn && (
+        <>
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '80rem',
+              background: 'linear-gradient(to top, #1A1A1A, rgba(0,0,0,0))',
+              pointerEvents: 'none',
+              zIndex: 50
+            }}
+          />
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: '2rem',
+              left: '50%',
+              transform: 'translateX(-90%)',
+              zIndex: 100,
+              textAlign: 'center'
+            }}
+          >
+            <button
+              onClick={() => window.location.href = '/login'}
+              style={{
+                backgroundColor: '#ff5e5e',
+                color: 'white',
+                padding: '0.75rem 2rem',
+                borderRadius: '9999px',
+                fontWeight: 'bold',
+                border: 'none',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ff7a7a'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#ff5e5e'}
+            >
+              로그인하러 가기
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

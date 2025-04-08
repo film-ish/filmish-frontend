@@ -1,6 +1,21 @@
 import { apiClient } from "../instance/client";
 
-export const getBestReview = async () => {
-  const response = await apiClient.get("/home/best-review");
+
+const getmovie = async () => {
+  console.log('getmovie API 호출');
+  try {
+    const response = await apiClient.get("/");
+    console.log('getmovie API 응답:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('getmovie API 오류:', error);
+    throw error;
+  }
+};
+
+const getrecommend = async () => {
+  const response = await apiClient.get("/recommendation");
   return response.data;
 };
+
+export { getmovie, getrecommend };

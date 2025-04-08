@@ -3,6 +3,7 @@ import React, { useEffect, useCallback } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import MovieCard from "../movie/MovieCard.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface MovieProps {
     id: number;
@@ -16,7 +17,7 @@ interface MovieProps {
 interface GenreType {
     id: number;
     name: string;
-    image: string;
+    image?: string;
     scrollState?: {canScrollPrev: boolean, canScrollNext: boolean};
 }
 
@@ -43,6 +44,11 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
         containScroll: 'trimSnaps',
         loop: false
     });
+
+    const navigate = useNavigate();
+    const handleMovieClick = (movieId: number) => {
+        navigate(`/movies/${movieId}`);
+    }
 
     // 컴포넌트 내부에서 캐러셀 초기화 로직을 처리하도록 변경
     const handleInit = useCallback(() => {
@@ -100,16 +106,18 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
                     {movies.map(movie => {
                         const movieKey = `${movie.id}-${movie.title}`;
                         return (
-                            <div key={movieKey} className="flex-[0_0_16.666%] min-w-0 pl-1 pr-2">
+                            <div key={movieKey} className="flex-[0_0_16.666%] min-w-0 pl-1 pr-2 cursor-pointer"
+                            onClick={() => handleMovieClick(movie.id)}>
                                 <MovieCard
                                     width="100%"
-                                    posterSrc={movie.image}
+                                    poster={movie.image}
                                     title={movie.title}
                                     rating={Number(movie.rating)}
-                                    genre={`${movie.year} • ${movie.month}`}
-                                    runningTime={0}
-                                    liked={!!likedMovies[movieKey]}
-                                    onLike={() => handleLike(movieKey)}
+                                    genres={movie.genreNames || `${movie.year} • ${movie.month}`}
+                                    runningTime={movie.runningTime}
+                                    iconType='star'
+                                    // liked={!!likedMovies[movieKey]}
+                                    // onLike={() => handleLike(movieKey)}
                                 />
                             </div>
                         );

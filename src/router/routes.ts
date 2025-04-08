@@ -11,4 +11,9 @@ export const ROUTES = {
   COMMERCIAL: '/commercial',
   LOGIN: '/login',
   SIGN_UP: '/sign-up',
+  HOME_MORE: {
+    RECOMMENDATIONS: '/home/recommendations',
+    TOP_RATED: '/home/top-rated',
+    TOP_LIKED: '/home/top-liked'
+  }
 } as const;
