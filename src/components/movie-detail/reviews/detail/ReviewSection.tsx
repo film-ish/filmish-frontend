@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import IconButton from '../../../common/IconButton';
 import { Check, Eye, MoreHorizontal } from 'lucide-react';
-import { getKoreanDate } from '../../../../utils/date';
+import { getTimeAgo } from '../../../../utils/date';
 import ProfileImage from '../../../common/ProfileImage';
 import Menu from '../../common/Menu';
 import Review from '../../../../types/review';
@@ -99,7 +99,7 @@ const ReviewSection = ({ review, updateReview, deleteReview }: ReviewSectionProp
         </div>
 
         <div className="flex items-center justify-between text-label-sm text-gray-4">
-          <div>{getKoreanDate(review.createdAt)}</div>
+          <div>{getTimeAgo(review.updatedAt || review.createdAt)}</div>
           <div className="flex items-center gap-1">
             <Eye size={16} /> {review.views.toLocaleString()} views
           </div>
