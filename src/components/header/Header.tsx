@@ -103,32 +103,27 @@ const Header = () => {
           pathname: '#',
           children: (
             <div className="relative">
-              <div 
-                onClick={toggleProfileModal}
-                className="cursor-pointer"
-              >
+              <div onClick={toggleProfileModal} className="cursor-pointer">
                 <ProfileImage src={user.headImage || '/no-poster.png'} />
               </div>
-              
+
               {isProfileModalOpen && (
-                <div 
+                <div
                   ref={profileModalRef}
-                  className="absolute right-0 mt-2 w-48 bg-gray-7 rounded-lg shadow-lg py-2 z-50"
-                >
-                  <button 
+                  className="absolute right-0 mt-2 w-48 bg-gray-7 rounded-lg shadow-lg py-2 z-50">
+                  <Link
                     onClick={() => {
                       setIsProfileModalOpen(false);
-                      navigate(ROUTES.MY_PAGE.ROOT);
+                      // navigate(ROUTES.MY_PAGE.ROOT);
                     }}
-                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6"
-                  >
+                    to={ROUTES.MY_PAGE.ROOT}
+                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6">
                     <User className="w-4 h-4 mr-2" />
                     마이페이지
-                  </button>
-                  <button 
+                  </Link>
+                  <button
                     onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6"
-                  >
+                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6">
                     <LogOut className="w-4 h-4 mr-2" />
                     로그아웃
                   </button>
@@ -174,11 +169,10 @@ const Header = () => {
         <ul className="flex items-center">
           {/* 검색 아이콘 및 검색창 */}
           <li className="relative mr-4 flex items-center justify-center w-10 h-10">
-            <div className={`absolute right-0 flex items-center transition-all duration-300 ${isSearchOpen ? 'w-[200px]' : 'w-[30px]'}`}>
+            <div
+              className={`absolute right-0 flex items-center transition-all duration-300 ${isSearchOpen ? 'w-[200px]' : 'w-[30px]'}`}>
               {isSearchOpen ? (
-                <form
-                  onSubmit={handleSearch}
-                  className="flex items-center bg-gray-5 rounded-full overflow-hidden w-64">
+                <form onSubmit={handleSearch} className="flex items-center bg-gray-5 rounded-full overflow-hidden w-64">
                   <input
                     ref={searchInputRef}
                     type="text"
@@ -205,11 +199,17 @@ const Header = () => {
           </li>
 
           {/* 프로필 */}
-          {userNavItems.map((item) => (
-            <NavItem key={item.pathname} pathname={item.pathname}>
-              {item.children}
-            </NavItem>
-          ))}
+          {userNavItems.map((item) =>
+            user.isLoggedIn ? (
+              <div key={item.pathname} pathname={item.pathname}>
+                {item.children}
+              </div>
+            ) : (
+              <NavItem key={item.pathname} pathname={item.pathname}>
+                {item.children}
+              </NavItem>
+            ),
+          )}
         </ul>
       </div>
     </nav>
