@@ -5,15 +5,6 @@ import { useUserStore } from '../../store/userStore';
 import { Link } from 'react-router';
 import useLoading from '../../hooks/useLoading';
 
-interface MovieRating {
-  movieId: number;
-  poster: string;
-  ratingId: number;
-  title: string;
-  content: string;
-  value: number;
-}
-
 const MyPageRatingList = () => {
   const user = useUserStore();
   const { ratings, isLoading } = useMyRatings(user.id);

@@ -1,17 +1,8 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import ProfileImage from '../common/ProfileImage';
 import IconButton from '../common/IconButton';
 import { Check, Pencil, X } from 'lucide-react';
-import { userService } from '../../api/user';
 import useProfileEdit from '../../hooks/mypage/useProfileEdit';
 import { useUserStore } from '../../store/userStore';
-
-interface User {
-  id: string;
-  nickname: string;
-  email: string;
-  profileImage: string;
-}
 
 const MyPageProfile = () => {
   const user = useUserStore();
