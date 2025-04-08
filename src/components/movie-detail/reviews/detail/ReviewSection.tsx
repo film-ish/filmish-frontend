@@ -5,6 +5,7 @@ import { getKoreanDate } from '../../../../utils/date';
 import ProfileImage from '../../../common/ProfileImage';
 import Menu from '../../common/Menu';
 import Review from '../../../../types/review';
+import { useUserStore } from '../../../../store/userStore';
 
 interface ReviewSectionProps {
   review: Review;
@@ -13,7 +14,7 @@ interface ReviewSectionProps {
 }
 
 const ReviewSection = ({ review, updateReview, deleteReview }: ReviewSectionProps) => {
-  const isOwner = true;
+  const user = useUserStore();
 
   const [editedReview, setEditedReview] = useState({ title: '', content: '' });
 
@@ -42,15 +43,24 @@ const ReviewSection = ({ review, updateReview, deleteReview }: ReviewSectionProp
     {
       name: '삭제',
       onClick: () => {
-        setShowMoreActions(false);
-        deleteReview();
+        if (confirm('정말 삭제하시겠습니까?')) {
+          setShowMoreActions(false);
+          deleteReview();
+        }
       },
     },
   ];
 
+  const onChangeReviewContent = (e) => {
+    const textarea = e.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto'; // 높이 초기화
+    textarea.style.height = textarea.scrollHeight + 'px'; // 실제 내용 높이로 설정
+    setEditedReview({ ...editedReview, content: e.target.value });
+  };
+
   return (
     <div className="flex gap-4 align-top justify-between">
-      <div className="w-full flex flex-col gap-2">
+      <div className="w-full flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="text-heading-md">
             {isEditing ? (
@@ -69,7 +79,7 @@ const ReviewSection = ({ review, updateReview, deleteReview }: ReviewSectionProp
             )}
           </div>
 
-          {isOwner && (
+          {review.writerName === user.nickname && (
             <div className="relative">
               {showMoreActions && (
                 <Menu hasRightSpace={false} items={moreActionItems} closeMenu={() => setShowMoreActions(false)} />
@@ -103,9 +113,9 @@ const ReviewSection = ({ review, updateReview, deleteReview }: ReviewSectionProp
         <div className="h-full text-paragraph-md">
           {isEditing ? (
             <textarea
-              className="w-full min-h-full border-2 border-gray-0 p-2 rounded-[10px]"
+              className="w-full text-label-md border-[1px] border-gray-2 rounded-[5px] p-1 resize-none overflow-y-hidden"
               value={editedReview.content}
-              onChange={(e) => setEditedReview({ ...editedReview, content: e.target.value })}
+              onChange={onChangeReviewContent}
             />
           ) : (
             review.content
