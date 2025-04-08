@@ -62,7 +62,7 @@ const Header = () => {
   const userNavItems = user.isLoggedIn
     ? [
         {
-          pathname: 'ROUTES.MY_PAGE',
+          pathname: ROUTES.MY_PAGE.ROOT,
           children: <ProfileImage src={user.headImage} />,
         },
       ]

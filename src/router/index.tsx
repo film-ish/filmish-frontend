@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router';
+import { Routes, Route, Navigate } from 'react-router';
 import { ROUTES } from './routes';
 import Home from '../pages/home/Home.tsx';
 import MovieTalk from '../pages/movie-talk/MovieTalk.tsx';
@@ -18,8 +18,14 @@ import ReviewDetailPage from '../pages/movie-detail/review/ReivewDetailPage.tsx'
 import HomeRecommendations from '../pages/home/more/HomeRecommendations.tsx';
 import HomeTopRated from '../pages/home/more/HomeTopRated.tsx';
 import HomeTopLiked from '../pages/home/more/HomeTopLiked.tsx';
-import CommercialMain from "../pages/commercial";
+import CommercialMain from '../pages/commercial';
 import Search from '../pages/search/Search';
+import MyPageLayout from '../layouts/MyPageLayout.tsx';
+import RatingsPage from '../pages/my-page/RatingsPage.tsx';
+import QnaPage from '../pages/my-page/QnaPage.tsx';
+import LikePage from '../pages/my-page/LikePage.tsx';
+import MyReviewsPage from '../pages/my-page/ReviewsPage.tsx';
+import MyCommentsPage from '../pages/my-page/CommentsPage.tsx';
 
 const AppRoutes = () => {
   return (
@@ -50,6 +56,15 @@ const AppRoutes = () => {
         <Route path={ROUTES.HOME_MORE.RECOMMENDATIONS} element={<HomeRecommendations />} />
         <Route path={ROUTES.HOME_MORE.TOP_RATED} element={<HomeTopRated />} />
         <Route path={ROUTES.HOME_MORE.TOP_LIKED} element={<HomeTopLiked />} />
+
+        <Route path={ROUTES.MY_PAGE.ROOT} element={<MyPageLayout />}>
+          <Route index element={<Navigate to={ROUTES.MY_PAGE.RATINGS} replace />} />
+          <Route path={ROUTES.MY_PAGE.RATINGS} element={<RatingsPage />} />
+          <Route path={ROUTES.MY_PAGE.REVIEWS} element={<MyReviewsPage />} />
+          <Route path={ROUTES.MY_PAGE.QNA} element={<QnaPage />} />
+          <Route path={ROUTES.MY_PAGE.COMMENTS} element={<MyCommentsPage />} />
+          <Route path={ROUTES.MY_PAGE.LIKES} element={<LikePage />} />
+        </Route>
       </Routes>
     </MainLayout>
   );
