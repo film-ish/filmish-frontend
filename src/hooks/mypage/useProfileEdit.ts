@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { userService } from '../../api/user';
 import { UserState } from '../../store/userStore';
 
@@ -32,7 +32,7 @@ const useProfileEdit = (user: UserState) => {
     });
   };
 
-  const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const file = e.target.files[0];
@@ -43,8 +43,8 @@ const useProfileEdit = (user: UserState) => {
       return;
     }
 
-    if (file.size / (1024 * 1024) >= 5) {
-      alert('5mb 이하의 파일만 업로드할 수 있습니다.');
+    if (file.size / (1024 * 1024) >= 1) {
+      alert('1MB 이하의 파일만 업로드할 수 있습니다.');
       e.target.value = '';
       return;
     }
@@ -99,7 +99,7 @@ const useProfileEdit = (user: UserState) => {
     onChangeNickname,
     tempProfileImage,
     fileInputRef,
-    handleProfileImageChange,
+    handleFileInputChange,
     onClickProfileImage,
     onClickEditButton,
     onClickCancelButton,
