@@ -16,16 +16,16 @@ import MovieReviewsPage from '../pages/movie-detail/review/MovieReviewsPage.tsx'
 import ReviewDetailPage from '../pages/movie-detail/review/ReivewDetailPage.tsx';
 
 import HomeRecommendations from '../pages/home/more/HomeRecommendations.tsx';
-import HomeTopRated from '../pages/home/more/HomeTopRated.tsx';
-import HomeTopLiked from '../pages/home/more/HomeTopLiked.tsx';
 import CommercialMain from '../pages/commercial';
 import Search from '../pages/search/Search';
+import SearchMore from '../pages/search/SearchMore';
 import MyPageLayout from '../layouts/MyPageLayout.tsx';
 import RatingsPage from '../pages/my-page/RatingsPage.tsx';
 import QnaPage from '../pages/my-page/QnaPage.tsx';
 import LikePage from '../pages/my-page/LikePage.tsx';
 import MyReviewsPage from '../pages/my-page/ReviewsPage.tsx';
 import MyCommentsPage from '../pages/my-page/CommentsPage.tsx';
+import Rate from "../pages/rate";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +34,8 @@ const AppRoutes = () => {
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.MOVIE_TALK} element={<MovieTalk />} />
         <Route path={ROUTES.MOVIE_TALK_DETAIL} element={<MovieTalkDetail />} />
+        <Route path={ROUTES.SEARCH} element={<Search />} />
+        <Route path={ROUTES.SEARCH_MORE} element={<SearchMore />} />
 
         <Route path={ROUTES.GENRE.ROOT}>
           <Route index element={<List />} />
@@ -54,8 +56,6 @@ const AppRoutes = () => {
 
         {/* 홈 더보기 페이지 라우트 */}
         <Route path={ROUTES.HOME_MORE.RECOMMENDATIONS} element={<HomeRecommendations />} />
-        <Route path={ROUTES.HOME_MORE.TOP_RATED} element={<HomeTopRated />} />
-        <Route path={ROUTES.HOME_MORE.TOP_LIKED} element={<HomeTopLiked />} />
 
         <Route path={ROUTES.MY_PAGE.ROOT} element={<MyPageLayout />}>
           <Route index element={<Navigate to={ROUTES.MY_PAGE.RATINGS} replace />} />
@@ -65,6 +65,7 @@ const AppRoutes = () => {
           <Route path={ROUTES.MY_PAGE.COMMENTS} element={<MyCommentsPage />} />
           <Route path={ROUTES.MY_PAGE.LIKES} element={<LikePage />} />
         </Route>
+        <Route path={ROUTES.RATES} element={<Rate />} />
       </Routes>
     </MainLayout>
   );

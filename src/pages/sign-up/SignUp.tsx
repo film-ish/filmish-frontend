@@ -1,21 +1,35 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Film, Upload } from 'lucide-react';
-import { signup } from '../../api/join/signupApi';
+import { signup, checkEmail, checkNickname } from '../../api/join/signupApi';
+
+type FormState = {
+  email: string;
+  password: string;
+  nickname: string;
+  birth: string;
+  image: File | null;
+};
 
 const SignUp = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormState>({
     email: '',
     password: '',
     nickname: '',
     birth: '',
-    image: ''
+    image: null,
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [emailChecked, setEmailChecked] = useState<boolean | null>(null);
+  const [nicknameChecked, setNicknameChecked] = useState<boolean | null>(null);
+  const [imageChecked, setImageChecked] = useState<boolean | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [nicknameError, setNicknameError] = useState<string | null>(null);
+  const [checkImageError, setCheckImageError] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,18 +40,78 @@ const SignUp = () => {
     }));
   };
 
+  const handleEmailCheckOnFocus = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email) return;
+    if (!emailRegex.test(formData.email)){
+      setEmailError('올바른 형식으로 입력해주세요.');
+      return;
+    }
+    try {
+      const response = await checkEmail(formData.email);
+      console.log('이메일 중복 조회 결과:', response);
+  
+      if (response.data.message === "사용할 수 없는 이메일입니다.") {
+        setEmailChecked(false);
+        setEmailError('이미 사용 중인 이메일입니다.');
+      } else {
+        setEmailChecked(true);
+        setEmailError("사용 가능한 이메일입니다.");
+      }
+    } catch (error) {
+      console.error('이메일 중복 확인 오류:', error);
+      setEmailChecked(false);
+      setEmailError('이메일 확인 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleNicknameCheckOnFocus = async () => {
+    if (!formData.nickname) return;
+    try {
+      const response = await checkNickname(formData.nickname);
+      console.log('닉네임 중복 조회 결과:', response);
+  
+      if (response.data.message === "사용할 수 없는 닉네임입니다.") {
+        setNicknameChecked(false);
+        setNicknameError('이미 사용 중인 닉네임입니다.');
+      } else {
+        setNicknameChecked(true);
+        setNicknameError("사용 가능한 닉네임입니다.");
+      }
+    } catch (error) {
+      console.error('닉네임 중복 확인 오류:', error);
+      setNicknameChecked(false);
+      setNicknameError('닉네임 확인 중 오류가 발생했습니다.');
+    }
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const isValidType = allowedTypes.includes(file.type);
+      const isValidSize = file.size <= 1024 * 1024; // 1MB
+
+      if (!isValidType) {
+        setCheckImageError("JPG/PNG/JPEG 형식의 이미지만 업로드 가능합니다.");
+        return;
+      }
+
+      const isValid = checkImageSize(file);
+      if (!isValid) return;
+
+      setFormData(prev => ({
+        ...prev,
+        image: file // Base64 형식의 이미지 데이터
+      }));
+
       // 이미지 파일 미리보기 생성
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
         setImagePreview(result);
-        setFormData(prev => ({
-          ...prev,
-          image: result // Base64 형식의 이미지 데이터
-        }));
+        
       };
       reader.readAsDataURL(file);
     }
@@ -48,16 +122,46 @@ const SignUp = () => {
     fileInputRef.current?.click();
   };
 
+  const checkImageSize = (file: File): boolean => {
+    const maxSizeBytes = 1024 * 1024;
+  
+    if (file.size > maxSizeBytes) {
+      setCheckImageError("이미지 크기는 1MB 이하로 업로드해주세요.");
+      setImageChecked(false);
+      return false;
+    }
+  
+    setCheckImageError("");
+    setImageChecked(true);
+    return true;
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
+    const data = new FormData();
+    data.append('email', formData.email);
+    data.append('password', formData.password);
+    data.append('nickname', formData.nickname);
+    data.append('birth', formData.birth);
+    if (formData.image) {
+      data.append('image', formData.image);
+    }
+    
+    if (emailChecked !== true || nicknameChecked !== true) {
+      setError('이메일과 닉네임 중복 확인을 완료해주세요.');
+      setLoading(false);
+      return;
+    }
+
     // TODO: 회원가입 로직 구현
-    console.log('SignUp attempt:', formData);
+    console.log('SignUp attempt:', data);
     try {
       // signup API 호출
-      const response = await signup(formData);
+      const response = await signup(data);
       console.log('회원가입 성공:', response);
       
       // 성공 시 로그인 페이지로 이동
@@ -109,7 +213,11 @@ const SignUp = () => {
                 className="mt-1 block w-full px-4 py-3 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 value={formData.email}
                 onChange={handleChange}
+                onBlur={handleEmailCheckOnFocus}
               />
+              {emailError && (
+                <div className="text-red-500 text-sm mt-1">{emailError}</div>
+              )}
             </div>
 
             <div>
@@ -126,7 +234,9 @@ const SignUp = () => {
                 className="mt-1 block w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 value={formData.password}
                 onChange={handleChange}
+                //onBlur={handleNicknameCheckOnFocus}
               />
+
             </div>
 
             <div>
@@ -143,6 +253,9 @@ const SignUp = () => {
                 value={formData.nickname}
                 onChange={handleChange}
               />
+              {nicknameError && (
+                <div className="text-red-500 text-sm mt-1">{nicknameError}</div>
+              )}
             </div>
 
             <div>
@@ -156,7 +269,9 @@ const SignUp = () => {
                 placeholder="생년월일을 입력해주세요"
                 className="mt-1 block w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 value={formData.birth}
+                max={new Date().toISOString().split('T')[0]}
                 onChange={handleChange}
+                onFocus={handleNicknameCheckOnFocus}
               />
             </div>
 
@@ -202,13 +317,19 @@ const SignUp = () => {
                 )}
               </div>
             </div>
+            {checkImageError && (
+              <p className="text-sm text-rose-cloud mt-1">{checkImageError}</p>
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              JPG, PNG 파일 지원 (최대 1MB)
+            </p>
           </div>
 
           <div>
             <button
               type="submit"
-              disabled={loading}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-rose-cloud hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              disabled={loading || !emailChecked || !nicknameChecked}
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-rose-cloud hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02] ${loading || !emailChecked || !nicknameChecked? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {loading ? '처리 중...' : '확인'}
             </button>

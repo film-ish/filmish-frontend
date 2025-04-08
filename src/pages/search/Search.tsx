@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { searchApi } from '../../api/header/searchIcon';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { searchApi } from '../../api/header/searchApi';
 import MovieCard from '../../components/movie/MovieCard';
 import { useAuthStore } from '../../store/authStore';
-import { Film } from 'lucide-react';
+import { Film, ChevronRight } from 'lucide-react';
 import React from 'react';
 
 // 오류 경계 컴포넌트
@@ -60,14 +60,15 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
+// API 응답 타입 정의
 interface MovieResult {
-  id: number;
+  id: string;
   title: string;
-  poster: string;
-  pubDate: string;
-  runningTime: number;
-  value: number;
-  genre: { id: number; name: string }[];
+  poster: string | null;
+  pubDate: string | null;
+  runningTime: number | null;
+  rate: number | null;
+  genres: string[] | null;
 }
 
 interface ActorResult {
@@ -86,16 +87,22 @@ interface DirectorResult {
   qnaNum: number;
 }
 
+interface KeywordMovieGroup {
+  name: string;
+  movies: MovieResult[];
+}
+
 interface SearchResults {
   movies: MovieResult[];
   actors: ActorResult[];
   directors: DirectorResult[];
   genreMovies: MovieResult[];
-  keywordMovies: MovieResult[];
+  keywordMovies: KeywordMovieGroup[];
 }
 
 const SearchContent = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const keyword = searchParams.get('keyword') || '';
   const [searchResults, setSearchResults] = useState<SearchResults>({
     movies: [],
@@ -129,7 +136,7 @@ const SearchContent = () => {
         
         if (response && response.data) {
           // API 응답 구조 확인 및 데이터 설정
-          const data = response.data;
+          const data = response.data as any;
           
           setSearchResults({
             movies: data.movies || [],
@@ -167,8 +174,7 @@ const SearchContent = () => {
   // 모든 영화 결과를 합침
   const allMovies = [
     ...searchResults.movies,
-    ...searchResults.genreMovies,
-    ...searchResults.keywordMovies
+    ...searchResults.genreMovies
   ];
 
   // 중복 제거 (id 기준)
@@ -176,8 +182,13 @@ const SearchContent = () => {
     index === self.findIndex((m) => m.id === movie.id)
   );
 
+  // 더보기 페이지로 이동하는 함수
+  const handleMoreClick = (type: string) => {
+    navigate(`/search/more?keyword=${keyword}&type=${type}`);
+  };
+
   return (
-    <div className="container mx-auto px-4 pt-24 pb-12">
+    <div className="container mx-auto px-4 pt-10 pb-12">
       <h1 className="text-3xl font-bold mb-8">통합 검색</h1>
       
       {/* 검색어 표시 */}
@@ -205,7 +216,8 @@ const SearchContent = () => {
       {!isLoading && !error && keyword && 
        uniqueMovies.length === 0 && 
        searchResults.actors.length === 0 && 
-       searchResults.directors.length === 0 && (
+       searchResults.directors.length === 0 && 
+       searchResults.keywordMovies.length === 0 && (
         <div className="text-center py-12 text-gray-400">
           검색 결과가 없습니다. 다른 키워드로 검색해보세요.
         </div>
@@ -214,20 +226,30 @@ const SearchContent = () => {
       {/* 영화 검색 결과 */}
       {uniqueMovies.length > 0 && (
         <div className="mb-12">
-          <h3 className="text-lg font-semibold mb-4">
-            영화 ({uniqueMovies.length}개)
-          </h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">
+              영화 ({uniqueMovies.length}개)
+            </h3>
+            {uniqueMovies.length > 5 && (
+              <button 
+                onClick={() => handleMoreClick('movies')}
+                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
+              >
+                더보기 <ChevronRight size={16} className="ml-1" />
+              </button>
+            )}
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {uniqueMovies.map((movie) => (
+            {uniqueMovies.slice(0, 5).map((movie) => (
               <MovieCard
                 key={movie.id}
                 movie={{
-                  id: movie.id,
+                  id: parseInt(movie.id),
                   title: movie.title,
                   posterPath: movie.poster || '/no-poster.png',
-                  rating: movie.value || 0,
+                  rating: movie.rate || 0,
                   likes: 0,
-                  genres: movie.genre ? movie.genre.map(g => g.name) : [],
+                  genres: movie.genres || [],
                   runningTime: movie.runningTime || 0,
                   pubDate: movie.pubDate || '',
                 }}
@@ -242,15 +264,25 @@ const SearchContent = () => {
       {/* 배우 검색 결과 */}
       {searchResults.actors && searchResults.actors.length > 0 && (
         <div className="mb-12">
-          <h3 className="text-lg font-semibold mb-4">
-            배우 ({searchResults.actors.length}개)
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-            {searchResults.actors.map((actor) => (
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">
+              배우 ({searchResults.actors.length}개)
+            </h3>
+            {searchResults.actors.length > 5 && (
+              <button 
+                onClick={() => handleMoreClick('actors')}
+                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
+              >
+                더보기 <ChevronRight size={16} className="ml-1" />
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-6">
+            {searchResults.actors.slice(0, 5).map((actor) => (
               <div key={actor.id} className="flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full overflow-hidden mb-2 bg-gray-700">
                   <img 
-                    src={actor.image || actor.image === null ? '/no-profile-long.png' : actor.image} 
+                    src={actor.image || '/no-poster-long.png'} 
                     alt={actor.name} 
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -281,15 +313,25 @@ const SearchContent = () => {
       {/* 감독 검색 결과 */}
       {searchResults.directors && searchResults.directors.length > 0 && (
         <div className="mb-12">
-          <h3 className="text-lg font-semibold mb-4">
-            감독 ({searchResults.directors.length}개)
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-            {searchResults.directors.map((director) => (
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">
+              감독 ({searchResults.directors.length}개)
+            </h3>
+            {searchResults.directors.length > 5 && (
+              <button 
+                onClick={() => handleMoreClick('directors')}
+                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
+              >
+                더보기 <ChevronRight size={16} className="ml-1" />
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-6">
+            {searchResults.directors.slice(0, 5).map((director) => (
               <div key={director.id} className="flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full overflow-hidden mb-2 bg-gray-700">
                   <img 
-                    src={director.image || director.image === null ? '/no-profile-long.png' : director.image} 
+                    src={director.image || '/no-poster-long.png'} 
                     alt={director.name} 
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -313,6 +355,51 @@ const SearchContent = () => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* 키워드 검색 결과 */}
+      {searchResults.keywordMovies && searchResults.keywordMovies.length > 0 && (
+        <div className="mb-12">
+          <h3 className="text-lg font-semibold mb-4">
+            키워드 검색 결과
+          </h3>
+          {searchResults.keywordMovies.map((group, index) => (
+            <div key={index} className="mb-8">
+              <div className="flex justify-between items-center mb-4">
+                <h4 className="text-md font-medium">
+                  "{group.name}" 관련 영화 ({group.movies.length}개)
+                </h4>
+                {group.movies.length > 5 && (
+                  <button 
+                    onClick={() => handleMoreClick(`keyword-${group.name}`)}
+                    className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
+                  >
+                    더보기 <ChevronRight size={16} className="ml-1" />
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                {group.movies.slice(0, 5).map((movie) => (
+                  <MovieCard
+                    key={movie.id}
+                    movie={{
+                      id: parseInt(movie.id),
+                      title: movie.title,
+                      posterPath: movie.poster || '/no-poster.png',
+                      rating: movie.rate || 0,
+                      likes: 0,
+                      genres: movie.genres || [],
+                      runningTime: movie.runningTime || 0,
+                      pubDate: movie.pubDate || '',
+                    }}
+                    isLoggedIn={isLoggedIn}
+                    iconType="star"
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

@@ -11,6 +11,7 @@ interface Movie {
   img: string;
   genre: Array<{ id: number; name: string }>;
   runningTime: number;
+  pubDate: string;
 }
 
 interface PersonalRecommendProps {
@@ -60,7 +61,8 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
                   rating: movie.rates || 0,
                   likes: 0,
                   genres: movie.genre ? movie.genre.map(g => g.name) : [],
-                  runningTime: movie.runningTime || 0
+                  runningTime: movie.runningTime || 0,
+                  pubDate: movie.pubDate || ''
                 }}
                 isLoggedIn={isLoggedIn}
               />

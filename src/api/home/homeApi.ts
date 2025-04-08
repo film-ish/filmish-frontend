@@ -13,9 +13,4 @@ const getmovie = async () => {
   }
 };
 
-const getrecommend = async () => {
-  const response = await apiClient.get("/recommendation");
-  return response.data;
-};
-
-export { getmovie, getrecommend };
+export { getmovie };

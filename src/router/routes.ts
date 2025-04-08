@@ -19,9 +19,10 @@ export const ROUTES = {
       DETAIL: ':reviewId',
     },
   },
-  RATING_RECOMMENDATION: '/rating-recommendation',
+  RATES: '/rates',
   INDIE_CINEMA: '/indie-cinema',
   SEARCH: '/search',
+  SEARCH_MORE: '/search/more',
   NOTIFICATION: '/notification',
   MY_PAGE: {
     ROOT: '/mypage',
@@ -33,7 +34,5 @@ export const ROUTES = {
   },
   HOME_MORE: {
     RECOMMENDATIONS: '/home/recommendations',
-    TOP_RATED: '/home/top-rated',
-    TOP_LIKED: '/home/top-liked'
   },
 } as const;

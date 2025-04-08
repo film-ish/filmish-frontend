@@ -39,38 +39,12 @@ const Home = () => {
     isFetching: isRecommendationsFetching
   } = useQuery({
     queryKey: ['recommendations'],
-    queryFn: () => getRecommendations(100), // 12개 추천 영화 요청
+    queryFn: () => getRecommendations(10), // 12개 추천 영화 요청
     enabled: !!accessToken, // accessToken이 존재하는 경우에만 쿼리 실행
   });
 
   // 마운트 시 및 데이터 변경 시 상태 로깅
   useEffect(() => {
-    console.log('Home 컴포넌트 상태:', {
-      isHomeLoading,
-      isHomeFetching,
-      isHomeSuccess,
-      isHomeError,
-      homeError,
-      homeData,
-      isLoggedIn,
-      accessToken,
-      recommendedMovies,
-      isRecommendationsLoading,
-      isRecommendationsFetching,
-      recommendationsError
-    });
-    
-    // API 응답 데이터 구조 확인
-    if (homeData) {
-      console.log('홈 데이터 구조:', {
-        orderByLikes: homeData?.data?.orderByLikes,
-        orderByAvg: homeData?.data?.orderByAvg
-      });
-    }
-    
-    if (recommendedMovies) {
-      console.log('추천 영화 데이터 구조:', recommendedMovies);
-    }
   }, [
     isHomeLoading,
     isHomeFetching,
@@ -174,9 +148,6 @@ const Home = () => {
               <section className="relative">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-xl font-bold tracking-tight">좋아요 TOP 10</h2>
-                  <Link to={ROUTES.HOME_MORE.TOP_LIKED} className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
-                    더보기 <ChevronRight className="w-4 h-4" />
-                  </Link>
                 </div>
                 <div className="relative w-[calc(100vw-6.25%)] overflow-hidden">
                   <TopTen movies={homeData?.data?.orderByLikes || []} isLoggedIn={isLoggedIn} iconType="heart" />
@@ -187,9 +158,6 @@ const Home = () => {
               <section className="relative">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-xl font-bold tracking-tight">평점 TOP 10</h2>
-                  <Link to={ROUTES.HOME_MORE.TOP_RATED} className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
-                    더보기 <ChevronRight className="w-4 h-4" />
-                  </Link>
                 </div>
                 <div className="relative w-[calc(100vw-6.25%)] overflow-hidden">
                   <TopTen movies={homeData?.data?.orderByAvg || []} isLoggedIn={isLoggedIn} />

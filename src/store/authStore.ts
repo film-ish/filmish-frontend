@@ -7,6 +7,7 @@ interface AuthState {
   setAccessToken: (newAccessToken: string) => void;
   isLoggedIn: boolean;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+  clearAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -16,6 +17,7 @@ export const useAuthStore = create<AuthState>()(
       setAccessToken: (newAccessToken) => set({ accessToken: newAccessToken }),
       isLoggedIn: false,
       setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
+      clearAuth: () => set({ accessToken: ''}),
     }),
     {
       name: 'auth-storage',

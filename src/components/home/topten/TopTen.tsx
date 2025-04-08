@@ -42,8 +42,6 @@ const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) 
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
 
-  console.log('TopTen 렌더링:', { movies, isLoggedIn, iconType });
-
   return (
     <div className="relative mb-10">
       <div className="overflow-hidden relative" ref={emblaRef}>
@@ -57,7 +55,8 @@ const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) 
               rating: movie.value || 0,
               likes: 0, // 좋아요 수는 API에서 제공하지 않는 것으로 보임
               genres: movie.genres || [],
-              runningTime: movie.runningTime || 0
+              runningTime: movie.runningTime || 0,
+              pubDate: movie.pubDate || ''
             };
             
             return (
