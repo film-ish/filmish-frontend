@@ -7,4 +7,11 @@ const getActors = async (page: number, size: number) => {
   return response.data.data.content;
 };
 
-export { getActors };
+const searchActor = async (name: string) => {
+  const response = await apiClient.get(
+    `/makers?name=${name}`
+  );
+  return response.data.data.actors;
+};
+
+export { getActors, searchActor };

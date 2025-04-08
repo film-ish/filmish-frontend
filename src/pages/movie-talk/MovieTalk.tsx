@@ -3,15 +3,27 @@ import MovieTalkActorSection from '../../components/movie-talk/actor-section/Mov
 import MovieTalkService from '../../components/movie-talk/service/MovieTalkService';
 import MovieTalkPagination from '../../components/movie-talk/pagination/MovieTalkPagination';
 import MovieTalkMoving from '../../components/movie-talk/moving-card/MovieTalkMoving';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const MovieTalk = () => {
   // 현재 페이지 상태 관리
   const [currentPage, setCurrentPage] = useState(1);
+  // 배우 섹션 참조
+  const actorSectionRef = useRef<HTMLDivElement>(null);
 
   // 페이지 변경 핸들러
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  // 배우 섹션으로 스크롤하는 함수
+  const scrollToActorSection = () => {
+    if (actorSectionRef.current) {
+      actorSectionRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   };
 
   // 컴포넌트 마운트 시 페이지 상태 초기화
@@ -24,16 +36,21 @@ const MovieTalk = () => {
         <MovieTalkBanner />
         
         <div className="mb-8 mt-10">
-          <h2 className="text-2xl font-bold text-center mb-8">인기 영화인</h2>
           <MovieTalkMoving />
         </div>
         
-        <h2 className="text-4xl font-bold text-center mt-25 mb-25">영화인 목록</h2>
-        <MovieTalkActorSection currentPage={currentPage} />
-        <MovieTalkPagination 
-          currentPage={currentPage} 
-          onPageChange={handlePageChange} 
-        />
+        <div className="flex flex-col items-center">
+          <h2 className="text-4xl font-bold text-center mt-20 mb-10">영화인 목록</h2>
+        </div>
+        
+        <div ref={actorSectionRef} data-actor-section>
+          <MovieTalkActorSection currentPage={currentPage} />
+          <MovieTalkPagination 
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        </div>
+        
         <MovieTalkService />
       </div>
     </>

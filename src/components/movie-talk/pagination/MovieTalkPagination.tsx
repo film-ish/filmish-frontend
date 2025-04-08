@@ -83,43 +83,49 @@ const MovieTalkPagination = ({ onPageChange, currentPage }: MovieTalkPaginationP
 
   // 페이지가 1개 이상이면 페이지네이션 표시
   return (
-    <div className="flex justify-center items-center gap-2 my-8">
+    <div className="flex justify-center items-center gap-1 mb-20">
       <button 
         onClick={handlePrevPage}
         disabled={currentPage === 1}
-        className={`w-8 h-8 flex items-center justify-center rounded-full border ${
+        className={`w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 ${
           currentPage === 1 
-            ? 'border-gray-300 text-gray-400 cursor-not-allowed' 
-            : 'border-gray-600 text-gray-600 hover:bg-gray-100'
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+            : 'text-gray-700 hover:bg-gray-100 shadow-sm'
         }`}
+        aria-label="이전 페이지"
       >
-        <ChevronLeft className="w-4 h-4" />
+        <ChevronLeft className="w-5 h-5" />
       </button>
       
-      {pageNumbers.map(page => (
-        <button 
-          key={page} 
-          onClick={() => handlePageClick(page)}
-          className={`w-8 h-8 flex items-center justify-center rounded-full ${
-            page === currentPage 
-              ? 'bg-black text-white' 
-              : 'text-gray-600 hover:bg-gray-100'
-          }`}
-        >
-          {page}
-        </button>
-      ))}
+      <div className="flex items-center gap-1 mx-2">
+        {pageNumbers.map(page => (
+          <button 
+            key={page} 
+            onClick={() => handlePageClick(page)}
+            className={`w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 ${
+              page === currentPage 
+                ? 'bg-black border border-gray-300 text-white text-xl font-bold shadow-md' 
+                : 'text-gray-700 hover:bg-gray-100 shadow-sm'
+            }`}
+            aria-label={`${page} 페이지로 이동`}
+            aria-current={page === currentPage ? 'page' : undefined}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
       
       <button 
         onClick={handleNextPage}
         disabled={currentPage === totalPages}
-        className={`w-8 h-8 flex items-center justify-center rounded-full border ${
+        className={`w-10 h-10 flex items-center justify-center rounded-md transition-all duration-200 ${
           currentPage === totalPages 
-            ? 'border-gray-300 text-gray-400 cursor-not-allowed' 
-            : 'border-gray-600 text-gray-600 hover:bg-gray-100'
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+            : 'text-gray-700 hover:bg-gray-100 shadow-sm'
         }`}
+        aria-label="다음 페이지"
       >
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-5 h-5" />
       </button>
     </div>
   );
