@@ -7,6 +7,8 @@ import { getRecommendations } from '../../api/genre/getRecommendations'; // 추�
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../router/routes';
 
 const Home = () => {
   // 로그인 상태 확인
@@ -33,11 +35,12 @@ const Home = () => {
   const {
     data: recommendedMovies,
     isLoading: isRecommendationsLoading,
-    error: recommendationsError
+    error: recommendationsError,
+    isFetching: isRecommendationsFetching
   } = useQuery({
     queryKey: ['recommendations'],
     queryFn: () => getRecommendations(100), // 12개 추천 영화 요청
-    enabled: isLoggedIn, // 로그인 상태일 때만 실행
+    enabled: !!accessToken, // accessToken이 존재하는 경우에만 쿼리 실행
   });
 
   // 마운트 시 및 데이터 변경 시 상태 로깅
@@ -50,8 +53,24 @@ const Home = () => {
       homeError,
       homeData,
       isLoggedIn,
+      accessToken,
       recommendedMovies,
+      isRecommendationsLoading,
+      isRecommendationsFetching,
+      recommendationsError
     });
+    
+    // API 응답 데이터 구조 확인
+    if (homeData) {
+      console.log('홈 데이터 구조:', {
+        orderByLikes: homeData?.data?.orderByLikes,
+        orderByAvg: homeData?.data?.orderByAvg
+      });
+    }
+    
+    if (recommendedMovies) {
+      console.log('추천 영화 데이터 구조:', recommendedMovies);
+    }
   }, [
     isHomeLoading,
     isHomeFetching,
@@ -60,7 +79,11 @@ const Home = () => {
     homeError,
     homeData,
     isLoggedIn,
-    recommendedMovies
+    accessToken,
+    recommendedMovies,
+    isRecommendationsLoading,
+    isRecommendationsFetching,
+    recommendationsError
   ]);
 
   // 로딩 중이면 로딩 표시 (홈 데이터만 체크)
@@ -90,7 +113,8 @@ const Home = () => {
   return (
       <div className="flex flex-col gap-20">
         {isLoggedIn ? (
-            <>    {/* --- 로그인 상태일 때 --- */}
+            <>    
+            {/* --- 로그인 상태일 때 --- */}
               {/* Best Review 섹션 */}
               <section className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw]">
                 <BestReview
@@ -119,24 +143,29 @@ const Home = () => {
                       )}
                     </div>
                   </div>
-                  <button className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
+                  <Link to={ROUTES.HOME_MORE.RECOMMENDATIONS} className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
                     더보기 <ChevronRight className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
                 <div className="relative w-[calc(100vw-6.25%)] overflow-hidden">
                   {/* 변경: React Query로 가져온 추천 영화 데이터 사용 */}
-                  <PersonalRecommend
-                      movies={isRecommendationsLoading ? [] : (recommendedMovies || [])}
-                  />
-                  {isRecommendationsLoading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="text-white">추천 영화 로딩 중...</div>
+                  {isRecommendationsLoading ? (
+                    <div className="flex items-center justify-center h-48 bg-gray-800 rounded-lg">
+                      <div className="text-white">추천 영화 로딩 중...</div>
+                    </div>
+                  ) : recommendationsError ? (
+                    <div className="flex items-center justify-center h-48 bg-gray-800 rounded-lg">
+                      <div className="text-red-500">추천 영화를 불러오는데 실패했습니다.</div>
+                    </div>
+                  ) : !recommendedMovies || recommendedMovies.length === 0 ? (
+                    <div className="flex items-center justify-center h-48 bg-gray-800 rounded-lg">
+                      <div className="text-center">
+                        <p className="text-white mb-2">추천 영화가 없습니다</p>
+                        <p className="text-gray-400 text-sm">좋아요를 누른 영화가 충분하지 않거나 서비스 이용 기록이 부족합니다</p>
                       </div>
-                  )}
-                  {recommendationsError && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="text-red-500">추천 영화를 불러오는데 실패했습니다.</div>
-                      </div>
+                    </div>
+                  ) : (
+                    <PersonalRecommend movies={recommendedMovies} />
                   )}
                 </div>
               </section>
@@ -145,6 +174,9 @@ const Home = () => {
               <section className="relative">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-xl font-bold tracking-tight">좋아요 TOP 10</h2>
+                  <Link to={ROUTES.HOME_MORE.TOP_LIKED} className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
+                    더보기 <ChevronRight className="w-4 h-4" />
+                  </Link>
                 </div>
                 <div className="relative w-[calc(100vw-6.25%)] overflow-hidden">
                   <TopTen movies={homeData?.data?.orderByLikes || []} isLoggedIn={isLoggedIn} iconType="heart" />
@@ -155,9 +187,9 @@ const Home = () => {
               <section className="relative">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-xl font-bold tracking-tight">평점 TOP 10</h2>
-                  <button className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
+                  <Link to={ROUTES.HOME_MORE.TOP_RATED} className="flex items-center gap-2 text-sm text-gray-4 hover:text-white transition-colors">
                     더보기 <ChevronRight className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
                 <div className="relative w-[calc(100vw-6.25%)] overflow-hidden">
                   <TopTen movies={homeData?.data?.orderByAvg || []} isLoggedIn={isLoggedIn} />

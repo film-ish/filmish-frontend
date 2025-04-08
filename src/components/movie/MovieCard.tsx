@@ -1,44 +1,55 @@
 import { Star, Heart } from 'lucide-react';
 import MoviePoster from './MoviePoster';
 
-interface MovieCardProps {
-  width?: number | string;
-  poster: string;
+interface Movie {
+  id: number;
   title: string;
+  posterPath: string;
   rating: number;
+  likes: number;
   genres: string[];
   runningTime: number;
-  liked: boolean;
-  onLike: () => void;
+}
+
+interface MovieCardProps {
+  width?: number | string;
+  movie: Movie;
+  isLoggedIn: boolean;
   iconType?: 'star' | 'heart';
 }
 
 const MovieCard = ({
   width = 225,
-  poster,
-  title,
-  genres,
-  runningTime,
-  rating,
-  liked,
-  onLike,
+  movie,
+  isLoggedIn,
   iconType = 'star'
 }: MovieCardProps) => {
+  if (!movie) {
+    return null;
+  }
+
+  const { title, posterPath, rating, genres, runningTime } = movie;
+
   return (
     <div className="flex flex-col gap-[5px] min-w-[150px]" style={{ width: width }}>
       <div className="relative">
-        <MoviePoster posterSrc={poster} liked={liked} onLike={onLike} />
+        <MoviePoster posterSrc={posterPath} liked={false} onLike={() => {}} />
       </div>
 
       <div className="flex items-center justify-between text-label-xl">
         <div className="font-semibold text-white">{title}</div>
         <div className="flex items-center gap-1 text-label-md font-light text-gray-4">
           {iconType === 'heart' ? (
-            <Heart fill="#FF5E5E" size={14} strokeWidth={0} />
+            <>
+              <Heart fill="#FF5E5E" size={14} strokeWidth={0} />
+              {rating == 0 ? 0 : rating}
+            </>
           ) : (
-            <Star fill="#FF5E5E" size={14} strokeWidth={0} />
+            <>
+              <Star fill="#FF5E5E" size={14} strokeWidth={0} />
+              {rating == 0 ? 0 : rating?.toFixed(1)}
+            </>
           )}
-            {rating >= 0 ? rating : ""}
         </div>
       </div>
 

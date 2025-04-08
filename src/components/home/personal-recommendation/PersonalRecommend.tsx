@@ -2,13 +2,12 @@ import { useState, useCallback, useEffect } from "react";
 import MovieCard from "../../movie/MovieCard";
 import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaCarouselType } from 'embla-carousel';
+import { useAuthStore } from "../../../store/authStore";
 
 interface Movie {
   id: number;
   title: string;
-  year: string;
-  duration: string;
-  rating: number;
+  rates: number;
   img: string;
   genre: Array<{ id: number; name: string }>;
   runningTime: number;
@@ -19,6 +18,8 @@ interface PersonalRecommendProps {
 }
 
 const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
+  const { isLoggedIn } = useAuthStore();
+  
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
@@ -41,6 +42,10 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
 
+  useEffect(() => {
+    console.log('PersonalRecommend 렌더링:', { movies });
+  }, [movies]);
+
   return (
     <div className="relative">
       <div className="overflow-hidden" ref={emblaRef}>
@@ -48,13 +53,16 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
           {movies.map((movie) => (
             <div key={movie.id} className="flex-[0_0_calc((100%-5rem)/6)]">
               <MovieCard
-                poster={movie.img || '/public/no-poster.png'}
-                title={movie.title}
-                rating={movie.rating}
-                genres={movie.genre ? [movie.genre.map(g => g.name).join(', ')] : []}
-                runningTime={movie.runningTime}
-                liked={false}
-                onLike={() => {}}
+                movie={{
+                  id: movie.id,
+                  title: movie.title,
+                  posterPath: movie.img || '/no-poster-long.png',
+                  rating: movie.rates || 0,
+                  likes: 0,
+                  genres: movie.genre ? movie.genre.map(g => g.name) : [],
+                  runningTime: movie.runningTime || 0
+                }}
+                isLoggedIn={isLoggedIn}
               />
             </div>
           ))}

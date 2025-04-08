@@ -6,21 +6,20 @@ import MovieCard from "../../movie/MovieCard";
 interface Movie {
   id: number;
   title: string;
-  pubdate: string;
-  duration: string;
-  genres: string[];
+  pubDate: string | null;
+  poster: string | null;
   runningTime: number;
-  poster: string;
+  genres: string[];
   value: number;
 }
 
 interface TopTenProps {
   movies: Movie[];
-  isLoggedIn?: boolean;
+  isLoggedIn: boolean;
   iconType?: 'star' | 'heart';
 }
 
-const TopTen = ({ movies, isLoggedIn, iconType = 'star' }: TopTenProps) => {
+const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
@@ -43,24 +42,34 @@ const TopTen = ({ movies, isLoggedIn, iconType = 'star' }: TopTenProps) => {
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
 
+  console.log('TopTen 렌더링:', { movies, isLoggedIn, iconType });
+
   return (
     <div className="relative mb-10">
       <div className="overflow-hidden relative" ref={emblaRef}>
         <div className="flex gap-6">
-          {movies.map((movie) => (
-            <div key={movie.id} className="flex-[0_0_calc((100%-5rem)/6)]">
-            <MovieCard  
-              poster={movie.poster}
-              title={movie.title}
-              rating={movie.value}
-              genres={movie.genres}
-              runningTime={movie.runningTime}
-              liked={false}
-              onLike={() => {}}
-              iconType={iconType}
-              />
-          </div>
-        ))}
+          {movies.map((movie) => {
+            // API 응답 데이터 구조에 맞게 변환
+            const formattedMovie = {
+              id: movie.id,
+              title: movie.title,
+              posterPath: movie.poster || '/no-poster-long.png',
+              rating: movie.value || 0,
+              likes: 0, // 좋아요 수는 API에서 제공하지 않는 것으로 보임
+              genres: movie.genres || [],
+              runningTime: movie.runningTime || 0
+            };
+            
+            return (
+              <div key={movie.id} className="flex-[0_0_calc((100%-5rem)/6)]">
+                <MovieCard
+                  movie={formattedMovie}
+                  isLoggedIn={isLoggedIn}
+                  iconType={iconType}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
       {!isLoggedIn && (

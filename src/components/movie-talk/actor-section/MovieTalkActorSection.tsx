@@ -148,7 +148,7 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
       return results;
     },
     enabled: debouncedSearchTerm.length >= 2 && !isComposing, // 2글자 이상이고 한글 입력 중이 아닐 때만 검색 실행
-    staleTime: 5 * 60 * 1000, // 5분
+    staleTime: 1000 * 60 * 60, // 1시간
   });
 
   // 페이지에 따른 배우 데이터 가져오기
@@ -159,7 +159,7 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
       console.log('페이지 배우 데이터:', results);
       return results;
     },
-    staleTime: 5 * 60 * 1000, // 5분
+    staleTime: 1000 * 60 * 60, // 1시간
   });
 
   // 캐러셀 이벤트 설정
