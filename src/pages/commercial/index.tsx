@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
-import { ChevronRight } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import {useState, useEffect} from "react";
+import {ChevronRight} from "lucide-react";
+import {Link, useNavigate} from "react-router";
 import MovieCard from "../../components/movie/MovieCard";
-import { getCommercialMovies, submitLikedCommercialMovies } from "../../api/commercial/commercialApi";
+import {getCommercialMovies, submitLikedCommercialMovies} from "../../api/commercial/commercialApi";
 import Button from "../../components/common/Button";
+import {Movie} from "../../components/movie/MovieCard"; // Movie 타입 임포트
 
 interface MovieProps {
     id: number;
@@ -161,6 +162,20 @@ const Main = () => {
         return categories.join(', ');
     };
 
+    // MovieProps 타입을 Movie 타입으로 변환하는 함수
+    const convertToMovieObject = (movieData: MovieProps): Movie => {
+        return {
+            id: movieData.id,
+            title: movieData.title,
+            posterPath: movieData.poster,
+            rating: movieData.rating || 0,
+            likes: 0, // 기본값 설정
+            genres: formatGenre(movieData.categories),
+            runningTime: 0, // 정보 없음
+            pubDate: movieData.pubDate || ''
+        };
+    };
+
     // 로딩 중 표시
     if (isInitialLoading) {
         return (
@@ -186,17 +201,7 @@ const Main = () => {
     }
 
     return (
-        <div className="bg-black text-white min-h-screen pb-16">
-            {/* 헤더 */}
-            {/*<div className="sticky top-0 bg-black z-10 p-4 border-b border-gray-8 mx-5">*/}
-            {/*    <div className="flex justify-end items-center mx-4">*/}
-            {/*        <h1 className="mr-2">다음</h1>*/}
-            {/*        <Link to={`/genre`} className="text-white mr-3">*/}
-            {/*            <ChevronRight size={24}/>*/}
-            {/*        </Link>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-
+        <div className="text-white min-h-screen pb-16">
             {/* 영화 좋아요 섹션 */}
             <div className="px-4 mb-8 mt-25">
                 <div className="mb-4 mx-10 flex flex-col items-center text-center mb-15">
@@ -232,29 +237,39 @@ const Main = () => {
                 {/* 그리드 영화 목록 (6개씩 4행) */}
                 <div className="mx-10">
                     <div className="grid grid-cols-6 gap-3">
-                        {commercialMovies.map((movie) => {
-                            const movieId = `${movie.id}`;
+                        {commercialMovies.map((movieData) => {
+                            const movieId = `${movieData.id}`;
+                            // MovieData를 MovieCard가 필요로 하는 형식으로 변환
+                            const movie = convertToMovieObject(movieData);
+
+                            // 좋아요 상태 확인
+                            const isLiked = !!likedMovies[movieId];
+
+                            // 좋아요 토글 핸들러
+                            const handleLike = () => {
+                                toggleLike(movieId);
+                            };
 
                             return (
                                 <div
                                     key={movie.id}
                                     className="flex-shrink-0 relative rounded-lg overflow-hidden"
-                                    // onClickCapture={(e) => handleCardWrapperClick(e, movieId)}
+                                    onClick={(e) => handleCardWrapperClick(e, movieId)}
                                 >
                                     <MovieCard
                                         width="100%"
-                                        poster={movie.poster}
-                                        title={movie.title}
-                                        rating={movie.rating || -1}
-                                        genres={formatGenre(movie.categories)}
-                                        runningTime={-1}
-                                        liked={!!likedMovies[movieId]}
-                                        onLike={() => toggleLike(movieId)}
+                                        movie={movie}
+                                        isLoggedIn={true}
+                                        iconType="heart"
+                                        isLiked={isLiked}
+                                        onLike={handleLike}
                                     />
                                     {/* 마우스 호버 시 오버레이 */}
-                                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
+                                    <div
+                                        className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
                                 </div>
-                            )})}
+                            );
+                        })}
                     </div>
                 </div>
             </div>

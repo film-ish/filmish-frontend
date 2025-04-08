@@ -3,7 +3,8 @@ import React, { useEffect, useCallback } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import MovieCard from "../movie/MovieCard.tsx";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Movie } from "../movie/MovieCard.tsx"; // Movie 타입 임포트
 
 interface MovieProps {
     id: number;
@@ -12,6 +13,8 @@ interface MovieProps {
     month: string;
     rating: number | string;
     image: string;
+    runningTime?: number;
+    genreNames?: string;
 }
 
 interface GenreType {
@@ -26,8 +29,8 @@ interface GenreCarouselProps {
     movies: MovieProps[];
     likedMovies: Record<string, boolean>;
     handleLike: (movieId: string) => void;
-    onCarouselInit?: (genreName: string, emblaApi: any) => void; // 수정: 콜백 함수 타입 변경
-    onCarouselScroll?: (genreName: string, direction: 'prev' | 'next') => void; // 수정: 콜백 함수 타입 변경
+    onCarouselInit?: (genreName: string, emblaApi: any) => void;
+    onCarouselScroll?: (genreName: string, direction: 'prev' | 'next') => void;
 }
 
 const GenreCarousel: React.FC<GenreCarouselProps> = ({
@@ -88,6 +91,20 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
     // 스크롤 상태 가져오기
     const scrollState = genre.scrollState || { canScrollPrev: false, canScrollNext: true };
 
+    // MovieProps를 Movie 타입으로 변환하는 함수
+    const convertToMovieObject = (movieData: MovieProps): Movie => {
+        return {
+            id: movieData.id,
+            title: movieData.title,
+            posterPath: movieData.image, // image를 posterPath로 매핑
+            rating: Number(movieData.rating),
+            likes: 0, // 기본값 설정
+            genres: movieData.genreNames || `${movieData.year} • ${movieData.month}`,
+            runningTime: movieData.runningTime || 0,
+            pubDate: `${movieData.year}-${movieData.month}` // 년도와 월을 조합하여 pubDate 생성
+        };
+    };
+
     return (
         <div className="relative">
             {/* 왼쪽 화살표 버튼 */}
@@ -103,21 +120,22 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
             {/* Embla Carousel */}
             <div className="overflow-hidden mx-10" ref={emblaRef}>
                 <div className="flex">
-                    {movies.map(movie => {
-                        const movieKey = `${movie.id}-${movie.title}`;
+                    {movies.map(movieData => {
+                        const movieKey = `${movieData.id}-${movieData.title}`;
+                        // 새로운 Movie 객체 생성
+                        const movie = convertToMovieObject(movieData);
+
                         return (
-                            <div key={movieKey} className="flex-[0_0_16.666%] min-w-0 pl-1 pr-2 cursor-pointer"
-                            onClick={() => handleMovieClick(movie.id)}>
+                            <div
+                                key={movieKey}
+                                className="flex-[0_0_16.666%] min-w-0 pl-1 pr-2 cursor-pointer"
+                                onClick={() => handleMovieClick(movieData.id)}
+                            >
                                 <MovieCard
                                     width="100%"
-                                    poster={movie.image}
-                                    title={movie.title}
-                                    rating={Number(movie.rating)}
-                                    genres={movie.genreNames || `${movie.year} • ${movie.month}`}
-                                    runningTime={movie.runningTime}
-                                    iconType='star'
-                                    // liked={!!likedMovies[movieKey]}
-                                    // onLike={() => handleLike(movieKey)}
+                                    movie={movie}
+                                    isLoggedIn={true}
+                                    iconType="star"
                                 />
                             </div>
                         );

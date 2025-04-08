@@ -139,13 +139,13 @@ const List = () => {
 
     // 로딩 상태 표시
     if (isLoading) {
-        return <div className="flex justify-center items-center h-screen bg-black text-white">영화 추천 목록을 불러오는 중...</div>;
+        return <div className="flex justify-center items-center h-screen  text-white">영화 추천 목록을 불러오는 중...</div>;
     }
 
     // 에러 상태 표시
     if (error) {
         return (
-            <div className="flex flex-col justify-center items-center h-screen bg-black text-white">
+            <div className="flex flex-col justify-center items-center h-screen text-white">
                 <p className="mb-4">영화 추천 목록을 불러오는데 실패했습니다.</p>
                 <Button
                     variant="filled"
@@ -166,11 +166,11 @@ const List = () => {
     }));
 
     return (
-        <div className="pb-16 bg-black text-white">
+        <div className="pb-16  text-white">
             {/* 장르 헤더 섹션 */}
             <div
                 ref={headerRef}
-                className="sticky top-0 bg-black z-10 p-4 border-b border-gray-8 z-100"
+                className="sticky top-0  z-10 p-4 border-b border-gray-8 z-100"
             >
                 <h1 className="text-xl font-bold mb-2 mx-10">장르별 추천</h1>
                 <div className="flex flex-wrap py-2 mx-10">

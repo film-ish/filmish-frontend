@@ -5,10 +5,11 @@ import { ROUTES } from "../../router/routes.ts";
 import GenreCarousel from "../../components/genre/GenreCarousel.tsx";
 import MovieCard from "../../components/movie/MovieCard";
 import { useGenres } from "../../hooks/useGenres";
-import {Movie, useRecommendStore} from "../../store/recommendStore";
+import { Movie as StoreMovie, useRecommendStore } from "../../store/recommendStore";
 import Button from "../../components/common/Button.tsx";
-import {getMoviesByGenre} from "../../api/genre/genreMoviesByGenre.ts";
-import {useNavigate} from "react-router-dom";
+import { getMoviesByGenre } from "../../api/genre/genreMoviesByGenre.ts";
+import { useNavigate } from "react-router-dom";
+import { Movie } from "../../components/movie/MovieCard"; // 새로운 Movie 타입 임포트
 
 interface MovieProps {
     id: number;
@@ -23,7 +24,7 @@ interface MovieProps {
 interface GenreType {
     id: number;
     name: string;
-    image?: string; // image를 선택적으로 변경
+    image?: string;
     scrollState?: {canScrollPrev: boolean, canScrollNext: boolean};
 }
 
@@ -36,37 +37,29 @@ interface PaginatedResponse {
         runningTime: number;
         rates: number;
         img: string | null;
-        // 기타 필요한 필드들
     }>;
     totalPages: number;
     totalElements: number;
     size: number;
-    number: number; // 현재 페이지 (0-based)
+    number: number;
     numberOfElements: number;
-    // 기타 필요한 필드들
 }
 
 const Detail = () => {
-    // URL 파라미터에서 id를 가져옴
-    // const { id } = useParams<{ id: string }>();
-    // const genreId = parseInt(id || "0", 10);
-
-    // useParams에서 가져오는 파라미터 이름 수정
     const params = useParams();
     const { genre } = params;
     const genreId = genre ? parseInt(genre, 10) : 0;
     const navigate = useNavigate();
+
+    // 장르 전체보기 섹션에 대한 ref 추가
+    const genreSectionRef = useRef<HTMLDivElement>(null);
+
     const handleMovieClick = (movieId: number) => {
         navigate(`/movies/${movieId}`);
     }
 
-    // 장르 데이터 가져오기
-    // useGenres 훅에 대한 로그 추가
     const { genres } = useRecommendStore();
-
     const [currentGenre, setCurrentGenre] = useState<GenreType | null>(null);
-
-    // 추천 영화와 전체 영화 상태
     const [likedMovies, setLikedMovies] = useState<Record<string, boolean>>({});
     const [recommendedMovies, setRecommendedMovies] = useState<MovieProps[]>([]);
     const [allGenreMovies, setAllGenreMovies] = useState<MovieProps[]>([]);
@@ -115,7 +108,6 @@ const Detail = () => {
         console.log('Detail 컴포넌트 마운트됨, genreId:', genreId);
     }, []);
 
-    // 장르별 영화 API 호출 함수
     // 장르별 영화 API 호출 함수
     const fetchGenreMovies = useCallback(async (page: number = 0) => {
         console.log(`fetchGenreMovies 실행: genreId=${genreId}, page=${page}`);
@@ -208,9 +200,18 @@ const Detail = () => {
         }
     }, [currentGenre, loadRecommendedMovies, fetchGenreMovies]);
 
-    // 페이지 변경 핸들러
+    // 페이지 변경 핸들러 - 장르 전체보기 섹션으로 스크롤 추가
     const handlePageChange = useCallback((page: number) => {
         fetchGenreMovies(page);
+
+        // 장르 전체보기 섹션으로 스크롤
+        if (genreSectionRef.current) {
+            // 스크롤 동작 추가
+            genreSectionRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'  // 섹션의 시작 부분으로 스크롤
+            });
+        }
     }, [fetchGenreMovies]);
 
     // 좋아요 클릭 핸들러
@@ -271,7 +272,7 @@ const Detail = () => {
             console.log(`${genreName} 캐러셀 스크롤: ${direction}`);
         }
     }, [emblaApis]);
-    // 페이지네이션 렌더링
+
     // 페이지네이션 렌더링
     const renderPagination = () => {
         if (totalPages <= 1) return null;
@@ -329,7 +330,7 @@ const Detail = () => {
                     ) : (
                         <Button
                             key={`page-${page}`}
-                            variant={page === currentPage ? 'filled' : 'text'}
+                            variant={page === currentPage ? 'filled' : 'outlined'}
                             bgColor={page === currentPage ? 'cherry-blush' : 'black'}
                             textColor="white"
                             className={`text-sm mx-1 ${page === currentPage ? 'font-bold' : ''}`}
@@ -355,26 +356,11 @@ const Detail = () => {
         );
     };
 
-    // 로딩 상태 표시
-    // if (isGenresLoading) {
-    //     return <div className="flex justify-center items-center h-screen bg-black text-white">장르 정보를 불러오는 중...</div>;
-    // }
-    //
-    // // 에러 상태 표시
-    // if (genresError) {
-    //     return <div className="flex justify-center items-center h-screen bg-black text-white">장르 정보를 불러오는데 실패했습니다.</div>;
-    // }
-
+    // 로딩, 에러 상태 처리
     if (!genres || genres.length === 0) {
         return <div className="flex justify-center items-center h-screen bg-black text-white">장르 정보를 불러오는 중...</div>;
     }
 
-// 장르를 찾지 못한 경우
-    if (!currentGenre) {
-        return <div className="flex justify-center items-center h-screen bg-black text-white">해당 장르를 찾을 수 없습니다.</div>;
-    }
-
-    // 장르를 찾지 못한 경우
     if (!currentGenre) {
         return <div className="flex justify-center items-center h-screen bg-black text-white">해당 장르를 찾을 수 없습니다.</div>;
     }
@@ -385,10 +371,24 @@ const Detail = () => {
         scrollState: scrollStates[currentGenre.name] || { canScrollPrev: false, canScrollNext: true }
     };
 
+    // MovieProps 타입에서 Movie 타입으로 변환하는 함수
+    const convertToMovieObject = (movieData: any): Movie => {
+        return {
+            id: movieData.id,
+            title: movieData.title,
+            posterPath: movieData.poster || movieData.image || `https://picsum.photos/seed/genre${movieData.id}/300/450`,
+            rating: Number(movieData.value || movieData.rating || 0),
+            likes: 0, // 기본값
+            genres: movieData.genres || movieData.genreNames || '',
+            runningTime: movieData.runningTime || 0,
+            pubDate: movieData.pubDate || `${movieData.year || ''}-${movieData.month || ''}`
+        };
+    };
+
     return (
-        <div className="bg-black text-white min-h-screen pb-16">
+        <div className="text-white min-h-screen pb-16">
             {/* 헤더 */}
-            <div className="sticky top-0 bg-black z-10 p-4 border-b border-gray-8 mx-5 z-100">
+            <div className="sticky top-0 z-10 p-4 border-b border-gray-8 mx-5 z-100">
                 <div className="flex items-center mx-4">
                     <Link to={ROUTES.GENRE.ROOT} className="text-white mr-3">
                         <ChevronLeft size={24} />
@@ -414,8 +414,8 @@ const Detail = () => {
                         movies={recommendedMovies.slice(0, 10)}
                         likedMovies={likedMovies}
                         handleLike={handleLike}
-                        onCarouselInit={handleCarouselInit} // 그냥 함수 자체를 전달
-                        onCarouselScroll={handleCarouselScroll} // 그냥 함수 자체를 전달
+                        onCarouselInit={handleCarouselInit}
+                        onCarouselScroll={handleCarouselScroll}
                     />
                 ) : (
                     <div className="flex justify-center items-center h-40 text-gray-400">
@@ -425,7 +425,7 @@ const Detail = () => {
             </div>
 
             {/* 장르 전체보기 섹션 */}
-            <div className="px-4 mb-8 mt-15">
+            <div className="px-4 mb-8 mt-15 pt-20" ref={genreSectionRef}>
                 <div className="flex justify-between items-center mb-2 mx-10">
                     <h2 className="text-2xl font-bold">{currentGenre.name} 전체보기</h2>
                 </div>
@@ -451,19 +451,25 @@ const Detail = () => {
                     /* 그리드 영화 목록 */
                     <div className="mx-10">
                         <div className="grid grid-cols-6 gap-3">
-                            {allGenreMovies.map((movie) => (
-                                <div key={movie.id} className="flex-shrink-0 cursor-pointer"
-                                     onClick={()=>{handleMovieClick(movie.id)}}>
-                                    <MovieCard
-                                        width="100%"
-                                        poster={movie.poster || `https://picsum.photos/seed/genre${movie.id}/300/450`}
-                                        title={movie.title}
-                                        rating={Number(movie.value || 0)}
-                                        genres={movie.genres ? movie.genres.join(', ') : ''}
-                                        runningTime={movie.runningTime || 0}
-                                    />
-                                </div>
-                            ))}
+                            {allGenreMovies.map((movieData) => {
+                                // 기존 데이터 구조를 새로운 Movie 객체로 변환
+                                const movie = convertToMovieObject(movieData);
+
+                                return (
+                                    <div
+                                        key={movie.id}
+                                        className="flex-shrink-0 cursor-pointer"
+                                        onClick={() => handleMovieClick(movie.id)}
+                                    >
+                                        <MovieCard
+                                            width="100%"
+                                            movie={movie}
+                                            isLoggedIn={false}
+                                            iconType="star"
+                                        />
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 )}

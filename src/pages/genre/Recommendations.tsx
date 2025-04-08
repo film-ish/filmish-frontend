@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Link, useParams } from "react-router";
 import MovieCard from "../../components/movie/MovieCard";
+import { Movie } from "../../components/movie/MovieCard"; // Movie 타입 임포트
 import { useRecommendStore } from "../../store/recommendStore";
 import Button from "../../components/common/Button.tsx";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface MovieProps {
     id: number;
@@ -13,7 +14,7 @@ interface MovieProps {
     month: string;
     rating: number;
     image: string;
-    genres: string[];
+    genreNames?: string;
     runningTime: number;
 }
 
@@ -41,9 +42,24 @@ const Recommendations = () => {
     const currentGenre = genres.find(g => g.id === parsedGenreId);
     const genreName = currentGenre?.name || `장르 ${parsedGenreId}`;
     const navigate = useNavigate();
+
     const handleMovieClick = (movieId: number) => {
         navigate(`/movies/${movieId}`);
     }
+
+    // MovieProps 타입에서 Movie 타입으로 변환하는 함수
+    const convertToMovieObject = (movieData: MovieProps): Movie => {
+        return {
+            id: movieData.id,
+            title: movieData.title,
+            posterPath: movieData.image,
+            rating: Number(movieData.rating || 0),
+            likes: 0, // 기본값
+            genres: movieData.genreNames || `${movieData.year} • ${movieData.month}`,
+            runningTime: movieData.runningTime || 0,
+            pubDate: `${movieData.year || ''}-${movieData.month || ''}`
+        };
+    };
 
     // 추천 영화 데이터 로드 함수
     const loadRecommendedMovies = useCallback(async () => {
@@ -90,7 +106,8 @@ const Recommendations = () => {
                         month: '5월',
                         rating: Number((4 + Math.random()).toFixed(1)),
                         image: `https://picsum.photos/seed/rec${parsedGenreId}${i}/300/450`,
-                        genres: genreName,
+                        genreNames: genreName,
+                        runningTime: 0
                     });
                 }
                 setRecommendedMovies(fallbackMovies);
@@ -200,7 +217,7 @@ const Recommendations = () => {
                     ) : (
                         <Button
                             key={`page-${page}`}
-                            variant={page === currentPage ? 'filled' : 'text'}
+                            variant={page === currentPage ? 'filled' : 'outlined'} // 'text'에서 'outlined'로 변경
                             bgColor={page === currentPage ? 'cherry-blush' : 'black'}
                             textColor="white"
                             className={`text-sm mx-1 ${page === currentPage ? 'font-bold' : ''}`}
@@ -227,9 +244,9 @@ const Recommendations = () => {
     };
 
     return (
-        <div className="bg-black text-white min-h-screen pb-16">
+        <div className=" text-white min-h-screen pb-16">
             {/* 헤더 */}
-            <div className="sticky top-0 bg-black z-10 p-4 border-b border-gray-8 mx-5">
+            <div className="sticky top-0  z-10 p-4 border-b border-gray-8 mx-5">
                 <div className="flex items-center mx-4">
                     <Link to={`/genre/${parsedGenreId}`} className="text-white mr-3">
                         <ChevronLeft size={24} />
@@ -265,19 +282,25 @@ const Recommendations = () => {
                     /* 그리드 영화 목록 (6개씩 4행) */
                     <div className="mx-10">
                         <div className="grid grid-cols-6 gap-3">
-                            {currentPageMovies.map((movie) => (
-                                <div key={movie.id} className="flex-shrink-0 cursor-pointer"
-                                     onClick={()=>{handleMovieClick(movie.id)}}>
-                                    <MovieCard
-                                        width="100%"
-                                        poster={movie.image}
-                                        title={movie.title}
-                                        rating={movie.rating}
-                                        genres={movie.genreNames || `${movie.year} • ${movie.month}`}
-                                        runningTime={movie.runningTime}
-                                    />
-                                </div>
-                            ))}
+                            {currentPageMovies.map((movieData) => {
+                                // MovieData를 MovieCard가 필요로 하는 형식으로 변환
+                                const movie = convertToMovieObject(movieData);
+
+                                return (
+                                    <div
+                                        key={movie.id}
+                                        className="flex-shrink-0 cursor-pointer"
+                                        onClick={() => handleMovieClick(movie.id)}
+                                    >
+                                        <MovieCard
+                                            width="100%"
+                                            movie={movie}
+                                            isLoggedIn={false}
+                                            iconType="star"
+                                        />
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 )}
