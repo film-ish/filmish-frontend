@@ -5,10 +5,20 @@ export const userService = {
     const { data } = apiClient.get(`/users?nickname=${nickname}`);
     return data;
   },
-  async updateProfile(userId: string, nickname: string, image: File) {
+
+  async getProfile(userId: number) {
+    const { data } = await apiClient.get(`/users/${userId}`);
+    return data;
+  },
+
+  async updateProfile(userId: number, nickname: string, image: File) {
+    console.log(userId, nickname, image);
     const formData = new FormData();
     formData.append('nickname', nickname);
-    formData.append('image', image);
+
+    if (image) {
+      formData.append('image', image);
+    }
 
     const { data } = await apiClient.patch(`/users/${userId}`, formData, {
       headers: {
@@ -18,7 +28,18 @@ export const userService = {
 
     return data;
   },
-  async getMyReviewList(userId: string, page: number, size?: number = 10) {
+
+  async deleteAccount(userId: number) {
+    const { data } = await apiClient.delete(`/users/${userId}`);
+    return data;
+  },
+
+  async getMyRatings(userId: number, page: number, size?: number = 20) {
+    const { data } = await apiClient.get(`/users/${userId}/ratings?pageNum=${page}&pageSize=${size}`);
+    return data;
+  },
+
+  async getMyReviewList(userId: number, page: number, size?: number = 10) {
     // const { data } = await apiClient.get(`/users/${userId}/reviews?page=${page}&size=${size}`);
 
     const data = {
@@ -67,6 +88,7 @@ export const userService = {
 
     return data;
   },
+
   async getMyQnaList(userId: string, page: number, size?: number = 10) {
     // const { data } = await apiClient.get(`/users/${userId}/qna?page=${page}&size=${size}`);
 

@@ -8,12 +8,12 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { idbStorage } from '../lib/idbStorage'; // 경로 확인: lib 폴더 아래에 idbStorage.ts가 있어야 합니다.
 
 // 사용자 상태(State)의 타입을 정의하는 인터페이스입니다.
-interface UserState {
-  id: number | null;          // 사용자 ID (로그인 전에는 null)
-  email: string | null;       // 사용자 이메일 (로그인 전에는 null)
-  nickname: string | null;    // 사용자 닉네임 (로그인 전에는 null)
-  headImage: string | null;   // 사용자 프로필 이미지 URL (로그인 전에는 null)
-  isLoggedIn: boolean;        // 로그인 상태 여부
+export interface UserState {
+  id: number | null; // 사용자 ID (로그인 전에는 null)
+  email: string | null; // 사용자 이메일 (로그인 전에는 null)
+  nickname: string | null; // 사용자 닉네임 (로그인 전에는 null)
+  headImage: string | null; // 사용자 프로필 이미지 URL (로그인 전에는 null)
+  isLoggedIn: boolean; // 로그인 상태 여부
   // 사용자 정보를 업데이트하는 액션(함수) 타입 정의
   setUser: (user: { id: number; email: string; nickname: string; headImage: string | null }) => void;
   // 사용자 정보를 초기화(로그아웃)하는 액션(함수) 타입 정의
@@ -27,10 +27,10 @@ export const useUserStore = create<UserState>()(
     // set 함수를 인자로 받는 콜백 함수입니다. set 함수는 상태를 업데이트하는 데 사용됩니다.
     (set) => ({
       // --- 초기 상태 정의 ---
-      id: null,          // 초기 사용자 ID는 null
-      email: null,       // 초기 이메일은 null
-      nickname: null,    // 초기 닉네임은 null
-      headImage: null,   // 초기 프로필 이미지는 null
+      id: null, // 초기 사용자 ID는 null
+      email: null, // 초기 이메일은 null
+      nickname: null, // 초기 닉네임은 null
+      headImage: null, // 초기 프로필 이미지는 null
       isLoggedIn: false, // 초기 로그인 상태는 false
 
       // --- 액션(상태 변경 함수) 정의 ---
@@ -39,28 +39,30 @@ export const useUserStore = create<UserState>()(
        * 사용자 정보를 업데이트하고 로그인 상태로 변경하는 액션입니다.
        * @param user - 로그인 시 서버 등에서 받아온 사용자 정보 객체
        */
-      setUser: (user) => set({
-        // 전달받은 user 객체의 속성으로 상태를 업데이트합니다.
-        id: user.id,
-        email: user.email,
-        nickname: user.nickname,
-        headImage: user.headImage,
-        // 로그인 상태를 true로 변경합니다.
-        isLoggedIn: true
-      }),
+      setUser: (user) =>
+        set({
+          // 전달받은 user 객체의 속성으로 상태를 업데이트합니다.
+          id: user.id,
+          email: user.email,
+          nickname: user.nickname,
+          headImage: user.headImage,
+          // 로그인 상태를 true로 변경합니다.
+          isLoggedIn: true,
+        }),
 
       /**
        * 사용자 정보를 초기화하고 로그아웃 상태로 변경하는 액션입니다.
        */
-      clearUser: () => set({ 
-        // 모든 사용자 관련 상태를 초기값으로 되돌립니다.
-        id: null, 
-        email: null, 
-        nickname: null, 
-        headImage: null, 
-        // 로그인 상태를 false로 변경합니다.
-        isLoggedIn: false 
-      }),
+      clearUser: () =>
+        set({
+          // 모든 사용자 관련 상태를 초기값으로 되돌립니다.
+          id: null,
+          email: null,
+          nickname: null,
+          headImage: null,
+          // 로그인 상태를 false로 변경합니다.
+          isLoggedIn: false,
+        }),
     }),
     // --- persist 미들웨어 설정 객체 ---
     {
@@ -80,7 +82,7 @@ export const useUserStore = create<UserState>()(
 
       // --- (선택적) 부분 저장 설정 ---
       /**
-       * 저장할 상태의 특정 부분만 선택할 수 있습니다. 
+       * 저장할 상태의 특정 부분만 선택할 수 있습니다.
        * 주석 해제 시 아래 명시된 속성들만 IndexedDB에 저장됩니다.
        * 기본적으로는 모든 상태가 저장됩니다.
        */
@@ -91,6 +93,6 @@ export const useUserStore = create<UserState>()(
       //   headImage: state.headImage,
       //   isLoggedIn: state.isLoggedIn,
       // }),
-    }
-  )
+    },
+  ),
 );
