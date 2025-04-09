@@ -12,6 +12,7 @@ interface Movie {
   genre: Array<{ id: number; name: string }>;
   runningTime: number;
   pubDate: string;
+  stillcut: string | null;
 }
 
 interface PersonalRecommendProps {
@@ -57,7 +58,7 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
                 movie={{
                   id: movie.id,
                   title: movie.title,
-                  posterPath: movie.img || '/no-poster-long.png',
+                  posterPath: movie.img || movie.stillcut || '/no-poster-long.png',
                   rating: movie.rates || 0,
                   likes: 0,
                   genres: movie.genre ? movie.genre.map(g => g.name) : [],
