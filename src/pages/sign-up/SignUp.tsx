@@ -149,6 +149,9 @@ const SignUp = () => {
     data.append('birth', formData.birth);
     if (formData.image) {
       data.append('image', formData.image);
+    } else {
+      // 빈 필드를 명시적으로 추가
+      data.append('image', 'null');
     }
     
     if (emailChecked !== true || nicknameChecked !== true) {
