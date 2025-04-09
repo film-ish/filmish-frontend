@@ -114,7 +114,9 @@ const Header = () => {
                   <Link
                     onClick={() => {
                       setIsProfileModalOpen(false);
-                      // navigate(ROUTES.MY_PAGE.ROOT);
+                      setTimeout(() => {
+                        navigate(ROUTES.MY_PAGE.ROOT);
+                      }, 0);
                     }}
                     to={ROUTES.MY_PAGE.ROOT}
                     className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6">
@@ -156,52 +158,61 @@ const Header = () => {
           똑똑
         </Link>
 
-        {/* 장르별 추천, 평점별 영화, 영화인과의 대화, 독립영화관 */}
-        <ul className="flex items-center gap-10 font-extralight">
-          {commonNavItems.map((item) => (
-            <NavItem key={item.children} pathname={item.pathname}>
-              {item.children}
-            </NavItem>
-          ))}
-        </ul>
+        {/* 장르별 추천, 평점별 영화, 영화인과의 대화, 독립영화관 - 로그인한 사용자만 볼 수 있음 */}
+        {user.isLoggedIn ? (
+          <ul className="flex items-center gap-10 font-extralight">
+            {commonNavItems.map((item) => (
+              <NavItem key={item.children} pathname={item.pathname}>
+                {item.children}
+              </NavItem>
+            ))}
+          </ul>
+        ) : (
+          <div className="text-gray-400 text-sm">
+            로그인하여 더 많은 기능을 이용하세요
+          </div>
+        )}
 
         {/* 검색, 알림, 프로필 */}
         <ul className="flex items-center">
-          {/* 검색 아이콘 및 검색창 */}
-          <li className="relative mr-4 flex items-center justify-center w-10 h-10">
-            <div
-              className={`absolute right-0 flex items-center transition-all duration-300 ${isSearchOpen ? 'w-[200px]' : 'w-[30px]'}`}>
-              {isSearchOpen ? (
-                <form onSubmit={handleSearch} className="flex items-center bg-gray-5 rounded-full overflow-hidden w-64">
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder="통합 검색..."
-                    className="bg-transparent text-white py-2 px-4 w-full outline-none"
-                  />
+          {/* 검색 아이콘 및 검색창 - 로그인한 사용자만 사용 가능 */}
+          {user.isLoggedIn ? (
+            <li className="relative mr-4 flex items-center justify-center w-10 h-10">
+              <div className={`absolute right-0 flex items-center transition-all duration-300 ${isSearchOpen ? 'w-[200px]' : 'w-[30px]'}`}>
+                {isSearchOpen ? (
+                  <form
+                    onSubmit={handleSearch}
+                    className="flex items-center bg-gray-5 rounded-full overflow-hidden w-64">
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchKeyword}
+                      onChange={(e) => setSearchKeyword(e.target.value)}
+                      placeholder="통합 검색..."
+                      className="bg-transparent text-white py-2 px-4 w-full outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={toggleSearch}
+                      className="p-2 text-white hover:text-gray-300 transition-colors">
+                      <X size={20} />
+                    </button>
+                  </form>
+                ) : (
                   <button
-                    type="button"
                     onClick={toggleSearch}
-                    className="p-2 text-white hover:text-gray-300 transition-colors">
-                    <X size={20} />
+                    className="p-2 text-white hover:text-gray-300 transition-colors flex items-center justify-center">
+                    <Search size={24} />
                   </button>
-                </form>
-              ) : (
-                <button
-                  onClick={toggleSearch}
-                  className="p-2 text-white hover:text-gray-300 transition-colors flex items-center justify-center">
-                  <Search size={24} />
-                </button>
-              )}
-            </div>
-          </li>
+                )}
+              </div>
+            </li>
+          ) : null}
 
           {/* 프로필 */}
           {userNavItems.map((item) =>
             user.isLoggedIn ? (
-              <div key={item.pathname} pathname={item.pathname}>
+              <div key={item.pathname}>
                 {item.children}
               </div>
             ) : (

@@ -138,22 +138,6 @@ const Main = () => {
         navigate(`/movies/${movieId}`);
     };
 
-    // 영화카드 직접 클릭 시에는 MovieCard 내부 함수가 실행되지 않도록
-    const handleCardWrapperClick = (e: React.MouseEvent, movieId: string) => {
-        // Heart 아이콘이나 그 부모 버튼을 클릭한 경우는 처리하지 않음
-        if (
-            e.target instanceof Element &&
-            (e.target.tagName === 'svg' ||
-                e.target.tagName === 'path' ||
-                e.target.closest('button'))
-        ) {
-            return;
-        }
-
-        // 그 외의 경우 영화 상세 페이지로 이동
-        handleMovieClick(parseInt(movieId));
-    };
-
     // 장르 문자열 생성 함수
     const formatGenre = (categories: string[]): string => {
         if (!categories || categories.length === 0) {
@@ -254,16 +238,41 @@ const Main = () => {
                                 <div
                                     key={movie.id}
                                     className="flex-shrink-0 relative rounded-lg overflow-hidden"
-                                    onClick={(e) => handleCardWrapperClick(e, movieId)}
+                                    onClick={(e) => {
+                                        // 이벤트 전파 중단
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        
+                                        // Heart 아이콘이나 그 부모 버튼을 클릭한 경우는 처리하지 않음
+                                        if (
+                                            e.target instanceof Element &&
+                                            (e.target.tagName === 'svg' ||
+                                                e.target.tagName === 'path' ||
+                                                e.target.closest('button'))
+                                        ) {
+                                            return;
+                                        }
+                                        
+                                        // 그 외의 경우 좋아요 토글
+                                        toggleLike(movieId);
+                                    }}
                                 >
-                                    <MovieCard
-                                        width="100%"
-                                        movie={movie}
-                                        isLoggedIn={true}
-                                        iconType="heart"
-                                        isLiked={isLiked}
-                                        onLike={handleLike}
-                                    />
+                                    <div 
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        }}
+                                        style={{ pointerEvents: 'none' }}
+                                    >
+                                        <MovieCard
+                                            width="100%"
+                                            movie={movie}
+                                            isLoggedIn={true}
+                                            iconType="heart"
+                                            isLiked={isLiked}
+                                            onLike={handleLike}
+                                        />
+                                    </div>
                                     {/* 마우스 호버 시 오버레이 */}
                                     <div
                                         className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>

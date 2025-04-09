@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { apiClient } from '../instance/client';
 
 export const logout = async () => {
-  const response = await axios.post('/users/logout');
+  const response = await apiClient.post('/users/logout');
   return response.data;
 
 };

@@ -2,16 +2,15 @@ import { useRef } from 'react';
 import { useDraggable } from '../../hooks/useDraggable';
 
 interface FilmographyItem {
-  title: string;
-  date: string;
-  posterUrl?: string;
+  movieName: string;
+  movieId: number;
+  pubDate?: string;
 }
 
 interface FilmographyProps {
-  items: FilmographyItem[];
-}
+items?: FilmographyItem[];}
 
-const Filmography = ({ items }: FilmographyProps) => {
+const Filmography = ({ items = [] }: FilmographyProps) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const { onMouseDown, onMouseMove, onMouseUp, onMouseLeave } = useDraggable(scrollerRef);
 
@@ -30,13 +29,13 @@ const Filmography = ({ items }: FilmographyProps) => {
           {items.map((film, index) => (
             <div key={index} className="w-30 flex-[0_0_auto] aspect-[3/4] bg-gray-7 rounded-lg overflow-hidden">
               <div className="w-full h-full relative group cursor-pointer">
-                {film.posterUrl && (
-                  <img src={film.posterUrl} alt={film.title} className="w-full h-full object-cover" />
+                {film.movieId && (
+                  <img src={`https://image.tmdb.org/t/p/w500/${film.movieId}`} alt={film.movieName} className="w-full h-full object-cover" />
                 )}
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <p className="text-lg font-bold text-white">{film.title}</p>
-                  <p className="text-xs font-light text-gray-5">{film.date}</p>
+                  <p className="text-lg font-bold text-white">{film.movieName}</p>
+                  <p className="text-xs font-light text-gray-5">{film.pubDate?.slice(0, 4) || ''}</p>
                 </div>
               </div>
             </div>

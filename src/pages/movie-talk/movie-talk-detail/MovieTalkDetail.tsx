@@ -1,123 +1,85 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Profile from '../../../components/movie-talk-detail/Profile';
 import QnABoard from '../../../components/movie-talk-detail/QnABoard';
 import Filmography from '../../../components/movie-talk-detail/Filmography';
-
-interface Comment {
-  id: number;
-  author: string;
-  content: string;
-  timestamp: string;
-  replies?: Comment[];
-}
+import { useParams } from 'react-router';
+import { detailActors } from '../../../api/actor/getActor';
 
 interface FilmographyItem {
-  title: string;
-  date: string;
-  posterUrl?: string;
+  movieName: string;
+  movieId: number;
+  pubDate?: string;
+}
+
+interface ActorDetail {
+  id: number;
+  userId: number;
+  name: string;
+  image?: string;
+  qnaCnt: number;
+  filmography?: FilmographyItem[];
 }
 
 const MovieTalkDetail = () => {
-  const actorName = '우성윤';
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: 1,
-      author: '김덕윤',
-      content: '안녕하세요?!',
-      timestamp: '23시간 전',
-      replies: [
-        {
-          id: 2,
-          author: '우성윤',
-          content: '나는 영화 좋아해',
-          timestamp: '23시간 전',
-        },
-      ],
-    },
-    {
-      id: 3,
-      author: '우성윤',
-      content: '안녕 못잡니다 ㅋㅋ',
-      timestamp: '23시간 전',
-      replies: [],
-    },
-    {
-      id: 4,
-      author: '김덕윤',
-      content: 'ㅋㅋ 화이팅',
-      timestamp: '23시간 전',
-      replies: [],
-    },
-  ]);
+  const { makerId } = useParams<{ makerId: string }>();
+  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [actorDetail, setActorDetail] = useState<ActorDetail | null>(null);
 
-  const filmography: FilmographyItem[] = [
-    {
-      title: '정욱',
-      date: '2024.12.01',
-      posterUrl: '/images/movie1.jpg',
-    },
-    {
-      title: '정욱',
-      date: '2024.12.01',
-      posterUrl: '/images/movie1.jpg',
-    },
-    {
-      title: '정욱',
-      date: '2024.12.01',
-      posterUrl: '/images/movie1.jpg',
-    },
-    {
-      title: '정욱',
-      date: '2024.12.01',
-      posterUrl: '/images/movie1.jpg',
-    },
-
-    // 추가 영화 데이터...
-  ];
-
-  const handleAddComment = (content: string) => {
-    const newComment: Comment = {
-      id: comments.length + 1,
-      author: '사용자',
-      content,
-      timestamp: '방금 전',
-      replies: [],
-    };
-    setComments([...comments, newComment]);
-  };
-
-  const handleAddReply = (commentId: number, content: string) => {
-    const newReply: Comment = {
-      id: Math.max(...comments.flatMap((c) => [c.id, ...(c.replies?.map((r) => r.id) || [])])) + 1,
-      author: '사용자',
-      content,
-      timestamp: '방금 전',
-    };
-
-    setComments(
-      comments.map((comment) => {
-        if (comment.id === commentId) {
-          return {
-            ...comment,
-            replies: [...(comment.replies || []), newReply],
-          };
+  // 배우 상세 정보 가져오기
+  useEffect(() => {
+    const fetchActorDetail = async () => {
+      if (!makerId) {
+        setLoading(false);
+        return;
+      }
+      try {
+        setLoading(true);
+        const data = await detailActors(Number(makerId));
+        
+        // API 응답이 유효한지 확인
+        if (!data) {
+          throw new Error('배우 정보를 찾을 수 없습니다.');
         }
-        return comment;
-      }),
-    );
-  };
+        
+        // 필수 필드가 있는지 확인
+        if (data.id === undefined || data.userId === undefined || data.name === undefined) {
+          console.error('API 응답 형식 오류:', data);
+          throw new Error('배우 정보 형식이 올바르지 않습니다.');
+        }
+        
+        setActorDetail(data);
+      } catch (err) {
+        console.error('배우 정보를 불러오는데 실패했습니다:', err);
+        setError('배우 정보를 불러오는데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActorDetail();
+  }, [makerId]);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+  }
 
   return (
     <div className="bg-gray-8">
       <div className="flex h-[calc(100vh-5.5rem)]">
         <div className="w-[40%] flex flex-col mr-2">
-          <div className="flex-1 flex flex-col">
-            <Profile name={actorName} />
-            <Filmography items={filmography} />
+          <div className="flex-1 flex flex-col font-HakgyoansimChulseokbuTTF-B">
+            <Profile name={actorDetail?.name || '이름 없음'} profileImage={actorDetail?.image || '/no-poster.png'} />
+            <Filmography items={actorDetail?.filmography || []} />
           </div>
         </div>
         <div className="w-[60%] ml-2">
-          <QnABoard comments={comments} onAddComment={handleAddComment} onAddReply={handleAddReply} />
+          <QnABoard makerId={Number(makerId)} />
         </div>
       </div>
     </div>

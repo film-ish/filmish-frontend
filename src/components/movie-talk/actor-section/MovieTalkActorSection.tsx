@@ -178,7 +178,6 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
   }
 
   const displayActors = searchTerm.length >= 2 && searchResults ? searchResults : actors;
-  console.log('표시할 배우 데이터:', displayActors);
 
   return (
     <div className="relative w-full mx-auto px-4">
@@ -219,10 +218,12 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
                     key={`actor-${actor.id}-${index}`} 
                     className={`embla__slide relative flex-[0_0_400px] actor-card ${index === centerIndex ? 'center' : ''}`}
                     data-index={index}
-                    onClick={() => handleSlideClick(index)}
-                    style={{ cursor: 'pointer' }}
                   >
-                    <MovieTalkActorCard actor={actor} />
+                    <MovieTalkActorCard 
+                      actor={actor} 
+                      isCenter={index === centerIndex} 
+                      onCardClick={() => handleSlideClick(index)}
+                    />
                     <div 
                       className={`mt-4 transition-all duration-300 ${
                         index === centerIndex 
