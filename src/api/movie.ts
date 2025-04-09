@@ -24,6 +24,8 @@ export const movieService = {
     return data;
   },
 
+  async deleteRating(ratingId: number) {},
+
   async updateRating(ratingId: number, rating: number, content?: string) {
     const { data } = await apiClient.put(`/rates/${ratingId}`, {
       value: rating,
@@ -32,8 +34,15 @@ export const movieService = {
     return data;
   },
 
-  async getMovieRatings(movieId: string, page: number, size?: number = 100) {
+  async getMovieRatings(movieId: number, page: number, size?: number = 100) {
     const { data } = await apiClient.get(`/movies/${movieId}/ratings?page=${page}&size=${size}`);
+    return data;
+  },
+
+  async likeMovie(movieId: number) {
+    const { data } = await apiClient.post(`/movies/likes`, {
+      indieId: movieId,
+    });
     return data;
   },
 };

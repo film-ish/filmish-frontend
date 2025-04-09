@@ -24,8 +24,9 @@ import RatingsPage from '../pages/my-page/RatingsPage.tsx';
 import QnaPage from '../pages/my-page/QnaPage.tsx';
 import LikePage from '../pages/my-page/LikePage.tsx';
 import MyReviewsPage from '../pages/my-page/ReviewsPage.tsx';
-import MyCommentsPage from '../pages/my-page/CommentsPage.tsx';
-import Rate from "../pages/rate";
+import Rate from '../pages/rate';
+import ReviewCommentsPage from '../pages/my-page/ReviewCommentsPage.tsx';
+import QnaCommentsPage from '../pages/my-page/QnaCommentsPage.tsx';
 
 const AppRoutes = () => {
   return (
@@ -62,7 +63,13 @@ const AppRoutes = () => {
           <Route path={ROUTES.MY_PAGE.RATINGS} element={<RatingsPage />} />
           <Route path={ROUTES.MY_PAGE.REVIEWS} element={<MyReviewsPage />} />
           <Route path={ROUTES.MY_PAGE.QNA} element={<QnaPage />} />
-          <Route path={ROUTES.MY_PAGE.COMMENTS} element={<MyCommentsPage />} />
+
+          <Route path={ROUTES.MY_PAGE.COMMENTS.ROOT}>
+            <Route index element={<Navigate to={ROUTES.MY_PAGE.COMMENTS.REVIEW} replace />} />
+            <Route path={ROUTES.MY_PAGE.COMMENTS.REVIEW} element={<ReviewCommentsPage />} />
+            <Route path={ROUTES.MY_PAGE.COMMENTS.QNA} element={<QnaCommentsPage />} />
+          </Route>
+
           <Route path={ROUTES.MY_PAGE.LIKES} element={<LikePage />} />
         </Route>
         <Route path={ROUTES.RATES} element={<Rate />} />

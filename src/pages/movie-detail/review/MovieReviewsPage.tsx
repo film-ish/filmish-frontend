@@ -1,6 +1,6 @@
 import { Outlet, useParams } from 'react-router';
 import useReviews from '../../../hooks/review/useReviews';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import Button from '../../../components/common/Button';
 import ReviewCard from '../../../components/movie-detail/reviews/ReviewCard';
 import ReviewForm from '../../../components/movie-detail/reviews/ReviewForm';
@@ -8,7 +8,7 @@ import useReview from '../../../hooks/review/useReview';
 
 const MovieReviewsPage = () => {
   const { movieId, reviewId } = useParams();
-  const { reviews, getMoreReviews } = useReviews(movieId);
+  const { reviews } = useReviews(movieId);
 
   const { createReview } = useReview(movieId, reviewId);
 
@@ -42,12 +42,12 @@ const MovieReviewsPage = () => {
           <div className="w-full h-[1px] bg-gray-6" />
 
           {reviews.pages.map((page) => {
-            return page.map((review, index) => {
+            return page?.map((review, index) => {
               return (
-                <>
+                <Fragment key={review.id}>
                   <ReviewCard key={review.id} review={review} />
                   {index !== page.length - 1 && <div className="w-full h-[1px] bg-gray-6" />}
-                </>
+                </Fragment>
               );
             });
           })}

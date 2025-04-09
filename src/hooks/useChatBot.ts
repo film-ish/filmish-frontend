@@ -38,7 +38,7 @@ const useChatBot = (userId: number) => {
 
   useEffect(() => {
     if (!userId) {
-      alert('사용자 ID를 입력하세요');
+      alert('로그인 상태를 확인해주세요.');
       return;
     }
 

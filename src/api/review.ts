@@ -2,8 +2,6 @@ import { apiClient } from './instance/client';
 
 export const reviewService = {
   async createReview(movieId, title, content, images?: File[]) {
-    console.log(movieId, title, content, images);
-
     const formData = new FormData();
     formData.append('indieId', movieId);
     formData.append('title', title);

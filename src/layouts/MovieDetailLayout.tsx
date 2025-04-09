@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Outlet, useParams } from 'react-router';
+import { Outlet, useLocation, useParams } from 'react-router';
 import MoviePoster from '../components/movie/MoviePoster';
 import { Star } from 'lucide-react';
 import Tag from '../components/common/Tag';
@@ -10,11 +10,14 @@ import { movieService } from '../api/movie';
 const MovieDetailLayout = () => {
   const movieId = Number(useParams().movieId);
 
+  const location = useLocation();
+
   const movieQuery = useQuery({
     queryKey: ['movie', movieId],
     queryFn: async () => {
       const response = await movieService.getMovieDetail(movieId);
 
+      console.log(response);
       const posters = response.data.posters?.map((poster) => poster.replace('망함', ''));
 
       return {
@@ -39,6 +42,11 @@ const MovieDetailLayout = () => {
     },
   });
 
+  const likeMovie = async () => {
+    const response = await movieService.likeMovie(movieId);
+    console.log(response);
+  };
+
   return (
     <div
       className="relative w-screen h-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] -mt-[3.75rem] p-[70px] bg-cover bg-center overflow-hidden"
@@ -54,7 +62,7 @@ const MovieDetailLayout = () => {
             posterSrc={movieQuery.data?.posters?.[0] || movieQuery.data?.stillcuts?.[0]}
             width={250}
             liked={false}
-            onLike={() => {}}
+            onLike={likeMovie}
           />
 
           <div>
@@ -84,7 +92,11 @@ const MovieDetailLayout = () => {
         {/* 우측 화면 */}
         <div className="w-full mr-[-70px] mb-[-70px]">
           <MovieDetailTap />
-          <div className="relative flex-1 h-[calc(100vh-110px)] p-6 bg-gray-8/85 overflow-x-hidden movie-detail-scrollbar">
+          <div
+            className={
+              'relative flex-1 h-[calc(100vh-110px)] p-6 bg-gray-8/85 overflow-x-hidden movie-detail-scrollbar ' +
+              (location.pathname.split('/reviews/').length === 2 ? 'overflow-y-hidden' : '')
+            }>
             <Outlet context={movieQuery.data} />
           </div>
         </div>

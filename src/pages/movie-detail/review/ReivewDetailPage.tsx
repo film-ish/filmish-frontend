@@ -31,7 +31,7 @@ const ReviewDetailPage = () => {
   return (
     <div
       className={
-        'absolute top-0 left-0 w-full h-full flex flex-col justify-end overflow-x-hidden ' +
+        'fixed bottom-0 right-0 w-5/12 h-[calc(100vh-110px)] flex flex-col justify-end overflow-x-hidden ' +
         (animation === 'in' ? 'animate-slidein' : 'animate-slideout')
       }>
       <div
