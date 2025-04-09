@@ -118,7 +118,7 @@ const ReviewSection = ({ review, updateReview, deleteReview }: ReviewSectionProp
               onChange={onChangeReviewContent}
             />
           ) : (
-            review.content
+            <span className="whitespace-pre-line">{review.content}</span>
           )}
         </div>
       </div>
