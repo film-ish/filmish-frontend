@@ -36,6 +36,9 @@ const LikePage = () => {
     queryKey: ['my-like-list', user.id],
     queryFn: async ({ pageParam }) => {
       const response = await userService.getMyLikeList(user.id, pageParam);
+
+      console.log('response', response);
+
       return response.data;
     },
     initialPageParam: 0,
@@ -50,8 +53,8 @@ const LikePage = () => {
   });
 
   const { mutate: likeMovie } = useMutation({
-    mutationFn: async (movieId: number) => {
-      const response = await movieService.likeMovie(movieId);
+    mutationFn: async (movieId: number, like: boolean) => {
+      const response = await movieService.likeMovie(movieId, like);
       return response;
     },
     onSuccess: (_, movieId) => {
@@ -66,12 +69,21 @@ const LikePage = () => {
               if (movie.id === movieId) {
                 return {
                   ...movie,
-                  liked: !movie.liked,
+                  like: !movie.like,
                 };
               }
               return movie;
             }),
           })),
+        };
+      });
+
+      queryClient.setQueryData(['movie', movieId], (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          like: !oldData.like,
         };
       });
     },
@@ -97,11 +109,11 @@ const LikePage = () => {
                   />
 
                   <LikeButton
-                    liked={movie.liked}
+                    liked={movie.like}
                     movieId={movie.id}
                     onClick={(e) => {
                       e.preventDefault();
-                      likeMovie(movie.id);
+                      likeMovie(movie.id, movie.like);
                     }}
                   />
                 </div>

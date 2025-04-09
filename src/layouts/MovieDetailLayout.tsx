@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Outlet, useLocation, useParams } from 'react-router';
 import MoviePoster from '../components/movie/MoviePoster';
 import { Star } from 'lucide-react';
@@ -6,10 +6,12 @@ import Tag from '../components/common/Tag';
 import MovieDetailTap from '../components/movie-detail/MovieDetailTap';
 import formatRating from '../utils/rating';
 import { movieService } from '../api/movie';
+import { useUserStore } from '../store/userStore';
 
 const MovieDetailLayout = () => {
   const movieId = Number(useParams().movieId);
-
+  const queryClient = useQueryClient();
+  const user = useUserStore();
   const location = useLocation();
 
   const movieQuery = useQuery({
@@ -25,7 +27,7 @@ const MovieDetailLayout = () => {
         posters,
       };
     },
-    staleTime: 10 * 1000,
+    staleTime: 1 * 1000,
     enabled: !!movieId,
     placeholderData: {
       id: movieId,
@@ -39,13 +41,46 @@ const MovieDetailLayout = () => {
       stillcuts: [],
       makers: [],
       keywords: '',
+      like: false,
     },
   });
 
-  const likeMovie = async () => {
-    const response = await movieService.likeMovie(movieId);
-    console.log(response);
-  };
+  const { mutate: likeMovie } = useMutation({
+    mutationFn: async () => {
+      const response = await movieService.likeMovie(movieId, !movieQuery.data?.like);
+      console.log(response);
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(['my-like-list', user.id], (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            content: page.content.map((movie: LikedMovie) => {
+              if (movie.id === movieId) {
+                return {
+                  ...movie,
+                  like: !movie.like,
+                };
+              }
+              return movie;
+            }),
+          })),
+        };
+      });
+
+      queryClient.setQueryData(['movie', movieId], (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          like: !oldData.like,
+        };
+      });
+    },
+  });
 
   return (
     <div
@@ -61,7 +96,7 @@ const MovieDetailLayout = () => {
           <MoviePoster
             posterSrc={movieQuery.data?.posters?.[0] || movieQuery.data?.stillcuts?.[0]}
             width={250}
-            liked={false}
+            liked={movieQuery.data?.like}
             onLike={likeMovie}
           />
 

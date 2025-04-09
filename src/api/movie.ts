@@ -39,10 +39,23 @@ export const movieService = {
     return data;
   },
 
-  async likeMovie(movieId: number) {
-    const { data } = await apiClient.post(`/movies/likes`, {
-      indieId: movieId,
-    });
+  async likeMovie(movieId: number, like: boolean) {
+    if (like) {
+      const { data } = await apiClient.post(`/movies/likes`, {
+        indieId: movieId,
+      });
+
+      console.log('data', data);
+
+      return data;
+    } else {
+      const { data } = await apiClient.delete(`/movies/likes/${movieId}`);
+
+      console.log('data', data);
+
+      return data;
+    }
+
     return data;
   },
 };
