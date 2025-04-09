@@ -103,34 +103,29 @@ const Header = () => {
           pathname: '#',
           children: (
             <div className="relative">
-              <div 
-                onClick={toggleProfileModal}
-                className="cursor-pointer"
-              >
+              <div onClick={toggleProfileModal} className="cursor-pointer">
                 <ProfileImage src={user.headImage || '/no-poster.png'} />
               </div>
-              
+
               {isProfileModalOpen && (
-                <div 
+                <div
                   ref={profileModalRef}
-                  className="absolute right-0 mt-2 w-48 bg-gray-7 rounded-lg shadow-lg py-2 z-50"
-                >
-                  <button 
+                  className="absolute right-0 mt-2 w-48 bg-gray-7 rounded-lg shadow-lg py-2 z-50">
+                  <Link
                     onClick={() => {
                       setIsProfileModalOpen(false);
                       setTimeout(() => {
                         navigate(ROUTES.MY_PAGE.ROOT);
                       }, 0);
                     }}
-                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6"
-                  >
+                    to={ROUTES.MY_PAGE.ROOT}
+                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6">
                     <User className="w-4 h-4 mr-2" />
                     마이페이지
-                  </button>
-                  <button 
+                  </Link>
+                  <button
                     onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6"
-                  >
+                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-6">
                     <LogOut className="w-4 h-4 mr-2" />
                     로그아웃
                   </button>
@@ -215,11 +210,17 @@ const Header = () => {
           ) : null}
 
           {/* 프로필 */}
-          {userNavItems.map((item) => (
-            <NavItem key={item.pathname} pathname={item.pathname}>
-              {item.children}
-            </NavItem>
-          ))}
+          {userNavItems.map((item) =>
+            user.isLoggedIn ? (
+              <div key={item.pathname}>
+                {item.children}
+              </div>
+            ) : (
+              <NavItem key={item.pathname} pathname={item.pathname}>
+                {item.children}
+              </NavItem>
+            ),
+          )}
         </ul>
       </div>
     </nav>

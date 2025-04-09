@@ -1,6 +1,5 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { movieService } from '../../api/movie';
-import { reviewService } from '../../api/review';
 import { useState } from 'react';
 
 const useRatings = (movieId: number) => {
@@ -31,9 +30,13 @@ const useRatings = (movieId: number) => {
         ratings[rate.value.toFixed(1)]++;
       });
 
+      const averageRating =
+        response.data.content.reduce((acc, curr) => acc + curr.value, 0) / response.data.content.length;
+
       return {
         ...response.data,
         ratingsCount: ratings,
+        averageRating,
       };
     },
     initialPageParam: 0,
@@ -82,6 +85,7 @@ const useRatings = (movieId: number) => {
             empty: true,
           },
           empty: true,
+          averageRating: 0.0,
         },
       ],
     },
@@ -208,7 +212,6 @@ const useRatings = (movieId: number) => {
     createRating: createRatingMutation.mutate,
     updateRating: updateRatingMutation.mutate,
     totalRatingsCount: ratingListQuery.data?.pages[0].totalElements,
-    averageRating: ratingListQuery.data?.pages[0].avgScore || 0,
     ratings: ratingListQuery.data?.pages,
   };
 };

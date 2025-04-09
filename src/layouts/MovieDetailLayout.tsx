@@ -6,7 +6,6 @@ import Tag from '../components/common/Tag';
 import MovieDetailTap from '../components/movie-detail/MovieDetailTap';
 import formatRating from '../utils/rating';
 import { movieService } from '../api/movie';
-import { useEffect } from 'react';
 
 const MovieDetailLayout = () => {
   const movieId = Number(useParams().movieId);
@@ -16,21 +15,12 @@ const MovieDetailLayout = () => {
     queryFn: async () => {
       const response = await movieService.getMovieDetail(movieId);
 
-      console.log(response);
+      const posters = response.data.posters?.map((poster) => poster.replace('망함', ''));
 
-      const stillcuts = response.data.stillcuts;
-      const newStillcuts = [];
-
-      stillcuts.forEach((item) => {
-        newStillcuts.push(Object.values(item));
-      });
-
-      const newResponse = {
+      return {
         ...response.data,
-        stillcuts: newStillcuts,
+        posters,
       };
-
-      return newResponse;
     },
     staleTime: 10 * 1000,
     enabled: !!movieId,
@@ -42,7 +32,7 @@ const MovieDetailLayout = () => {
       runningTime: 0,
       averageRating: 0,
       type: '',
-      poster: null,
+      posters: ['/no-poster.png'],
       stillcuts: [],
       makers: [],
       keywords: '',
@@ -52,14 +42,16 @@ const MovieDetailLayout = () => {
   return (
     <div
       className="relative w-screen h-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] -mt-[3.75rem] p-[70px] bg-cover bg-center overflow-hidden"
-      style={{ backgroundImage: `url(${movieQuery.data?.stillcuts[0]})` }}>
+      style={{
+        backgroundImage: movieQuery.data?.stillcuts?.[0] ? `url(${movieQuery.data.stillcuts[0]})` : '',
+      }}>
       <div className="absolute inset-0 bg-black/50" />
 
       <div className="w-full h-full relative z-10 flex">
         {/* 좌측 화면 */}
         <div className="w-full flex flex-col gap-4 self-end">
           <MoviePoster
-            posterSrc={movieQuery.data?.poster || movieQuery.data?.stillcuts[0]}
+            posterSrc={movieQuery.data?.posters?.[0] || movieQuery.data?.stillcuts?.[0]}
             width={250}
             liked={false}
             onLike={() => {}}

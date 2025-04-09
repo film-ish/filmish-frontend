@@ -36,8 +36,38 @@ export const idbQueryPersister: Persister = {
     const tx = db.transaction(STORE_NAME, 'readwrite');
     // 객체 저장소 가져오기
     const store = tx.objectStore(STORE_NAME);
+
+    // Promise 객체를 필터링하는 함수
+    const removePromises = (obj: unknown): unknown => {
+      if (obj === null || typeof obj !== 'object') return obj;
+
+      if (Array.isArray(obj)) {
+        return obj.map((item) => removePromises(item));
+      }
+
+      const result: Record<string, unknown> = {};
+      for (const key in obj) {
+        if (obj[key] instanceof Promise) {
+          // Promise 객체는 제외
+          continue;
+        }
+        result[key] = removePromises(obj[key]);
+      }
+      return result;
+    };
+
+    // Promise 객체를 제거한 클라이언트 상태 생성
+    const sanitizedClient = {
+      ...client,
+      clientState: {
+        ...client.clientState,
+        queries: removePromises(client.clientState.queries),
+        mutations: removePromises(client.clientState.mutations),
+      },
+    };
+
     // PersistedClient 객체 전체를 미리 정의된 CACHE_KEY를 사용하여 저장
-    await store.put(client, CACHE_KEY);
+    await store.put(sanitizedClient, CACHE_KEY);
     // 트랜잭션 완료 기다리기
     await tx.done;
     // console.log('React Query client persisted to IDB'); // 디버깅용 로그

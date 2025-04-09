@@ -1,5 +1,6 @@
 import ProfileImage from '../../common/ProfileImage';
 import { Maker } from '../../../types/comment';
+import { Link } from 'react-router';
 
 interface MakerListProps {
   title: string;
@@ -13,10 +14,10 @@ const MakerList = ({ title, makers }: MakerListProps) => (
       {makers.map((maker, index) => {
         if (index > 2) return null;
         return (
-          <div key={maker.id} className="flex flex-col items-center">
+          <Link key={maker.id} to={`/movie-talk/${maker.id}`} className="flex flex-col items-center">
             <ProfileImage size={40} src={maker.thumbnailImage} />
             {maker.name}
-          </div>
+          </Link>
         );
       })}
     </div>

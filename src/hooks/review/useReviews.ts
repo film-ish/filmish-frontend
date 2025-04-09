@@ -16,21 +16,7 @@ const useReviews = (movieId: string) => {
     },
     staleTime: 1 * 1000,
     placeholderData: {
-      pages: [
-        [
-          {
-            id: 0,
-            writerName: '',
-            writerImage: '',
-            title: '',
-            content: '',
-            image: '',
-            createdAt: '',
-            updatedAt: '',
-            views: 0,
-          },
-        ],
-      ],
+      pages: [[]],
     },
   });
 

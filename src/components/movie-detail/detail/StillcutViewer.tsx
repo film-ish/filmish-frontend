@@ -20,13 +20,27 @@ const StillcutViewer = ({ stillcuts }: StillcutViewerProps) => {
 
   return (
     <div className="relative flex items-center justify-center box-content mt-[-1.5rem] aspect-[2/1] overflow-hidden">
-      <IconButton onClick={() => handleIndexChange('left')} className="absolute left-0 top-1/2 z-10 -translate-y-1/2">
-        <ChevronLeft />
-      </IconButton>
-      <img className="z-0 w-full h-full object-cover" src={stillcuts[currentIndex]} alt="영화 스틸컷" />
-      <IconButton onClick={() => handleIndexChange('right')} className="absolute right-0 top-1/2 z-10 -translate-y-1/2">
-        <ChevronRight />
-      </IconButton>
+      {stillcuts.length > 1 && (
+        <>
+          <IconButton
+            onClick={() => handleIndexChange('left')}
+            className="absolute left-0 top-1/2 z-10 -translate-y-1/2">
+            <ChevronLeft />
+          </IconButton>
+
+          <IconButton
+            onClick={() => handleIndexChange('right')}
+            className="absolute right-0 top-1/2 z-10 -translate-y-1/2">
+            <ChevronRight />
+          </IconButton>
+        </>
+      )}
+
+      <img
+        className="z-0 w-full h-full object-cover"
+        src={stillcuts[0] ? stillcuts[currentIndex] : '/no-poster.png'}
+        alt="영화 스틸컷"
+      />
     </div>
   );
 };

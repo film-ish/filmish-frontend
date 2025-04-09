@@ -28,7 +28,6 @@ const useComment = (reviewId: string) => {
     queryKey: queryKey,
     queryFn: async ({ pageParam }) => {
       const response = await reviewService.getReviewComments(reviewId, pageParam);
-      console.log(response.data);
       return response.data;
     },
     initialPageParam: 0,

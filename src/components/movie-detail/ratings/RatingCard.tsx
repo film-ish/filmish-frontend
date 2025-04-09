@@ -1,6 +1,6 @@
 import { Star, StarHalf } from 'lucide-react';
 import ProfileImage from '../../common/ProfileImage';
-import { getKoreanDate } from '../../../utils/date';
+import { getTimeAgo } from '../../../utils/date';
 
 interface RatingProps {
   id: number;
@@ -31,7 +31,7 @@ const RatingCard = ({ comment }: RatingProps) => {
       </div>
 
       <div className="text-gray-4 text-paragraph-sm whitespace-nowrap self-end content-end">
-        {getKoreanDate(comment.createdAt)}
+        {getTimeAgo(comment.updatedAt || comment.createdAt)}
       </div>
     </div>
   );
