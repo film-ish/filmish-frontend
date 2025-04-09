@@ -80,8 +80,7 @@ export interface RatingRange {
  * 평점 범위 상수 정의
  */
 export const RATING_RANGES: RatingRange[] = [
-    { id: 'rating-5', label: '5점대', minValue: 5, maxValue: 5.1 },
-    { id: 'rating-4.5', label: '4.5점대', minValue: 4.5, maxValue: 4.99 },
+    { id: 'rating-4.5', label: '4.5점대', minValue: 4.5, maxValue: 5 },
     { id: 'rating-4', label: '4점대', minValue: 4, maxValue: 4.49 },
     { id: 'rating-3.5', label: '3.5점대', minValue: 3.5, maxValue: 3.99 },
     { id: 'rating-3', label: '3점대', minValue: 3, maxValue: 3.49 }
