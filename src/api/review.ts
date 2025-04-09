@@ -27,14 +27,9 @@ export const reviewService = {
   },
 
   async updateReview(reviewId: string, title: string, content: string) {
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
-
-    const { data } = await apiClient.put(`/reviews/${reviewId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+    const { data } = await apiClient.put(`/reviews/${reviewId}`, {
+      title,
+      content,
     });
 
     return data;
