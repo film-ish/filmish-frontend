@@ -43,9 +43,11 @@ const RatingCarousel: React.FC<RatingCarouselProps> = ({
                                                        }) => {
     const [emblaRef, emblaApi] = useEmblaCarousel({
         align: 'start',
-        slidesToScroll: 1,
+        slidesToScroll: 'auto',  // 'auto'로 변경
         containScroll: 'trimSnaps',
-        loop: false
+        loop: false,
+        dragFree: true,  // 자유롭게 드래그할 수 있도록 설정
+        speed: 10  // 스크롤 속도 조정 (낮을수록 빠름)
     });
 
     const navigate = useNavigate();
