@@ -16,7 +16,7 @@ interface MovieTalkMovingCardProps {
 
 const MovieTalkMovingCard = ({ actor }: MovieTalkMovingCardProps) => {
   return (
-    <div className="flex gap-[22px] items-center justify-start w-[405px] bg-gray-6 py-5 rounded-lg px-[24px]">
+    <div className="flex gap-[22px] items-center justify-start w-[405px] bg-white/10 py-5 rounded-lg px-[24px] backdrop-blur-xs">
       <img
         className="w-[109px] h-[106px] rounded-lg bg-gray-7 object-cover border border-gray-5"
         src={actor.photoUrl || '/no-poster-long.png'}

@@ -5,7 +5,7 @@ interface ProfileProps {
 
 const Profile = ({ name, profileImage }: ProfileProps) => {
   return (
-    <div className="flex-1 flex-col mb-4 bg-white/10 backdrop-blur-xl rounded-lg justify-items-center content-center">
+    <div className="flex-1 flex-col mb-4 bg-white/10 rounded-2xl justify-items-center content-center backdrop-blur-xs">
       <div className="w-40 h-40 bg-gray-4 rounded-lg mb-3">
         {profileImage && (
           <img src={profileImage} alt={name} className="w-full h-full object-cover rounded-lg" />

@@ -177,7 +177,7 @@ const CommentItem = ({
           
           {/* 대댓글 목록 */}
           {subComments && subComments.length > 0 && (
-            <div className="mt-3 pl-4 border-l border-gray-700">
+            <div className="mt-3 pl-4 border-l border-gray-5">
               {subComments.map((reply, index) => (
                 <div key={`reply-${reply.id || index}`} className="mb-2">
                   <div className="flex items-start">

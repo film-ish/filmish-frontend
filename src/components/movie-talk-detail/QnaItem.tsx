@@ -258,11 +258,32 @@ const QnaItem = ({ qna, onQnaUpdated, onQnaDeleted }: QnaItemProps) => {
 
   // 일반 모드일 때 게시글 렌더링
   return (
-    <div className="bg-gray-800/30 rounded-lg p-4">
-      <div className="flex items-start mb-3">
-        <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
-          <img
-            src={qna.writerImage || '/no-poster.png'}
+    <div className=" bg-gray-8/50 rounded-lg p-4">
+      
+      <div className="flex flex-col items-start">
+        <div className="flex justify-between items-start">
+          <h4 className="font-medium text-lg mb-2">제목: {qna.title}</h4>
+          {isAuthor && (
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={toggleMenu}
+                className="text-gray-400 hover:text-white p-1"
+              >
+                <MoreVertical size={18} />
+              </button>
+              {showMenu && (
+                <QnaMenu 
+                  onEdit={handleEditClick}
+                  onDelete={handleDeleteClick}
+                />
+              )}
+            </div>
+          )}
+        </div>
+        <div className="flex"> 
+          <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+            <img
+              src={qna.writerImage || '/no-poster.png'}
             alt={qna.writer}
             className="w-full h-full object-cover"
             onError={(e) => {
@@ -271,45 +292,23 @@ const QnaItem = ({ qna, onQnaUpdated, onQnaDeleted }: QnaItemProps) => {
           />
         </div>
         <div className="flex-1">
-          <div className="flex justify-between items-start">
-            <h4 className="font-bold text-lg">{qna.title}</h4>
-            {isAuthor && (
-              <div className="relative" ref={menuRef}>
-                <button
-                  onClick={toggleMenu}
-                  className="text-gray-400 hover:text-white p-1"
-                >
-                  <MoreVertical size={18} />
-                </button>
-                {showMenu && (
-                  <QnaMenu 
-                    onEdit={handleEditClick}
-                    onDelete={handleDeleteClick}
-                  />
-                )}
-              </div>
-            )}
-          </div>
-          <div className="flex items-center text-sm text-gray-400 mb-2">
+          <div className="flex items-center just text-sm text-gray-400 mb-2 gap-2">
             <span>{qna.writer}</span>
-            <span className="mx-2">- </span>
-            <span>{formatDate(qna.createdAt)}</span>
+            <span className='text-gray-5 text-xs font-extralight'>{formatDate(qna.createdAt)}</span>
           </div>
-          <p className="text-white/90">{qna.content}</p>
-        </div>
-      </div>
-
-      <div className="border-t border-gray-700 pt-3">
+          <p className="text-gray-4">{qna.content}</p>
         <button 
           onClick={() => setShowComments(!showComments)}
-          className="text-blue-400 hover:text-blue-300 transition"
+          className="text-gray-4 hover:text-blue-300 text-xs font-extralight underline transition pt-3"
         >
           {showComments ? '댓글 숨기기' : `댓글 ${qna.comments?.length || 0}개 보기`}
         </button>
+        </div>
+        </div>
       </div>
-      
+
       {showComments && (
-        <div className="mt-4 pl-6 border-l-2 border-gray-700">
+        <div className="mt-4 pl-6 border-l-2 border-gray-5">
           {qna.comments && qna.comments.length > 0 ? (
             <div className="space-y-4">
               {qna.comments.map((comment, index) => (
@@ -327,7 +326,7 @@ const QnaItem = ({ qna, onQnaUpdated, onQnaDeleted }: QnaItemProps) => {
               ))}
             </div>
           ) : (
-            <div className="text-gray-400 mb-4">아직 댓글이 없습니다.</div>
+            <div className="text-gray-5 mb-4 text-sm">아직 댓글이 없습니다.</div>
           )}
           
           <div className="mt-4">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import QnaItem from './QnaItem';
 import QnaPostInput from './QnaPostInput';
 import { createQna, listQna } from '../../api/actor/getQna';
@@ -52,8 +52,10 @@ const PAGE_SIZE = 10;
 const QnABoard = ({ makerId }: QnABoardProps) => {
   const [showQnaForm, setShowQnaForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(0); // 0부터 시작하는 페이지 번호
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const queryClient = useQueryClient();
-
+  const user = useUserStore.getState();
   // QnA 목록 가져오기 (페이지네이션 적용)
   const { data: qnaData, isLoading, error } = useQuery<QnaData>({
     queryKey: ['qnaList', makerId, currentPage],
@@ -172,6 +174,17 @@ const QnABoard = ({ makerId }: QnABoardProps) => {
     return pageNumbers;
   };
 
+  const handleSubmit = async () => {
+    try {
+      await handleAddQna(title, content);
+      setTitle('');
+      setContent('');
+      setShowQnaForm(false);
+    } catch (error) {
+      console.error('Q&A 작성 중 오류 발생:', error);
+    }
+  };
+
   console.log('QnaBoard qnaList:', qnaData?.items);
 
   if (isLoading && !qnaData) {
@@ -183,30 +196,13 @@ const QnABoard = ({ makerId }: QnABoardProps) => {
   }
 
   return (
-    <div className="flex flex-col bg-white/10 rounded-lg h-full px-4">
-      <div className="pt-5 pb-3 flex justify-between items-center">
+    <div className="flex flex-col bg-white/10 rounded-2xl h-full px-4 backdrop-blur-xs">
+      <div className="p-5 flex items-center">
         <h3 className="text-xl font-bold">Q&A 게시판</h3>
-        <button 
-          onClick={() => setShowQnaForm(!showQnaForm)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-        >
-          {showQnaForm ? '취소' : 'Q&A 작성'}
-        </button>
       </div>
-      <div className="border-b border-gray-5/50 pt-2"></div>
-      
-      {showQnaForm && (
-        <div className="my-4">
-          <QnaPostInput 
-            onSubmit={(title, content) => {
-              handleAddQna(title, content);
-            }}
-          />
-        </div>
-      )}
 
-      <div className="flex-1 overflow-y-auto rounded-lg pr-2 mt-4">
-        <div className="space-y-6">
+      <div className="flex-1 overflow-y-auto rounded-lg px-4">
+        <div className="space-y-2">
           {qnaData?.items && qnaData.items.length > 0 ? (
             qnaData.items.map((qna: QnaItemType, index: number) => {
               console.log('QnABoard에서 QnaItem으로 전달되는 데이터:', {
@@ -216,11 +212,10 @@ const QnABoard = ({ makerId }: QnABoardProps) => {
                 writer: qna.writer
               });
               
-              // writerId가 없는 경우 userId를 writerId로 설정
               const processedQna = {
                 ...qna,
                 id: qna.qnaId,
-                writerId: qna.writerId || qna.userId // writerId가 없으면 userId 사용
+                writerId: qna.writerId || qna.userId
               };
               
               return (
@@ -242,7 +237,7 @@ const QnABoard = ({ makerId }: QnABoardProps) => {
 
       {/* 페이지네이션 UI */}
       {qnaData && qnaData.items.length > 0 && qnaData.totalPages > 1 && (
-        <div className="flex justify-center items-center py-4 mt-4 border-t border-gray-700">
+        <div className="flex justify-center items-center py-4 px-4 border-t border-gray-7">
           <button
             onClick={handlePrevPage}
             disabled={currentPage === 0}
@@ -258,8 +253,8 @@ const QnABoard = ({ makerId }: QnABoardProps) => {
                 onClick={() => handlePageClick(pageNum)}
                 className={`w-8 h-8 mx-1 rounded-md ${
                   currentPage === pageNum
-                    ? 'bg-blue-500 text-white'
-                    : 'text-white hover:bg-gray-700'
+                    ? 'bg-gray-6 text-white'
+                    : 'text-white hover:bg-gray-7'
                 }`}
               >
                 {pageNum + 1}
@@ -280,6 +275,55 @@ const QnABoard = ({ makerId }: QnABoardProps) => {
           </button>
         </div>
       )}
+
+      {/* Q&A 작성 영역 */}
+      <div className="px-4 py-3 border-t border-gray-7">
+        <div className='flex justify-end'>
+          <div className='min-w-[40px] w-10 h-10 rounded-full overflow-hidden'>
+            <img
+              src={user.headImage || '/no-poster.png'}
+              alt={user.nickname || ''}
+              className="w-full h-full object-cover"
+              style={{ aspectRatio: '1/1' }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/no-poster.png';
+              }}
+            />
+          </div>
+          <div className="flex-1 mx-3">
+            <input 
+              type="text" 
+              placeholder='제목을 입력하세요' 
+              className='w-full p-3 bg-gray-7 rounded-xl text-sm font-light'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onClick={() => setShowQnaForm(true)}
+            />
+            <div className={`overflow-hidden transition-all duration-300 ${showQnaForm ? 'animate-expand mt-4' : 'h-0'}`}>
+              <textarea
+                placeholder="내용을 입력하세요"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="w-full p-2 bg-gray-7 rounded-md h-32"
+              />
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  onClick={() => setShowQnaForm(false)}
+                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                  작성완료
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

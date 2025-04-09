@@ -13,7 +13,6 @@
   --color-gray-6: #363636;
   --color-gray-7: #2b2b2b;
   --color-gray-8: #1a1a1a;
-  --color-black: #000000;
   --color-cherry-blush: #ff5e5e;
   --color-rose-cloud: #be1a1a;
   --color-citrus-honey: #ffe68a;
@@ -85,6 +84,50 @@
   }
 }
 
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes expandHeight {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+
+@keyframes collapseHeight {
+  from {
+    max-height: 500px;
+    opacity: 1;
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
 @layer components {
   .movie-detail-scrollbar {
     @apply overflow-y-auto
@@ -141,6 +184,24 @@ button:hover {
 
 .animate-infiniteSlideDuplicate {
   animation: infiniteSlideDuplicate 40s linear infinite;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.animate-expand {
+  animation: expandHeight 0.3s ease-out forwards;
+  overflow: hidden;
+}
+
+.animate-collapse {
+  animation: collapseHeight 0.3s ease-out forwards;
+  overflow: hidden;
 }
 
 .actor-card-container {
