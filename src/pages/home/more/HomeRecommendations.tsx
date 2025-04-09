@@ -12,6 +12,7 @@ interface Movie {
   genre: Array<{ id: number; name: string }>;
   runningTime: number;
   pubDate: string;
+  stillcut: string | null;
 }
 
 const HomeRecommendations = () => {
@@ -93,7 +94,7 @@ const HomeRecommendations = () => {
           const formattedMovie = {
             id: movie.id,
             title: movie.title,
-            posterPath: movie.img || '/no-poster-long.png',
+            posterPath: movie.img || movie.stillcut || '/no-poster-long.png',
             rating: movie.rates || 0,
             likes: 0, // 좋아요 수는 API에서 제공하지 않는 것으로 보임
             genres: movie.genre ? movie.genre.map(g => g.name) : [],
