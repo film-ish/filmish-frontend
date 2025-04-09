@@ -13,7 +13,6 @@
   --color-gray-6: #363636;
   --color-gray-7: #2b2b2b;
   --color-gray-8: #1a1a1a;
-  --color-black: #000000;
   --color-cherry-blush: #ff5e5e;
   --color-rose-cloud: #be1a1a;
   --color-citrus-honey: #ffe68a;
@@ -59,13 +58,30 @@
   --animate-slideout: slideout 0.5s forwards;
 }
 
+@keyframes slidein {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideout {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 @font-face {
   font-family: 'HakgyoansimChulseokbuTTF-B';
   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimChulseokbuTTF-B.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
 }
-
 
 @keyframes infiniteSlideOriginal {
   0% {
@@ -85,6 +101,50 @@
   }
 }
 
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes expandHeight {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+
+@keyframes collapseHeight {
+  from {
+    max-height: 500px;
+    opacity: 1;
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
 @layer components {
   .movie-detail-scrollbar {
     @apply overflow-y-auto
@@ -93,7 +153,6 @@
     [&::-webkit-scrollbar-track]:border-transparent
     [&::-webkit-scrollbar-thumb]:rounded-full
     [&::-webkit-scrollbar-thumb]:border-[2px]
-    [&::-webkit-scrollbar-thumb]:border-black/80
     [&::-webkit-scrollbar-thumb]:bg-gray-4;
   }
 
@@ -143,6 +202,24 @@ button:hover {
   animation: infiniteSlideDuplicate 40s linear infinite;
 }
 
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.animate-expand {
+  animation: expandHeight 0.3s ease-out forwards;
+  overflow: hidden;
+}
+
+.animate-collapse {
+  animation: collapseHeight 0.3s ease-out forwards;
+  overflow: hidden;
+}
+
 .actor-card-container {
   display: flex;
   gap: 1.5rem;
@@ -184,7 +261,7 @@ button:hover {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #A3A3A3;
+  background: #a3a3a3;
 }
 
 ::-webkit-scrollbar-button {

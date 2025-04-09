@@ -16,7 +16,7 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
     containScroll: false,
     dragFree: true,
     loop: false,
-    startIndex: 0,
+    startIndex: 4,
     skipSnaps: false,
     active: true,
     inViewThreshold: 0.7,
@@ -58,6 +58,7 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
       };
 
       emblaApi.on('select', onSelect);
+      emblaApi.scrollTo(4);
       onSelect();
 
       return () => {
@@ -70,8 +71,8 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
   useEffect(() => {
     if (emblaApi) {
       setTimeout(() => {
-        emblaApi.scrollTo(0);
-        setCenterIndex(0);
+        emblaApi.scrollTo(4);
+        setCenterIndex(4);
         emblaApi.reInit();
       }, 100);
     }

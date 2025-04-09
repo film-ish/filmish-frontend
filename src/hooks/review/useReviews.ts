@@ -6,7 +6,7 @@ const useReviews = (movieId: string) => {
     enabled: !!movieId,
     queryKey: ['movies-reviews', movieId],
     queryFn: async ({ pageParam }) => {
-      const response = await reviewService.getReviewList(movieId, pageParam);
+      const response = await reviewService.getReviewList(movieId, pageParam, 100);
       return response;
     },
     initialPageParam: 0,

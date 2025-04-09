@@ -56,7 +56,7 @@ const MyPageLayout = () => {
 
       {/* 오른쪽 컨텐츠 영역 */}
       <div className="flex-9/12 p-8 bg-gray-7 rounded-[10px]">
-        <Outlet context={{ user }} />
+        <Outlet />
       </div>
     </div>
   );

@@ -1,16 +1,18 @@
 import { Fragment } from 'react';
 import ProfileImage from '../../components/common/ProfileImage';
-import { Link, useOutletContext } from 'react-router';
+import { Link } from 'react-router';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { userService } from '../../api/user';
+import { useUserStore } from '../../store/userStore';
 
 const MyReviewsPage = () => {
-  const { user } = useOutletContext();
+  const user = useUserStore();
 
   const myReviewsQuery = useInfiniteQuery({
-    queryKey: ['my-reviews', user.userId],
+    queryKey: ['my-reviews', user.id],
     queryFn: async ({ pageParam }) => {
-      const response = await userService.getMyReviewList(user.userId, pageParam);
+      const response = await userService.getMyReviewList(user.id, pageParam);
+      console.log(response);
       return response.data;
     },
     select: (data) => ({
@@ -21,11 +23,11 @@ const MyReviewsPage = () => {
       return lastPageParam + 1;
     },
     staleTime: 1 * 1000,
-    enabled: user.userId === 0 || !!user.userId,
+    enabled: user.id === 0 || !!user.id,
     placeholderData: {
       pages: [
         {
-          reviews: [],
+          content: [],
         },
       ],
     },
@@ -35,9 +37,9 @@ const MyReviewsPage = () => {
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold text-white">리뷰</h1>
       <div className="grid grid-cols-1 gap-6">
-        {myReviewsQuery.data.pages.map((group, i) => (
+        {myReviewsQuery.data?.pages.map((group, i) => (
           <Fragment key={i}>
-            {group.reviews.map((review) => (
+            {group.content?.map((review) => (
               <Link
                 key={review.reviewId}
                 to={`/movies/${review.movieId}/reviews/${review.reviewId}`}

@@ -2,12 +2,13 @@ import Markdown from 'react-markdown';
 import IconButton from '../common/IconButton';
 import { Send, X } from 'lucide-react';
 import useChatBot from '../../hooks/useChatBot';
+import { useUserStore } from '../../store/userStore';
 
 const ChatBot = ({ closeChatBot }) => {
-  const userId = 1;
+  const user = useUserStore();
 
   const { chattings, question, setQuestion, sendQuestion, disabled, currentResponse, isLoading, loadingIndicatorIdx } =
-    useChatBot(userId);
+    useChatBot(user.id);
 
   return (
     <div className="fixed z-50 bottom-10 right-10 w-sm aspect-[1/1.2] p-4 flex flex-col gap-2 bg-gray-2 text-gray-8 rounded-[10px]">

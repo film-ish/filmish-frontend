@@ -29,7 +29,11 @@ export const ROUTES = {
     RATINGS: 'ratings',
     REVIEWS: 'reviews',
     QNA: 'qna',
-    COMMENTS: 'comments',
+    COMMENTS: {
+      ROOT: 'comments',
+      REVIEW: 'review',
+      QNA: 'qna',
+    },
     LIKES: 'likes',
   },
   HOME_MORE: {

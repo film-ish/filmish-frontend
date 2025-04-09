@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import Review from '../../../types/review';
 import ProfileImage from '../../common/ProfileImage';
+import { getTimeAgo } from '../../../utils/date';
 
 interface ReviewCardProps {
   review: Review;
@@ -28,7 +29,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
             <ProfileImage size={30} src={review.writerImage} />
             <div className="text-label-md">{review.writerName}</div>
           </div>
-          <div className="text-label-sm text-gray-4">{review.createdAt}</div>
+          <div className="text-label-sm text-gray-4">{getTimeAgo(review.updatedAt || review.createdAt)}</div>
         </div>
       </div>
     </Link>

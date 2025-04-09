@@ -33,8 +33,10 @@ const MovieTalk = () => {
   return (
     <>
       <div>
+        <img src="/1.png" alt="background" className='absolute bottom-40 left-30 w-50 h-full object-contain z-0' />
+        <img src="/2.png" alt="background" className='absolute bottom-0 right-30 w-50 h-full object-contain z-0' />
         <MovieTalkBanner />
-        
+        <img src="/7.png" alt="background" className='absolute top-160 right-20 w-70 h-full object-contain z-0' />
         <div className="mb-8 mt-10">
           <MovieTalkMoving />
         </div>
@@ -42,7 +44,8 @@ const MovieTalk = () => {
         <div className="flex flex-col items-center">
           <h2 className="text-4xl font-bold text-center mt-20 mb-10">영화인 목록</h2>
         </div>
-        
+        <img src="/3.png" alt="background" className='absolute top-230 left-20 w-70 h-full object-contain z-0' />
+        <img src="/4.png" alt="background" className='absolute top-370 right-30 w-60 h-full object-contain z-0' />
         <div ref={actorSectionRef} data-actor-section>
           <MovieTalkActorSection currentPage={currentPage} />
           <MovieTalkPagination 

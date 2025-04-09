@@ -9,6 +9,8 @@ interface FilmographyItem {
   movieName: string;
   movieId: number;
   pubDate?: string;
+  poster?: string;
+  stillCut?: string;
 }
 
 interface ActorDetail {
@@ -71,9 +73,15 @@ const MovieTalkDetail = () => {
 
   return (
     <div className="bg-gray-8">
-      <div className="flex h-[calc(100vh-5.5rem)]">
-        <div className="w-[40%] flex flex-col mr-2">
-          <div className="flex-1 flex flex-col font-HakgyoansimChulseokbuTTF-B">
+      <div className="flex mt-20 h-[calc(100vh-5.5rem)]">
+        <div className="relative w-[40%] flex flex-col mr-2">
+          <img src="/6.png" alt="background" className='absolute bottom-55 right-0 w-50 h-full object-contain z-0' />
+          <img 
+            src="/5.png" 
+            alt="background" 
+            className='absolute top-8 left-0 w-60 h-full object-contain z-0' 
+          />
+          <div className="relative z-10 flex-1 flex flex-col font-HakgyoansimChulseokbuTTF-B">
             <Profile name={actorDetail?.name || '이름 없음'} profileImage={actorDetail?.image || '/no-poster.png'} />
             <Filmography items={actorDetail?.filmography || []} />
           </div>
