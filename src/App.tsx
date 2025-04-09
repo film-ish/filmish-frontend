@@ -35,7 +35,7 @@ persistQueryClient({
   queryClient, // 상태를 지속시킬 QueryClient 인스턴스
   persister: idbQueryPersister, // 사용할 퍼시스터 (IndexedDB 기반 커스텀 퍼시스터)
   maxAge: 1000 * 60 * 60 * 24 * 7, // 캐시 데이터의 최대 유효 기간 (7일로 증가)
-  buster: 'app-version-' + Date.now(), // 캐시 무효화를 위한 문자열 (버전 업데이트)
+  buster: 'app-version-1.0.0', // 캐시 무효화를 위한 문자열 (버전 업데이트)
   // 오류 발생 시 캐시를 무시하고 새로 데이터를 가져오도록 설정
   dehydrateOptions: {
     shouldDehydrateQuery: (query) => {
