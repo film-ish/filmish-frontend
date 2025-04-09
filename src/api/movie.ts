@@ -1,17 +1,19 @@
 import { apiClient } from './instance/client';
 
 export const movieService = {
-  async getMovieDetail(movieId: string) {
+  async getMovieDetail(movieId: number) {
     const { data } = await apiClient.get(`/movies/${movieId}`);
     return data;
   },
 
   async createMovieRating(movieId: string, rating: number, content?: string) {
+    console.log(movieId, rating, content);
+
     const formData = new FormData();
 
     formData.append('indieId', movieId);
     formData.append('value', rating);
-    formData.append('content', content || '');
+    formData.append('content', content?.trimEnd() || '');
 
     const { data } = await apiClient.post(`/rates`, formData, {
       headers: {
@@ -24,7 +26,11 @@ export const movieService = {
     return data;
   },
 
-  async deleteRating(ratingId: number) {},
+  async deleteRating(ratingId: number) {
+    const { data } = await apiClient.delete(`/rates/${ratingId}`);
+    console.log('data', data);
+    return data;
+  },
 
   async updateRating(ratingId: number, rating: number, content?: string) {
     const { data } = await apiClient.put(`/rates/${ratingId}`, {
@@ -55,7 +61,5 @@ export const movieService = {
 
       return data;
     }
-
-    return data;
   },
 };

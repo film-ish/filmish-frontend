@@ -104,7 +104,7 @@ const Header = () => {
           children: (
             <div className="relative">
               <div onClick={toggleProfileModal} className="cursor-pointer">
-                <ProfileImage src={user.headImage || '/no-poster.png'} />
+                <ProfileImage src={user.headImage} />
               </div>
 
               {isProfileModalOpen && (
@@ -168,9 +168,7 @@ const Header = () => {
             ))}
           </ul>
         ) : (
-          <div className="text-gray-400 text-sm">
-            로그인하여 더 많은 기능을 이용하세요
-          </div>
+          <div className="text-gray-400 text-sm">로그인하여 더 많은 기능을 이용하세요</div>
         )}
 
         {/* 검색, 알림, 프로필 */}
@@ -178,7 +176,8 @@ const Header = () => {
           {/* 검색 아이콘 및 검색창 - 로그인한 사용자만 사용 가능 */}
           {user.isLoggedIn ? (
             <li className="relative mr-4 flex items-center justify-center w-10 h-10">
-              <div className={`absolute right-0 flex items-center transition-all duration-300 ${isSearchOpen ? 'w-[200px]' : 'w-[30px]'}`}>
+              <div
+                className={`absolute right-0 flex items-center transition-all duration-300 ${isSearchOpen ? 'w-[200px]' : 'w-[30px]'}`}>
                 {isSearchOpen ? (
                   <form
                     onSubmit={handleSearch}
@@ -212,9 +211,7 @@ const Header = () => {
           {/* 프로필 */}
           {userNavItems.map((item) =>
             user.isLoggedIn ? (
-              <div key={item.pathname}>
-                {item.children}
-              </div>
+              <div key={item.pathname}>{item.children}</div>
             ) : (
               <NavItem key={item.pathname} pathname={item.pathname}>
                 {item.children}

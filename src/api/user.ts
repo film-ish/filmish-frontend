@@ -51,6 +51,7 @@ export const userService = {
 
   async getMyReviewCommentList(userId: number, page: number, size?: number = 10) {
     const { data } = await apiClient.get(`/users/${userId}/reviews/comments?pageNum=${page}&pageSize=${size}`);
+    console.log(data);
     return data;
   },
 

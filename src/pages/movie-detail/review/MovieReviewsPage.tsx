@@ -28,7 +28,7 @@ const MovieReviewsPage = () => {
           </Button>
         </div>
 
-        {(showReviewForm || reviews.pages[0].length === 0) && (
+        {showReviewForm && (
           <ReviewForm
             onClickCancel={() => {
               setShowReviewForm(false);
@@ -45,7 +45,7 @@ const MovieReviewsPage = () => {
             return page?.map((review, index) => {
               return (
                 <Fragment key={review.id}>
-                  <ReviewCard key={review.id} review={review} />
+                  <ReviewCard key={review.id} id={review.id} review={review} />
                   {index !== page.length - 1 && <div className="w-full h-[1px] bg-gray-6" />}
                 </Fragment>
               );

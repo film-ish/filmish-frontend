@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import ProfileImage from '../../components/common/ProfileImage';
 import { getTimeAgo } from '../../utils/date';
 import { Fragment } from 'react/jsx-runtime';
+import { objArrayToValueArray } from '../../utils/array';
 
 const ReviewCommentsPage = () => {
   const user = useUserStore();
@@ -12,12 +13,19 @@ const ReviewCommentsPage = () => {
   const { data, isLoading } = useInfiniteQuery({
     queryKey: ['my-review-comment-list', user.id],
     queryFn: async ({ pageParam }) => {
-      const response = await userService.getMyReviewCommentList(user.id, pageParam);
+      const response = await userService.getMyReviewCommentList(user.id, pageParam, 100);
+
       console.log(response);
-      return response.data;
+
+      const newContent = response.data.content.map((review) => {
+        return { ...review, images: objArrayToValueArray(review.images, 'path') };
+      });
+
+      return { ...response.data, content: newContent };
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages, lastPageParam) => {
+      if (!lastPage || lastPage.length === 0) return undefined;
       return lastPageParam + 1;
     },
     staleTime: 1 * 1000,
@@ -36,7 +44,10 @@ const ReviewCommentsPage = () => {
       <div className="w-full h-[1px] bg-gray-6" />
 
       {data?.pages.map((page) => {
+        const reviewIdArr = [];
         return page.content?.map((review, index) => {
+          if (reviewIdArr.includes(review.reviewId)) return null;
+          reviewIdArr.push(review.reviewId);
           return (
             <Fragment key={review.reviewId}>
               <Link

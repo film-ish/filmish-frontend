@@ -8,7 +8,9 @@ export const getTimeAgo = (date: string): string => {
   const diffHours = Math.floor(diff / (1000 * 60 * 60));
   const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-  if (diffMinutes < 60) {
+  if (diffMinutes < 1) {
+    return '방금 전';
+  } else if (diffMinutes < 60) {
     return `${diffMinutes}분 전`;
   } else if (diffHours < 24) {
     return `${diffHours}시간 전`;

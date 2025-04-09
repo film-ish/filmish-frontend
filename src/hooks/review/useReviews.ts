@@ -7,7 +7,17 @@ const useReviews = (movieId: string) => {
     queryKey: ['movies-reviews', movieId],
     queryFn: async ({ pageParam }) => {
       const response = await reviewService.getReviewList(movieId, pageParam, 100);
-      return response;
+
+      console.log(response);
+
+      const newResponse = response.data.content.map((reivew) => {
+        if (reivew.images.length === 0) return reivew;
+
+        const newImages = reivew.images.map((image) => image.path);
+        return { ...reivew, images: newImages };
+      });
+
+      return newResponse;
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages, lastPageParam) => {

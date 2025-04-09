@@ -7,6 +7,7 @@ const login = async (formData: { email: string; password: string }) => {
   // axios.post를 사용하여 '/api/login' 엔드포인트로 POST 요청을 보냅니다.
   // 요청 본문(body)에는 formData를 전달합니다.
   const response = await apiClient.post('/users/login', formData);
+  console.log('response', response);
   // API 응답 객체에서 data 속성 (실제 서버 데이터)을 반환합니다.
   return response;
 };

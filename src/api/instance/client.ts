@@ -10,7 +10,10 @@ export const apiClient = axios.create({
 // 요청 인터셉터 설정
 apiClient.interceptors.request.use(
   async (config) => {
-    if (config.url === '/users/reissue') return config;
+    const isReissueRequest = config.url === '/users/reissue';
+    const isSignupRequest = config.url === '/users' && config.method === 'post';
+
+    if (isReissueRequest || isSignupRequest) return config;
 
     const authStorage = await idbStorage.getItem('auth-storage');
 

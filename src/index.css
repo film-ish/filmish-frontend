@@ -151,9 +151,7 @@
     [&::-webkit-scrollbar]:bg-transparent
     [&::-webkit-scrollbar]:w-[10px]
     [&::-webkit-scrollbar-track]:border-transparent
-    [&::-webkit-scrollbar-thumb]:rounded-full
-    [&::-webkit-scrollbar-thumb]:border-[2px]
-    [&::-webkit-scrollbar-thumb]:bg-gray-4;
+    [&::-webkit-scrollbar-thumb]:rounded-full;
   }
 
   .chatbot-scrollbar {
@@ -266,4 +264,8 @@ button:hover {
 
 ::-webkit-scrollbar-button {
   display: none;
+}
+
+body {
+  user-select: none;
 }

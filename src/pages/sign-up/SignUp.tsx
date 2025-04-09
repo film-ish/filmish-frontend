@@ -34,29 +34,29 @@ const SignUp = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleEmailCheckOnFocus = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email) return;
-    if (!emailRegex.test(formData.email)){
+    if (!emailRegex.test(formData.email)) {
       setEmailError('올바른 형식으로 입력해주세요.');
       return;
     }
     try {
       const response = await checkEmail(formData.email);
       console.log('이메일 중복 조회 결과:', response);
-  
-      if (response.data.message === "사용할 수 없는 이메일입니다.") {
+
+      if (response.data.message === '사용할 수 없는 이메일입니다.') {
         setEmailChecked(false);
         setEmailError('이미 사용 중인 이메일입니다.');
       } else {
         setEmailChecked(true);
-        setEmailError("사용 가능한 이메일입니다.");
+        setEmailError('사용 가능한 이메일입니다.');
       }
     } catch (error) {
       console.error('이메일 중복 확인 오류:', error);
@@ -70,13 +70,13 @@ const SignUp = () => {
     try {
       const response = await checkNickname(formData.nickname);
       console.log('닉네임 중복 조회 결과:', response);
-  
-      if (response.data.message === "사용할 수 없는 닉네임입니다.") {
+
+      if (response.data.message === '사용할 수 없는 닉네임입니다.') {
         setNicknameChecked(false);
         setNicknameError('이미 사용 중인 닉네임입니다.');
       } else {
         setNicknameChecked(true);
-        setNicknameError("사용 가능한 닉네임입니다.");
+        setNicknameError('사용 가능한 닉네임입니다.');
       }
     } catch (error) {
       console.error('닉네임 중복 확인 오류:', error);
@@ -94,16 +94,16 @@ const SignUp = () => {
       const isValidSize = file.size <= 1024 * 1024; // 1MB
 
       if (!isValidType) {
-        setCheckImageError("JPG/PNG/JPEG 형식의 이미지만 업로드 가능합니다.");
+        setCheckImageError('JPG/PNG/JPEG 형식의 이미지만 업로드 가능합니다.');
         return;
       }
 
       const isValid = checkImageSize(file);
       if (!isValid) return;
 
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        image: file // Base64 형식의 이미지 데이터
+        image: file, // Base64 형식의 이미지 데이터
       }));
 
       // 이미지 파일 미리보기 생성
@@ -111,7 +111,6 @@ const SignUp = () => {
       reader.onloadend = () => {
         const result = reader.result as string;
         setImagePreview(result);
-        
       };
       reader.readAsDataURL(file);
     }
@@ -124,18 +123,17 @@ const SignUp = () => {
 
   const checkImageSize = (file: File): boolean => {
     const maxSizeBytes = 1024 * 1024;
-  
+
     if (file.size > maxSizeBytes) {
-      setCheckImageError("이미지 크기는 1MB 이하로 업로드해주세요.");
+      setCheckImageError('이미지 크기는 1MB 이하로 업로드해주세요.');
       setImageChecked(false);
       return false;
     }
-  
-    setCheckImageError("");
+
+    setCheckImageError('');
     setImageChecked(true);
     return true;
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,13 +145,11 @@ const SignUp = () => {
     data.append('password', formData.password);
     data.append('nickname', formData.nickname);
     data.append('birth', formData.birth);
+
     if (formData.image) {
       data.append('image', formData.image);
-    } else {
-      // 빈 필드를 명시적으로 추가
-      data.append('image', 'null');
     }
-    
+
     if (emailChecked !== true || nicknameChecked !== true) {
       setError('이메일과 닉네임 중복 확인을 완료해주세요.');
       setLoading(false);
@@ -166,19 +162,17 @@ const SignUp = () => {
       // signup API 호출
       const response = await signup(data);
       console.log('회원가입 성공:', response);
-      
+
       // 성공 시 로그인 페이지로 이동
       alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
       navigate('/login');
     } catch (err) {
       console.error('회원가입 실패:', err);
       setError('회원가입에 실패했습니다. 다시 시도해주세요.');
-
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-gray-800">
@@ -187,16 +181,16 @@ const SignUp = () => {
           <div className="bg-rose-cloud p-3 rounded-full mb-4">
             <Film className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-center text-3xl font-bold tracking-tight text-white mb-2">
-            회원가입
-          </h2>
+          <h2 className="text-center text-3xl font-bold tracking-tight text-white mb-2">회원가입</h2>
           <p className="font-light text-center text-gray-400 text-sm">
-            독립영화의 새로운 발견,<br />똑똑에 오신 걸 환영합니다.
+            독립영화의 새로운 발견,
+            <br />
+            똑똑에 오신 걸 환영합니다.
           </p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-        {/* {error && (
+          {/* {error && (
             <div className="text-red-500 text-sm text-center bg-red-100/10 p-2 rounded-lg">
               {error}
             </div>
@@ -218,9 +212,7 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleEmailCheckOnFocus}
               />
-              {emailError && (
-                <div className="text-red-500 text-sm mt-1">{emailError}</div>
-              )}
+              {emailError && <div className="text-red-500 text-sm mt-1">{emailError}</div>}
             </div>
 
             <div>
@@ -239,7 +231,6 @@ const SignUp = () => {
                 onChange={handleChange}
                 //onBlur={handleNicknameCheckOnFocus}
               />
-
             </div>
 
             <div>
@@ -256,9 +247,7 @@ const SignUp = () => {
                 value={formData.nickname}
                 onChange={handleChange}
               />
-              {nicknameError && (
-                <div className="text-red-500 text-sm mt-1">{nicknameError}</div>
-              )}
+              {nicknameError && <div className="text-red-500 text-sm mt-1">{nicknameError}</div>}
             </div>
 
             <div>
@@ -275,15 +264,16 @@ const SignUp = () => {
                 max={new Date().toISOString().split('T')[0]}
                 onChange={handleChange}
                 onFocus={handleNicknameCheckOnFocus}
+                onBlur={handleNicknameCheckOnFocus}
               />
             </div>
 
-                        {/* 이미지 업로드 필드 수정 */}
+            {/* 이미지 업로드 필드 수정 */}
             <div>
               <label htmlFor="image" className="block text-sm font-medium text-gray-300 mb-1">
                 프로필 이미지
               </label>
-              
+
               {/* 숨겨진 파일 입력 */}
               <input
                 ref={fileInputRef}
@@ -294,17 +284,16 @@ const SignUp = () => {
                 className="hidden"
                 onChange={handleImageChange}
               />
-              
+
               {/* 이미지 업로드 UI */}
-              <div 
+              <div
                 onClick={handleImageClick}
-                className="mt-1 flex flex-col items-center justify-center w-full h-32 px-4 py-3 bg-gray-800/50 border border-gray-700 border-dashed rounded-xl text-gray-400 cursor-pointer hover:bg-gray-700/30 transition-all duration-200"
-              >
+                className="mt-1 flex flex-col items-center justify-center w-full h-32 px-4 py-3 bg-gray-800/50 border border-gray-700 border-dashed rounded-xl text-gray-400 cursor-pointer hover:bg-gray-700/30 transition-all duration-200">
                 {imagePreview ? (
                   <div className="relative w-full h-full flex items-center justify-center">
-                    <img 
-                      src={imagePreview} 
-                      alt="프로필 미리보기" 
+                    <img
+                      src={imagePreview}
+                      alt="프로필 미리보기"
                       className="max-h-full max-w-full object-contain rounded-lg"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity duration-200 rounded-lg">
@@ -320,20 +309,15 @@ const SignUp = () => {
                 )}
               </div>
             </div>
-            {checkImageError && (
-              <p className="text-sm text-rose-cloud mt-1">{checkImageError}</p>
-            )}
-            <p className="text-xs text-gray-500 mt-1">
-              JPG, PNG 파일 지원 (최대 1MB)
-            </p>
+            {checkImageError && <p className="text-sm text-rose-cloud mt-1">{checkImageError}</p>}
+            <p className="text-xs text-gray-500 mt-1">JPG, PNG 파일 지원 (최대 1MB)</p>
           </div>
 
           <div>
             <button
               type="submit"
               disabled={loading || !emailChecked || !nicknameChecked}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-rose-cloud hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02] ${loading || !emailChecked || !nicknameChecked? 'opacity-70 cursor-not-allowed' : ''}`}
-            >
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-rose-cloud hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02] ${loading || !emailChecked || !nicknameChecked ? 'opacity-70 cursor-not-allowed' : ''}`}>
               {loading ? '처리 중...' : '확인'}
             </button>
           </div>
@@ -351,12 +335,9 @@ const SignUp = () => {
             <button
               type="button"
               onClick={() => navigate('/login')}
-              className="text-sm text-gray-400 font-light hover:text-white transition-colors"
-            >
+              className="text-sm text-gray-400 font-light hover:text-white transition-colors">
               이미 계정이 있으신가요?{' '}
-              <span className="font-medium underline text-rose-cloud hover:text-white">
-                로그인
-              </span>
+              <span className="font-medium underline text-rose-cloud hover:text-white">로그인</span>
             </button>
           </div>
         </form>

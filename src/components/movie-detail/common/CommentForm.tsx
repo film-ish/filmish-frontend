@@ -17,6 +17,7 @@ interface CommentFormProps {
   ratingStep?: number;
   initialContent?: string;
   initialRating?: number;
+  maxLength?: number;
 }
 
 const CommentForm = ({
@@ -32,6 +33,7 @@ const CommentForm = ({
   ratingStep = 1,
   initialContent = '',
   initialRating = 0,
+  maxLength = 50,
 }: CommentFormProps) => {
   const { headImage } = useUserStore();
   const [content, setContent] = useState(initialContent);
@@ -49,8 +51,10 @@ const CommentForm = ({
     e.preventDefault();
     if (content.trim()) {
       onSubmit(content, showRating ? rating : undefined);
+      (document.activeElement as HTMLElement)?.blur();
       setContent('');
       setRating(0);
+      e.target.reset();
     }
   };
 
@@ -63,36 +67,18 @@ const CommentForm = ({
     const starIndex = Math.floor(x / starWidth);
     const starPosition = (x % starWidth) / starWidth;
 
-    if (starIndex >= 0 && starIndex < 5) {
-      return starIndex + (starPosition < 0.5 ? 0.5 : 1);
-    }
-    return 0;
+    if (starIndex < 0) return 0.5;
+    if (starIndex >= 5) return 5;
+
+    return starIndex + (starPosition < 0.5 ? 0.5 : 1);
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    document.body.style.cursor = 'grabbing';
+
     setIsDragging(true);
     const initialRating = calculateRating(e);
     setHoverRating(initialRating);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
-    const newRating = calculateRating(e);
-    setHoverRating(newRating);
-  };
-
-  const handleMouseLeave = () => {
-    if (!isDragging) return;
-    setHoverRating(0);
-    setIsDragging(false);
-  };
-
-  const handleMouseUp = () => {
-    if (isDragging && hoverRating > 0) {
-      setRating(hoverRating);
-    }
-    setHoverRating(0);
-    setIsDragging(false);
   };
 
   const getStarColor = (value: number) => {
@@ -108,19 +94,54 @@ const CommentForm = ({
     onCancel?.();
   };
 
+  useEffect(() => {
+    if (!isDragging) {
+      document.body.style.cursor = 'default';
+    }
+  }, [isDragging]);
+
+  useEffect(() => {
+    const handleMouseLeave = () => {
+      setHoverRating(0);
+      setIsDragging(false);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      setHoverRating(calculateRating(e));
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      setRating(hoverRating);
+    };
+
+    document?.addEventListener('mouseleave', handleMouseLeave);
+    document?.addEventListener('mousemove', handleMouseMove);
+    document?.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document?.removeEventListener('mouseleave', handleMouseLeave);
+      document?.removeEventListener('mousemove', handleMouseMove);
+      document?.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
+
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length > maxLength) {
+      alert(`최대 ${maxLength}자까지 입력할 수 있습니다.`);
+      return;
+    }
+    setContent(e.target.value);
+  };
+
   return (
     <form className={`flex flex-col gap-2 ${className}`} onSubmit={handleSubmit}>
       <div className="flex gap-2 items-center">
         <ProfileImage src={headImage} />
         <div className="flex-1 flex flex-col gap-2">
           {showRating && (
-            <div
-              ref={starsRef}
-              className="w-fit flex gap-1 cursor-pointer"
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              onMouseUp={handleMouseUp}>
+            <div ref={starsRef} className="w-fit flex gap-1 cursor-pointer" onMouseDown={handleMouseDown}>
               {[1, 2, 3, 4, 5].map((value) => (
                 <div key={value} className="relative w-5 h-5">
                   <Star size={20} className={getStarColor(value)} />
@@ -139,7 +160,7 @@ const CommentForm = ({
             type="text"
             placeholder={placeholder}
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={handleTextInputChange}
           />
         </div>
       </div>

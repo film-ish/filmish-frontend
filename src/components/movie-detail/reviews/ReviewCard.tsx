@@ -14,15 +14,17 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
       viewTransition
       className="w-full flex items-center gap-4"
       style={{ contentVisibility: 'auto' }}>
-      {review.image && (
+      {review.images.length > 0 && (
         <div className="shrink-0 w-[100px] h-fit aspect-square relative flex items-center justify-center rounded-[10px] overflow-hidden">
-          <img className="w-full h-full object-cover" src={review.image} alt="review thumbnail" />
+          <img className="w-full h-full object-cover" src={review.images[0]} alt="review thumbnail" />
         </div>
       )}
 
-      <div className="w-full max-h-[120px] flex flex-col gap-2">
-        <div className="text-label-lg font-bold">{review.title}</div>
-        <div className="text-paragraph-md line-clamp-2 text-ellipsis">{review.content}</div>
+      <div className="w-full max-h-[120px] flex flex-col gap-2 overflow-hidden">
+        <div className="text-label-lg font-bold truncate">{review.title}</div>
+        <div className="text-paragraph-md line-clamp-2 text-ellipsis whitespace-normal break-words overflow-hidden">
+          {review.content}
+        </div>
 
         <div className="w-full flex items-center justify-between">
           <div className="flex items-center gap-2">

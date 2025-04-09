@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { userService } from '../../api/user';
 import { useUserStore } from '../../store/userStore';
+import { getTimeAgo } from '../../utils/date';
 
 const MyReviewsPage = () => {
   const user = useUserStore();
@@ -59,7 +60,7 @@ const MyReviewsPage = () => {
                       <ProfileImage size={30} src={user.image} />
                       <div className="text-label-md">{user.nickname}</div>
                     </div>
-                    <div className="text-label-sm text-gray-4">{review.createdAt}</div>
+                    <div className="text-label-sm text-gray-4">{getTimeAgo(review.updatedAt || review.createdAt)}</div>
                   </div>
                 </div>
               </Link>

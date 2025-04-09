@@ -35,11 +35,13 @@ const CocommentCard = ({ cocomment, isOwner, onDeleteCocomment, onUpdateCocommen
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="w-full flex items-start justify-between">
-        <div className={`flex items-start gap-2`}>
+        <div className="flex-nowrap flex items-start gap-2 max-w-full overflow-hidden">
           <ProfileImage src={cocomment.cocommentWriterImage} />
-          <div className="flex flex-col">
-            <div className="text-label-md font-bold">{cocomment.cocommentWriterName}</div>
-            {cocomment.content && <div className="text-paragraph-md">{cocomment.content}</div>}
+          <div className="min-w-0 flex-1 flex flex-col break-words overflow-hidden">
+            <div className="text-label-md font-bold truncate">{cocomment.cocommentWriterName}</div>
+            {cocomment.content && (
+              <div className="text-paragraph-md whitespace-normal break-all">{cocomment.content}</div>
+            )}
           </div>
         </div>
         {isOwner && (

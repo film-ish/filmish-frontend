@@ -13,6 +13,7 @@ const useReview = (movieId: number, reviewId: number, navigate?: NavigateFunctio
       if (response.code === 'NOT_FOUND') {
         alert('존재하지 않는 리뷰입니다.');
         navigate(`/movies/${movieId}/reviews`);
+        return null;
       }
 
       const newImages = [];
@@ -22,6 +23,7 @@ const useReview = (movieId: number, reviewId: number, navigate?: NavigateFunctio
 
       return { ...response.data, images: newImages };
     },
+    staleTime: 0,
     retry: false,
     enabled: !!movieId && !!reviewId,
     placeholderData: {
@@ -65,19 +67,23 @@ const useReview = (movieId: number, reviewId: number, navigate?: NavigateFunctio
           content,
         };
       });
+
+      queryClient.invalidateQueries(['movies-reviews', movieId]);
     },
   });
 
   const deleteReviewMutation = useMutation({
     mutationFn: async () => {
-      if (confirm('정말 삭제하시겠습니까?')) {
-        const response = await reviewService.deleteReview(reviewId);
-        return response;
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(queryKey);
+      const response = await reviewService.deleteReview(reviewId);
+      console.log(response);
       navigate(`/movies/${movieId}/reviews`);
+      return response;
+    },
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries(queryKey),
+        queryClient.invalidateQueries(['movies-reviews', movieId]),
+      ]);
     },
   });
 

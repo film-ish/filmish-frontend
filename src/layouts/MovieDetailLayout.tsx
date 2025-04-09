@@ -4,7 +4,6 @@ import MoviePoster from '../components/movie/MoviePoster';
 import { Star } from 'lucide-react';
 import Tag from '../components/common/Tag';
 import MovieDetailTap from '../components/movie-detail/MovieDetailTap';
-import formatRating from '../utils/rating';
 import { movieService } from '../api/movie';
 import { useUserStore } from '../store/userStore';
 
@@ -14,12 +13,10 @@ const MovieDetailLayout = () => {
   const user = useUserStore();
   const location = useLocation();
 
-  const movieQuery = useQuery({
+  const { data: movieData, isLoading } = useQuery({
     queryKey: ['movie', movieId],
     queryFn: async () => {
       const response = await movieService.getMovieDetail(movieId);
-
-      console.log(response);
       const posters = response.data.posters?.map((poster) => poster.replace('망함', ''));
 
       return {
@@ -47,8 +44,9 @@ const MovieDetailLayout = () => {
 
   const { mutate: likeMovie } = useMutation({
     mutationFn: async () => {
-      const response = await movieService.likeMovie(movieId, !movieQuery.data?.like);
+      const response = await movieService.likeMovie(movieId, !movieData?.like);
       console.log(response);
+      return response;
     },
     onSuccess: () => {
       queryClient.setQueryData(['my-like-list', user.id], (oldData) => {
@@ -83,33 +81,36 @@ const MovieDetailLayout = () => {
   });
 
   return (
-    <div
-      className="relative w-screen h-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] -mt-[3.75rem] p-[70px] bg-cover bg-center overflow-hidden"
-      style={{
-        backgroundImage: movieQuery.data?.stillcuts?.[0] ? `url(${movieQuery.data.stillcuts[0]})` : '',
-      }}>
-      <div className="absolute inset-0 bg-black/50" />
+    <div className="relative flex w-screen h-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] -mt-[3.75rem] p-[70px] bg-cover bg-center overflow-hidden">
+      <div className="fixed top-0 left-0 right-0 bottom-0 bg-black">
+        <img
+          src={movieData?.stillcuts?.[0]}
+          alt="movie poster"
+          className="w-full h-full object-cover"
+          style={{ filter: 'brightness(0.2)' }}
+        />
+      </div>
 
-      <div className="w-full h-full relative z-10 flex">
+      <div className="flex justify-between w-full h-full relative z-10">
         {/* 좌측 화면 */}
-        <div className="w-full flex flex-col gap-4 self-end">
+        <div className="flex flex-col gap-4 self-end">
           <MoviePoster
-            posterSrc={movieQuery.data?.posters?.[0] || movieQuery.data?.stillcuts?.[0]}
+            posterSrc={movieData?.posters?.[0] || movieData?.stillcuts?.[0]}
             width={250}
-            liked={movieQuery.data?.like}
+            liked={movieData?.like}
             onLike={likeMovie}
           />
 
           <div>
-            <div className="text-heading-lg">{movieQuery.data?.title}</div>
+            <div className="text-heading-lg">{movieData?.title}</div>
             <div className="flex text-label-xxl gap-5">
               <div className="flex items-center">
                 <Star className="fill-rose-cloud" stroke={0} />
-                {formatRating(movieQuery.data?.averageRating || 0)}
+                {movieData?.averageRating?.toFixed(1)}
               </div>
 
               <div className="flex gap-2">
-                {movieQuery.data?.keywords?.split(',').map((genre, index) => {
+                {movieData?.keywords?.split(',').map((genre, index) => {
                   if (index >= 5) {
                     return null;
                   }
@@ -125,14 +126,14 @@ const MovieDetailLayout = () => {
         </div>
 
         {/* 우측 화면 */}
-        <div className="w-full mr-[-70px] mb-[-70px]">
+        <div className="w-7/12 mr-[-70px] mb-[-70px]">
           <MovieDetailTap />
           <div
             className={
               'relative flex-1 h-[calc(100vh-110px)] p-6 bg-gray-8/85 overflow-x-hidden movie-detail-scrollbar ' +
               (location.pathname.split('/reviews/').length === 2 ? 'overflow-y-hidden' : '')
             }>
-            <Outlet context={movieQuery.data} />
+            <Outlet context={movieData} />
           </div>
         </div>
       </div>

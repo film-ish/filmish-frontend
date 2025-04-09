@@ -4,10 +4,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface StillcutViewerProps {
   stillcuts: string[];
+  startIndex: number;
 }
 
-const StillcutViewer = ({ stillcuts }: StillcutViewerProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const StillcutViewer = ({ stillcuts, startIndex }: StillcutViewerProps) => {
+  const [currentIndex, setCurrentIndex] = useState(startIndex);
 
   const handleIndexChange = (direction: 'left' | 'right') => {
     setCurrentIndex((prevIndex) => {
@@ -20,7 +21,7 @@ const StillcutViewer = ({ stillcuts }: StillcutViewerProps) => {
 
   return (
     <div className="relative flex items-center justify-center box-content mt-[-1.5rem] aspect-[2/1] overflow-hidden">
-      {stillcuts.length > 1 && (
+      {stillcuts?.length > 1 && (
         <>
           <IconButton
             onClick={() => handleIndexChange('left')}
@@ -38,7 +39,7 @@ const StillcutViewer = ({ stillcuts }: StillcutViewerProps) => {
 
       <img
         className="z-0 w-full h-full object-cover"
-        src={stillcuts[0] ? stillcuts[currentIndex] : '/no-poster.png'}
+        src={stillcuts?.[0] ? (stillcuts.length > 1 ? stillcuts[currentIndex] : stillcuts[0]) : '/no-poster.png'}
         alt="영화 스틸컷"
       />
     </div>
