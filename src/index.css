@@ -153,7 +153,6 @@
     [&::-webkit-scrollbar-track]:border-transparent
     [&::-webkit-scrollbar-thumb]:rounded-full
     [&::-webkit-scrollbar-thumb]:border-[2px]
-    [&::-webkit-scrollbar-thumb]:border-black/80
     [&::-webkit-scrollbar-thumb]:bg-gray-4;
   }
 

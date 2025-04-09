@@ -4,6 +4,7 @@ import ChatBot from '../components/chat-bot/ChatBot';
 import IconButton from '../components/common/IconButton';
 import { Clapperboard } from 'lucide-react';
 import { useUserStore } from '../store/userStore';
+import { useLocation } from 'react-router';
 
 interface MainLayoutProps {
   children: ReactNode;
