@@ -239,7 +239,7 @@ const MovieTalkActorSection = ({ currentPage = 1 }: MovieTalkActorSectionProps) 
                           <span className="text-sm">{actor.indieCnt}개 작품</span>
                         </div>
                       </div>
-                      <span className="text-2xl font-light text-gray-5">작품: [{actor.movieTitle}]...</span>
+                      <span className="text-2xl font-light text-gray-5">작품: {actor.movieTitle}</span>
                     </div>
                   </div>
                 ))

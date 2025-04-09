@@ -1,38 +1,49 @@
 import { useState } from 'react';
 import { Send } from 'lucide-react';
+
 interface CommentInputProps {
   onSubmit: (content: string) => void;
-  placeholder?: string;
+  placeholder: string;
 }
 
-const CommentInput = ({ onSubmit, placeholder = "댓글을 입력하세요" }: CommentInputProps) => {
+const CommentInput = ({ onSubmit, placeholder }: CommentInputProps) => {
   const [content, setContent] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (content.trim()) {
-      onSubmit(content);
-      setContent('');
+  const handleSubmit = () => {
+    if (!content.trim()) {
+      alert('내용을 입력해주세요.');
+      return;
     }
+    if (content.length > 100) {
+      alert('댓글/답글은 100자 이하로 입력해주세요.');
+      return;
+    }
+    onSubmit(content);
+    setContent('');
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center">
+    <div className="flex items-center space-x-2">
       <input
         type="text"
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder={placeholder}
-        className="flex-1 py-2 px-3 bg-gray-6 rounded-xl text-white text-sm"
-        required
+        className="w-full flex-grow px-3 py-2 text-sm bg-gray-8/50 rounded-xl border border-gray-7/50 focus:border-gray-5 focus:outline-none"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+            e.preventDefault();
+            handleSubmit();
+          }
+        }}
       />
       <button
-        type="submit"
-        className="p-2 mx-2 bg-gray-5 text-white rounded-full hover:bg-gray-6 transition"
+        onClick={handleSubmit}
+        className="p-2 bg-gray-6 text-white rounded-full hover:bg-white hover:text-cherry-blush"
       >
         <Send size={16} />
       </button>
-    </form>
+    </div>
   );
 };
 

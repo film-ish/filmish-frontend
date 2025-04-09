@@ -87,7 +87,7 @@ const MovieTalkDetail = () => {
           </div>
         </div>
         <div className="w-[60%] ml-2">
-          <QnABoard makerId={Number(makerId)} />
+          <QnABoard makerId={Number(makerId)} actorName={actorDetail?.name || '이름 없음'} />
         </div>
       </div>
     </div>

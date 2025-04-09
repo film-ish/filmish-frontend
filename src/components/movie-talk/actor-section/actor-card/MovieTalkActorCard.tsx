@@ -1,6 +1,5 @@
 import { FilmIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../../../router/routes";
 
 interface Actor {
   actorId: number;
