@@ -10,6 +10,7 @@ export interface Movie {
     runningTime: number;
     rates: number;
     img: string | null;
+    stillcut: string | null;
 }
 
 // 장르 타입 정의

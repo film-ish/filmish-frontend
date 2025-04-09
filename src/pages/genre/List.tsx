@@ -221,7 +221,7 @@ const List = () => {
               year: year,
               month: month,
               rating: movie.rates || 0,
-              image: movie.img || `https://picsum.photos/seed/${movie.id}/200/300`, // 이미지가 없으면 대체 이미지
+              image: movie.img || movie.stillcut || `https://picsum.photos/seed/${movie.id}/200/300`, // 이미지가 없으면 대체 이미지
               runningTime: movie.runningTime || 0,
               genreNames: genreNames, // 장르 이름들을 문자열로 저장
             };

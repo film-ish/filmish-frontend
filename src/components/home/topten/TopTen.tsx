@@ -8,6 +8,7 @@ interface Movie {
   title: string;
   pubDate: string | null;
   poster: string | null;
+  stillcut: string | null;
   runningTime: number;
   genres: string[];
   value: number;
@@ -51,7 +52,7 @@ const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) 
             const formattedMovie = {
               id: movie.id,
               title: movie.title,
-              posterPath: movie.poster || '/no-poster-long.png',
+              posterPath: movie.poster || movie.stillcut ||'/no-poster-long.png',
               rating: movie.value || 0,
               likes: 0, // 좋아요 수는 API에서 제공하지 않는 것으로 보임
               genres: movie.genres || [],

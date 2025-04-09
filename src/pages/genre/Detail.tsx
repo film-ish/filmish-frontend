@@ -168,7 +168,7 @@ const Detail = () => {
         year: year,
         month: month,
         rating: movie.rates || 0,
-        image: movie.img || `https://picsum.photos/seed/${movie.id}/200/300`, // 이미지가 없으면 대체 이미지
+        image: movie.img || movie.stillcut || `https://picsum.photos/seed/${movie.id}/200/300`, // 이미지가 없으면 대체 이미지
         runningTime: movie.runningTime || 0,
         genreNames: genreNames, // 장르 이름들을 문자열로 저장
       };
@@ -387,7 +387,7 @@ const Detail = () => {
     return {
       id: movieData.id,
       title: movieData.title,
-      posterPath: movieData.poster || movieData.image || `https://picsum.photos/seed/genre${movieData.id}/300/450`,
+      posterPath: movieData.poster || movieData.image || movieData.stillcut || `https://picsum.photos/seed/genre${movieData.id}/300/450`,
       rating: Number(movieData.value || movieData.rating || 0),
       likes: 0, // 기본값
       genres: movieData.genres || movieData.genreNames || '',
