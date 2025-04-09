@@ -26,7 +26,7 @@ const MoviePoster = ({ posterSrc, width, liked, onLike }: MoviePosterProps) => {
       style={{ width: width }}>
       <img
         className="object-cover h-full"
-        src={posterSrc ? posterSrc : '/public/no-poster-long.png'}
+        src={posterSrc ? posterSrc : '/no-poster-long.png'}
         alt="poster image"
       />
       {likedState !== undefined && onLike && <LikeButton liked={likedState} onClick={onClickLike} />}

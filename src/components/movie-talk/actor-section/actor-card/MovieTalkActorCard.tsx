@@ -1,7 +1,9 @@
 import { FilmIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../../../router/routes";
 
 interface Actor {
-  id: number;
+  actorId: number;
   name: string;
   photoUrl: string;
   rating: number;
@@ -10,11 +12,27 @@ interface Actor {
 
 interface MovieTalkActorCardProps {
   actor: Actor;
+  isCenter?: boolean;
+  onCardClick?: () => void;
 }
 
-const MovieTalkActorCard = ({ actor }: MovieTalkActorCardProps) => {
+const MovieTalkActorCard = ({ actor, isCenter = false, onCardClick }: MovieTalkActorCardProps) => {
+  const navigate = useNavigate();
+  console.log(actor);
+  
+  const handleClick = () => {
+    if (isCenter) {
+      navigate(`/movie-talk/${actor.actorId}`);
+    } else if (onCardClick) {
+      onCardClick();
+    }
+  };
+
   return (
-    <div className="relative w-[400px] h-[550px] rounded-xl overflow-hidden shadow-xl">
+    <div 
+      className={`relative w-[400px] h-[550px] rounded-xl overflow-hidden shadow-xl cursor-pointer`}
+      onClick={handleClick}
+    >
       {/* 배경 이미지 */}
       <div 
         className="absolute inset-0 bg-cover bg-center"

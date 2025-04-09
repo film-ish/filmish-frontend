@@ -59,6 +59,14 @@
   --animate-slideout: slideout 0.5s forwards;
 }
 
+@font-face {
+  font-family: 'HakgyoansimChulseokbuTTF-B';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimChulseokbuTTF-B.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
 @keyframes infiniteSlideOriginal {
   0% {
     transform: translateX(0);
@@ -161,4 +169,24 @@ button:hover {
   opacity: 0.7;
   transform: translateY(-10px);
   filter: grayscale(20%);
+}
+
+/* 필포그래피 스크롤바 커스텀 스타일 */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-4);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A3A3A3;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
 }

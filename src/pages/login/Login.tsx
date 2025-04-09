@@ -50,9 +50,9 @@ const Login = () => {
       // 상업 영화 좋아요 여부 확인
       try {
         const likedMoviesResponse = await isLikedCommercialMovies();
-        console.log(likedMoviesResponse.data);
+        console.log('상업영화 좋아요 응답:', likedMoviesResponse);
         // 좋아요한 상업 영화가 있으면 메인 페이지로, 없으면 상업 영화 페이지로 이동
-        if (likedMoviesResponse) {
+        if (likedMoviesResponse.data) {
           navigate('/');
         } else {
           navigate('/commercial');
@@ -154,7 +154,7 @@ const Login = () => {
           <div className="text-center">
             <button
               type="button" // 폼 제출 방지
-              onClick={() => navigate('/register')} // 회원가입 페이지로 이동
+              onClick={() => navigate('/sign-up')} // 회원가입 페이지로 이동
               className="text-sm text-gray-400 font-light hover:text-white transition-colors">
               계정이 없으신가요?{' '}
               <span className="font-medium underline text-rose-cloud hover:text-white">회원가입</span>
