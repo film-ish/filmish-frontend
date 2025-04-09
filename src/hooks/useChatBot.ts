@@ -42,7 +42,7 @@ const useChatBot = (userId: number) => {
       return;
     }
 
-    const ws = new WebSocket(`ws://j12d207.p.ssafy.io:8000/algorithm/v1/woorecommendations/ws/${userId}`);
+    const ws = new WebSocket(`wss://ddokddok.duckdns.org/algorithm/v1/woorecommendations/ws/${userId}`);
     webSocketRef.current = ws;
 
     ws.onopen = () => {
