@@ -199,10 +199,14 @@ const Main = () => {
             <div className="fixed top-0 left-0 right-0 z-10 bg-black pt-4 pb-2 px-4 shadow-md bg-gray-8">
                 <div className="mx-10 flex flex-col items-center text-center">
                     <h2 className="text-3xl font-bold mb-2">영화 좋아요</h2>
-                    <h2 className="text-sm text-gray-4">관심있는 영화 5-10개를 골라 주세요</h2>
-                    <h2 className="text-sm text-gray-4">관심 있는 상업영화를 통해 독립영화를 추천해드려요</h2>
+                    <h2 className="text-sm text-gray-4">좋아하는 영화를 5~10개 선택해주세요</h2>
+                    <h2 className="text-sm text-gray-4">선택한 상업영화를 기반으로 당신에게 맞는 독립영화를 추천해드립니다</h2>
                     <div className="mt-2 text-sm text-gray-4 mb-3">
-                        선택된 영화: {Object.values(likedMovies).filter(Boolean).length}/{MAX_LIKED_MOVIES}
+        <span className={Object.values(likedMovies).filter(Boolean).length < MIN_LIKED_MOVIES ? "text-red-500" : ""}>
+            선택된 영화: {Object.values(likedMovies).filter(Boolean).length}/{MAX_LIKED_MOVIES}
+            {Object.values(likedMovies).filter(Boolean).length < MIN_LIKED_MOVIES &&
+                ` (최소 ${MIN_LIKED_MOVIES}개 이상 선택 필요)`}
+        </span>
                     </div>
 
                     {/* 제출 버튼 */}
@@ -275,7 +279,7 @@ const Main = () => {
                                         e.preventDefault();
                                         e.stopPropagation();
                                     }}
-                                    style={{ pointerEvents: 'none' }}
+                                    style={{pointerEvents: 'none'}}
                                 >
                                     <MovieCard
                                         width="100%"
