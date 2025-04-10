@@ -1,24 +1,16 @@
-<<<<<<< Updated upstream
 import { Bell, Search, X, LogOut, User } from 'lucide-react';
-=======
-import { Bell, Search, X } from 'lucide-react';
->>>>>>> Stashed changes
 import ProfileImage from '../common/ProfileImage';
 import { Link, useLocation, useNavigate } from 'react-router';
 import NavItem from './NavItem';
 import { ROUTES } from '../../router/routes';
 import { useState, useRef, useEffect } from 'react';
-<<<<<<< Updated upstream
 import { useUserStore } from '../../store/userStore';
 import { useAuthStore } from '../../store/authStore';
 import { logout } from '../../api/logout/logoutApi';
-=======
->>>>>>> Stashed changes
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
-<<<<<<< Updated upstream
 
   const user = useUserStore();
   const auth = useAuthStore();
@@ -28,11 +20,6 @@ const Header = () => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const profileModalRef = useRef<HTMLDivElement>(null);
-=======
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const searchInputRef = useRef<HTMLInputElement>(null);
->>>>>>> Stashed changes
 
   // 검색창이 열릴 때 자동으로 포커스
   useEffect(() => {
@@ -41,7 +28,6 @@ const Header = () => {
     }
   }, [isSearchOpen]);
 
-<<<<<<< Updated upstream
   // 프로필 모달 외부 클릭 시 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,8 +42,6 @@ const Header = () => {
     };
   }, []);
 
-=======
->>>>>>> Stashed changes
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
     if (isSearchOpen) {
@@ -69,7 +53,6 @@ const Header = () => {
     e.preventDefault();
     if (searchKeyword.trim()) {
       setIsSearchOpen(false);
-<<<<<<< Updated upstream
       navigate(`/search?keyword=${searchKeyword.trim()}`);
     }
   };
@@ -92,9 +75,6 @@ const Header = () => {
       auth.clearAuth();
       setIsProfileModalOpen(false);
       navigate(ROUTES.HOME); // 페이지 새로고침으로 상태 초기화
-=======
-      navigate(`/search?keyword=${encodeURIComponent(searchKeyword.trim())}`);
->>>>>>> Stashed changes
     }
   };
 
@@ -117,7 +97,6 @@ const Header = () => {
     // },
   ];
 
-<<<<<<< Updated upstream
   const userNavItems = user.isLoggedIn
     ? [
         {
@@ -125,7 +104,7 @@ const Header = () => {
           children: (
             <div className="relative">
               <div onClick={toggleProfileModal} className="cursor-pointer">
-                <ProfileImage src={user.headImage} />
+                <ProfileImage src={user.headImage || ''} />
               </div>
 
               {isProfileModalOpen && (
@@ -166,14 +145,6 @@ const Header = () => {
           children: '회원가입',
         },
       ];
-=======
-  const userNavItems = [
-    {
-      pathname: 'ROUTES.MY_PAGE',
-      children: <ProfileImage src="https://dummyimage.com/50x50/000/fff" />,
-    },
-  ];
->>>>>>> Stashed changes
 
   return (
     <nav
@@ -187,7 +158,6 @@ const Header = () => {
           똑똑
         </Link>
 
-<<<<<<< Updated upstream
         {/* 장르별 추천, 평점별 영화, 영화인과의 대화, 독립영화관 - 로그인한 사용자만 볼 수 있음 */}
         {user.isLoggedIn ? (
           <ul className="flex items-center gap-10 font-extralight">
@@ -248,57 +218,6 @@ const Header = () => {
               </NavItem>
             ),
           )}
-=======
-        {/* 장르별 추천, 평점별 영화, 영화인과의 대화, 독립영화관 */}
-        <ul className="flex items-center gap-10 font-extralight">
-          {commonNavItems.map((item) => (
-            <NavItem key={item.children} pathname={item.pathname}>
-              {item.children}
-            </NavItem>
-          ))}
-        </ul>
-
-        {/* 검색, 알림, 프로필 */}
-        <ul className="flex items-center">
-          {/* 검색 아이콘 및 검색창 */}
-          <li className="relative mr-4 flex items-center justify-center w-10 h-10">
-            <div className="absolute right-0 flex items-center">
-              {isSearchOpen ? (
-                <form onSubmit={handleSearch} className="flex items-center bg-gray-700 rounded-full overflow-hidden transition-all duration-300 ease-in-out w-64">
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder="영화 검색..."
-                    className="bg-transparent text-white py-2 px-4 w-full outline-none"
-                  />
-                  <button 
-                    type="button"
-                    onClick={toggleSearch}
-                    className="p-2 text-white hover:text-gray-300 transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
-                </form>
-              ) : (
-                <button 
-                  onClick={toggleSearch}
-                  className="p-2 text-white hover:text-gray-300 transition-colors flex items-center justify-center"
-                >
-                  <Search size={24} />
-                </button>
-              )}
-            </div>
-          </li>
-          
-          {/* 프로필 */}
-          {userNavItems.map((item) => (
-            <NavItem key={item.pathname} pathname={item.pathname}>
-              {item.children}
-            </NavItem>
-          ))}
->>>>>>> Stashed changes
         </ul>
       </div>
     </nav>
