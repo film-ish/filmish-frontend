@@ -1,8 +1,9 @@
-import { useState, useCallback, useEffect } from "react";
-import MovieCard from "../../movie/MovieCard";
+import { useState, useCallback, useEffect } from 'react';
+import MovieCard from '../../movie/MovieCard';
 import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaCarouselType } from 'embla-carousel';
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from '../../../store/authStore';
+import { Link } from 'react-router';
 
 interface Movie {
   id: number;
@@ -21,11 +22,11 @@ interface PersonalRecommendProps {
 
 const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
   const { isLoggedIn } = useAuthStore();
-  
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
-    dragFree: true
+    dragFree: true,
   });
 
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
@@ -53,7 +54,7 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-6">
           {movies.map((movie) => (
-            <div key={movie.id} className="flex-[0_0_calc((100%-5rem)/6)]">
+            <Link key={movie.id} to={`/movies/${movie.id}`} className="flex-[0_0_calc((100%-5rem)/6)]">
               <MovieCard
                 movie={{
                   id: movie.id,
@@ -61,13 +62,13 @@ const PersonalRecommend = ({ movies }: PersonalRecommendProps) => {
                   posterPath: movie.img || movie.stillcut || '/no-poster-long.png',
                   rating: movie.rates || 0,
                   likes: 0,
-                  genres: movie.genre ? movie.genre.map(g => g.name) : [],
+                  genres: movie.genre ? movie.genre.map((g) => g.name) : [],
                   runningTime: movie.runningTime || 0,
-                  pubDate: movie.pubDate || ''
+                  pubDate: movie.pubDate || '',
                 }}
                 isLoggedIn={isLoggedIn}
               />
-            </div>
+            </Link>
           ))}
         </div>
       </div>

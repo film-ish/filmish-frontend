@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaCarouselType } from 'embla-carousel';
-import MovieCard from "../../movie/MovieCard";
+import MovieCard from '../../movie/MovieCard';
+import { Link } from 'react-router';
 
 interface Movie {
   id: number;
@@ -24,9 +25,9 @@ const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
-    dragFree: true
+    dragFree: true,
   });
-  
+
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
 
@@ -52,29 +53,25 @@ const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) 
             const formattedMovie = {
               id: movie.id,
               title: movie.title,
-              posterPath: movie.poster || movie.stillcut ||'/no-poster-long.png',
+              posterPath: movie.poster || movie.stillcut || '/no-poster-long.png',
               rating: movie.value || 0,
               likes: 0, // 좋아요 수는 API에서 제공하지 않는 것으로 보임
               genres: movie.genres || [],
               runningTime: movie.runningTime || 0,
-              pubDate: movie.pubDate || ''
+              pubDate: movie.pubDate || '',
             };
-            
+
             return (
-              <div key={movie.id} className="flex-[0_0_calc((100%-5rem)/6)]">
-                <MovieCard
-                  movie={formattedMovie}
-                  isLoggedIn={isLoggedIn}
-                  iconType={iconType}
-                />
-              </div>
+              <Link key={movie.id} to={`/movies/${movie.id}`} className="flex-[0_0_calc((100%-5rem)/6)]">
+                <MovieCard movie={formattedMovie} isLoggedIn={isLoggedIn} iconType={iconType} />
+              </Link>
             );
           })}
         </div>
       </div>
       {!isLoggedIn && (
         <>
-          <div 
+          <div
             style={{
               position: 'absolute',
               bottom: 0,
@@ -83,21 +80,20 @@ const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) 
               height: '80rem',
               background: 'linear-gradient(to top, #1A1A1A, rgba(0,0,0,0))',
               pointerEvents: 'none',
-              zIndex: 50
+              zIndex: 50,
             }}
           />
-          <div 
+          <div
             style={{
               position: 'absolute',
               bottom: '2rem',
               left: '50%',
               transform: 'translateX(-90%)',
               zIndex: 100,
-              textAlign: 'center'
-            }}
-          >
+              textAlign: 'center',
+            }}>
             <button
-              onClick={() => window.location.href = '/login'}
+              onClick={() => (window.location.href = '/login')}
               style={{
                 backgroundColor: '#ff5e5e',
                 color: 'white',
@@ -107,11 +103,10 @@ const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) 
                 border: 'none',
                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
               }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ff7a7a'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#ff5e5e'}
-            >
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#ff7a7a')}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#ff5e5e')}>
               로그인하러 가기
             </button>
           </div>
@@ -121,4 +116,4 @@ const TopTen = ({ movies, isLoggedIn = false, iconType = 'star' }: TopTenProps) 
   );
 };
 
-export default TopTen; 
+export default TopTen;
