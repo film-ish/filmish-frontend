@@ -3,6 +3,7 @@ import ProfileImage from '../../../common/ProfileImage';
 
 interface ReviewCardProps {
   review: {
+    id: number;
     title: string;
     content: string;
     updatedAt: string;

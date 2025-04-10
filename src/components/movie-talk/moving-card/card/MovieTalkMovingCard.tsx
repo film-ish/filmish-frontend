@@ -3,7 +3,7 @@ import { Film } from 'lucide-react';
 interface Actor {
   id: number;
   name: string;
-  photoUrl: string;
+  image: string;
   rating: number;
   qnaCnt: number;
   indieCnt: number;
@@ -18,8 +18,8 @@ const MovieTalkMovingCard = ({ actor }: MovieTalkMovingCardProps) => {
   return (
     <div className="flex gap-[22px] items-center justify-start w-[405px] bg-white/10 py-5 rounded-lg px-[24px] backdrop-blur-xs">
       <img
-        className="w-[109px] h-[106px] rounded-lg bg-gray-7 object-cover border border-gray-5"
-        src={actor.photoUrl || '/no-poster-long.png'}
+        className="w-[109px] h-[106px] rounded-lg bg-gray-7 object-cover"
+        src={actor.image || '/no-poster-long.png'}
         alt={`${actor.name}의 프로필 이미지`}
       />
       <div className="flex flex-col gap-1 items-start justify-start">
