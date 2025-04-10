@@ -1,7 +1,7 @@
+import { useNavigate } from 'react-router';
 import MovieInfo from './MovieInfo';
 import SliderControls from './SliderControls';
 import SliderNavigation from './SliderNavigation';
-import { useNavigate } from 'react-router-dom';
 interface Movie {
   id: number;
   title: string;
@@ -33,6 +33,10 @@ const MovieSlider = ({ movies, currentSlide, onSlideChange }: MovieSliderProps) 
 
   return (
     <div className="relative h-full">
+      <button
+        className="absolute bottom-15 left-20 z-100 w-28 h-10"
+        onClick={() => handleDetailClick(movies?.[currentSlide].id)}
+      />
       <div className="relative h-full overflow-hidden">
         {movies.map((movie, index) => (
           <div
