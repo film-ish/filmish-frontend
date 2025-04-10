@@ -1,7 +1,7 @@
 import MovieInfo from './MovieInfo';
 import SliderControls from './SliderControls';
 import SliderNavigation from './SliderNavigation';
-
+import { useNavigate } from 'react-router-dom';
 interface Movie {
   id: number;
   title: string;
@@ -16,6 +16,7 @@ interface MovieSliderProps {
 }
 
 const MovieSlider = ({ movies, currentSlide, onSlideChange }: MovieSliderProps) => {
+  const navigate = useNavigate();
   const handlePrevSlide = () => {
     onSlideChange(currentSlide === 0 ? movies.length - 1 : currentSlide - 1);
   };
@@ -26,6 +27,7 @@ const MovieSlider = ({ movies, currentSlide, onSlideChange }: MovieSliderProps) 
 
   const handleDetailClick = (movieId: number) => {
     // TODO: Implement detail view navigation
+    navigate(`/movies/${movieId}`);
     console.log('View details for movie:', movieId);
   };
 
