@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 interface Actor {
   actorId: number;
   name: string;
-  photoUrl: string;
-  rating: number;
+  image?: string;
   indieCnt: number;
 }
 
@@ -36,7 +35,7 @@ const MovieTalkActorCard = ({ actor, isCenter = false, onCardClick }: MovieTalkA
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${actor.photoUrl || '/no-poster-long.png'})`,
+          backgroundImage: `url(${actor.image || '/no-poster-long.png'})`,
         }}
       >
         {/* 그라데이션 오버레이 */}
