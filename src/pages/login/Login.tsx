@@ -9,6 +9,8 @@ import { useAuthStore } from '../../store/authStore.ts';
 import { isLikedCommercialMovies } from '../../api/commercial/commercialApi.ts';
 // 상업 영화 좋아요 API 함수 임포트
 
+
+
 // Login 컴포넌트 정의
 const Login = () => {
   // 페이지 이동을 위한 navigate 함수 초기화
@@ -21,6 +23,7 @@ const Login = () => {
     email: '',
     password: '',
   });
+  const [checkPasswordError, setCheckPasswordError] = useState<string | null>(null);
 
   // 입력 필드 변경 시 호출되는 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,6 +67,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error('로그인 실패:', error);
+      setCheckPasswordError('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
   };
 
@@ -116,6 +120,7 @@ const Login = () => {
                 onChange={handleChange} // 변경 시 핸들러 연결
               />
             </div>
+            {checkPasswordError && <p className="text-sm text-rose-cloud mt-1">{checkPasswordError}</p>}
           </div>
 
           {/* 추가 옵션 (로그인 상태 유지, 비밀번호 찾기) */}
