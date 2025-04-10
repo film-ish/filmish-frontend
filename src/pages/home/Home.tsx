@@ -42,6 +42,10 @@ const Home = () => {
     queryKey: ['recommendations'],
     queryFn: () => getRecommendations(10), // 12개 추천 영화 요청
     enabled: !!accessToken, // accessToken이 존재하는 경우에만 쿼리 실행
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   // 마운트 시 및 데이터 변경 시 상태 로깅

@@ -22,6 +22,10 @@ const HomeRecommendations = () => {
     queryKey: ['recommendations', 20],
     queryFn: () => getRecommendations(20),
     enabled: !!accessToken, // accessToken이 존재하는 경우에만 쿼리 실행
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   // 컴포넌트 마운트 시 로그인 상태 확인
