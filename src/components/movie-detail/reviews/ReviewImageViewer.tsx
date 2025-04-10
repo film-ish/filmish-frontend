@@ -27,14 +27,17 @@ const ImageViewer = ({ images, alt = '이미지', handleClose }: ImageViewerProp
     <div
       className="z-1000 fixed inset-0 w-screen h-screen bg-gray-8/90 flex justify-center items-center"
       onClick={handleClose}>
-      <div className="fixed top-1/2 translate-y-[-50%] px-4 left-0 right-0 flex justify-between">
-        <IconButton onClick={handleImageChange}>
-          <ChevronLeft />
-        </IconButton>
-        <IconButton onClick={handleImageChange}>
-          <ChevronRight />
-        </IconButton>
-      </div>
+      {images.length > 1 && (
+        <div className="fixed top-1/2 translate-y-[-50%] px-4 left-0 right-0 flex justify-between">
+          <IconButton onClick={handleImageChange}>
+            <ChevronLeft />
+          </IconButton>
+          <IconButton onClick={handleImageChange}>
+            <ChevronRight />
+          </IconButton>
+        </div>
+      )}
+
       <div className="relative max-w-[90%] max-h-[90%]" onClick={(e) => e.stopPropagation()}>
         <img src={images[currentIndex]} alt={alt} className="max-w-full max-h-[90vh] object-contain" />
       </div>
