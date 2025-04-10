@@ -39,6 +39,10 @@ persistQueryClient({
   // 오류 발생 시 캐시를 무시하고 새로 데이터를 가져오도록 설정
   dehydrateOptions: {
     shouldDehydrateQuery: (query) => {
+
+      if (Array.isArray(query.queryKey) && query.queryKey[0] === 'recommendations') {
+        return false;
+      }
       // 오류가 있는 쿼리나 직렬화할 수 없는 데이터를 포함한 쿼리는 저장하지 않음
       try {
         // 직렬화 테스트 - 직렬화할 수 없는 데이터가 있으면 예외 발생
