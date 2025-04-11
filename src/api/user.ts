@@ -36,6 +36,7 @@ export const userService = {
 
   async getMyRatings(userId: number, page: number, size?: number = 20) {
     const { data } = await apiClient.get(`/users/${userId}/ratings?pageNum=${page}&pageSize=${size}`);
+    console.log(data);
     return data;
   },
 

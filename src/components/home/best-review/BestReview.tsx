@@ -9,10 +9,7 @@ interface Review {
   content: string;
   date: string;
   rating: number;
-  writerName: string;
-  writerImage: string;
-  updatedAt: string;
-  createdAt: string;
+  username: string;
 }
 
 interface Movie {

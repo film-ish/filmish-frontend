@@ -55,25 +55,28 @@ const List = () => {
   }, [fetchRecommendations]);
 
   // 장르 클릭 핸들러
-  const handleGenreClick = useCallback(
-    (genreName: string) => {
-      const wasActiveGenre = activeGenreName === genreName;
-      setGenreByName(wasActiveGenre ? null : genreName);
+  const handleGenreClick = () => {
+    navigate(`/genre#${genre.id}`);
+  };
+  // const handleGenreClick = useCallback(
+  //   (genreName: string) => {
+  //     const wasActiveGenre = activeGenreName === genreName;
+  //     setGenreByName(wasActiveGenre ? null : genreName);
 
-      if (wasActiveGenre) return;
+  //     if (wasActiveGenre) return;
 
-      // 자동 스크롤 허용 상태로 설정
-      blockAutoScrollRef.current = false;
+  //     // 자동 스크롤 허용 상태로 설정
+  //     blockAutoScrollRef.current = false;
 
-      setTimeout(() => {
-        // 스크롤 차단 상태가 아닐 때만 스크롤 실행
-        if (!blockAutoScrollRef.current) {
-          scrollToSection(genreName);
-        }
-      }, 10);
-    },
-    [activeGenreName, setGenreByName, scrollToSection],
-  );
+  //     setTimeout(() => {
+  //       // 스크롤 차단 상태가 아닐 때만 스크롤 실행
+  //       if (!blockAutoScrollRef.current) {
+  //         scrollToSection(genreName);
+  //       }
+  //     }, 10);
+  //   },
+  //   [activeGenreName, setGenreByName, scrollToSection],
+  // );
 
   // 좋아요 클릭 핸들러
   const handleLike = useCallback(
@@ -174,14 +177,14 @@ const List = () => {
   }));
 
   return (
-    <div className="pb-16 text-white">
+    <div className="min-h-screen pb-16 text-white">
       {/* 장르 헤더 섹션 */}
-      <div ref={headerRef} className="sticky top-0 z-10 p-4 border-b border-gray-8">
+      <div ref={headerRef} className="sticky top-[3.75rem] bg-gray-8 z-10 p-4 border-b border-gray-8">
         <h1 className="text-xl font-bold mb-2 mx-10">장르별 추천</h1>
-        <div className="flex flex-wrap py-2 mx-10">
+        <div className="overflow-x-clip flex py-2 mx-10">
           {genres &&
             genres.map((genre) => (
-              <div key={genre.id} className="mr-1 mb-1">
+              <div key={genre.id} className="mr-1 mb-1 whitespace-nowrap">
                 <Button
                   variant="filled"
                   shape="rounded-full"
@@ -231,7 +234,7 @@ const List = () => {
             <div
               key={genre.id}
               ref={registerSectionRef(genre.name)}
-              id={`genre-section-${genre.name}`}
+              id={`${genre.name}`}
               data-genre={genre.name}
               className="genre-section">
               {/* 섹션 내용 */}

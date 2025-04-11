@@ -35,20 +35,26 @@ const LikePage = () => {
   const { data, isLoading } = useInfiniteQuery({
     queryKey: ['my-like-list', user.id],
     queryFn: async ({ pageParam }) => {
-      const response = await userService.getMyLikeList(user.id, pageParam);
-
+      const response = await userService.getMyLikeList(user.id, pageParam, 100);
       console.log('response', response);
-
       return response.data;
     },
     initialPageParam: 0,
-    getNextPageParam: (lastPage, pages, lastPageParam) => {
-      return lastPageParam + 1;
+    getNextPageParam: (lastPage) => {
+      if (!lastPage || !lastPage.content || lastPage.content.length === 0) return undefined;
+      return lastPage.nextPage;
     },
-    staleTime: 1 * 1000,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     enabled: user.id === 0 || !!user.id,
     placeholderData: {
-      pages: [{}],
+      pages: [
+        {
+          content: [],
+          nextPage: 0,
+        },
+      ],
     },
   });
 
@@ -90,9 +96,13 @@ const LikePage = () => {
   });
 
   return (
-    <>
-      <h1 className="text-2xl font-bold text-white mb-8">보고 싶어요</h1>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold text-white">보고 싶어요</h1>
       {isLoading && <div className="w-full h-full flex items-center justify-center">로딩 중..</div>}
+
+      {data?.pages.length === 1 && data?.pages[0].content?.length === 0 && (
+        <div className="text-white text-paragraph-lg">보고 싶어요 내역이 없습니다.</div>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
         {data?.pages.map((page) => {
           return page?.content?.map((movie: LikedMovie) => {
@@ -136,7 +146,7 @@ const LikePage = () => {
           });
         })}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -16,24 +16,21 @@ export interface Movie {
 interface MovieCardProps {
   width?: number | string;
   movie: Movie;
-  isLoggedIn: boolean;
   iconType?: 'star' | 'heart';
   isLiked?: boolean;
   onLike?: () => void;
 }
 
- 
-
-const MovieCard = ({ width = 225, movie, isLoggedIn, iconType = 'star', isLiked, onLike }: MovieCardProps) => {
+const MovieCard = ({ width = 225, movie, iconType = 'star', isLiked, onLike }: MovieCardProps) => {
   if (!movie) {
     return null;
   }
 
   const { title, posterPath, rating, genres, runningTime } = movie;
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const onClick = () => {
     navigate(`/movies/${movie.id}`);
-}
+  };
   // genres가 문자열 배열인 경우 문자열로 변환
   const genresText = Array.isArray(genres) ? genres.join(', ') : genres;
 

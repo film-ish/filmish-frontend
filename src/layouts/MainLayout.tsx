@@ -18,6 +18,11 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   // commercial 페이지에서는 헤더를 표시하지 않음
   const isCommercialPage = location.pathname === '/commercial';
 
+  const isFullHeight = () => {
+    if (location.pathname === '/commercial') return true;
+    if (location.pathname.includes('/movie-talk/')) return true;
+  };
+
   return (
     <div className="min-h-screen bg-gray-8 overflow-x-hidden">
       {!isCommercialPage && <Header />}
@@ -35,7 +40,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         </IconButton>
       )}
 
-      <div className={`${isCommercialPage ? '' : 'mt-[3.75rem]'} mx-[6.25%]`}>{children}</div>
+      <div className={`${isFullHeight() ? '' : 'pt-[3.75rem]'} mx-[6.25%]`}>{children}</div>
     </div>
   );
 };

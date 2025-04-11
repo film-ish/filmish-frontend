@@ -95,18 +95,7 @@ const useRatings = (movieId: number) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ratingListQueryKey });
-      queryClient.setQueryData(['movie', movieId], (oldData) => {
-        if (!oldData) return oldData;
-
-        const newAverageRating =
-          oldData.ratingsCount.reduce((acc, curr) => acc + curr.value, 0) / oldData.ratingsCount.length;
-
-        return {
-          ...oldData,
-          ratingsCount: oldData.ratingsCount,
-          averageRating: newAverageRating,
-        };
-      });
+      queryClient.invalidateQueries({ queryKey: ['movie', movieId] });
     },
   });
 

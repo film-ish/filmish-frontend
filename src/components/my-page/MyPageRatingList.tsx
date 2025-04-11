@@ -15,6 +15,14 @@ const MyPageRatingList = () => {
       {isLoading && loadingIndicator()}
 
       {ratings?.pages.map((page) => {
+        if (page.content.length === 0) {
+          return (
+            <div key={page.totalPages} className="text-white text-paragraph-lg">
+              평점 내역이 없습니다.
+            </div>
+          );
+        }
+
         return page.content.map((movie) => (
           <Link
             key={movie.movieId}

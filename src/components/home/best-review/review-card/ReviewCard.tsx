@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { getTimeAgo } from '../../../../utils/date';
 import ProfileImage from '../../../common/ProfileImage';
 
@@ -16,7 +17,9 @@ interface ReviewCardProps {
 
 const ReviewCard = ({ review }: ReviewCardProps) => {
   return (
-    <div className="h-full bg-white/10 rounded-xl p-6 flex flex-col transition-colors">
+    <Link
+      to={`movies/${review.indieId}/reviews/${review.id}`}
+      className="h-full bg-white/10 rounded-xl p-6 flex flex-col transition-colors hover:bg-white/20">
       <h3 className="text-lg font-bold mb-2 text-white line-clamp-1">{review.title}</h3>
       <p className="text-sm text-gray-4 line-clamp-2 mb-auto">{review.content}</p>
       <div className="flex items-center justify-between">
@@ -26,7 +29,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
         </div>
         <span className="text-xs font-light text-gray-4">{getTimeAgo(review.updatedAt || review.createdAt)}</span>
       </div>
-    </div>
+    </Link>
   );
 };
 

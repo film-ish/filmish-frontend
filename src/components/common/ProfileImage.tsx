@@ -1,5 +1,3 @@
-import { User } from 'lucide-react';
-
 interface ProfileImageProps {
   src: string;
   size?: number;

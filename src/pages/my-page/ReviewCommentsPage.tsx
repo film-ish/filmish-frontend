@@ -25,13 +25,20 @@ const ReviewCommentsPage = () => {
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages, lastPageParam) => {
-      if (!lastPage || lastPage.length === 0) return undefined;
-      return lastPageParam + 1;
+      if (!lastPage || !lastPage.content || lastPage.content.length === 0) return undefined;
+      return lastPage.nextPage;
     },
-    staleTime: 1 * 1000,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     enabled: user.id === 0 || !!user.id,
     placeholderData: {
-      pages: [{}],
+      pages: [
+        {
+          content: [],
+          nextPage: 0,
+        },
+      ],
     },
   });
 
@@ -42,6 +49,10 @@ const ReviewCommentsPage = () => {
       {isLoading && <div className="w-full h-full flex items-center justify-center">로딩 중..</div>}
 
       <div className="w-full h-[1px] bg-gray-6" />
+
+      {data?.pages.length === 1 && data?.pages[0].content?.length === 0 && (
+        <div className="text-white text-paragraph-lg">댓글 내역이 없습니다.</div>
+      )}
 
       {data?.pages.map((page) => {
         const reviewIdArr = [];

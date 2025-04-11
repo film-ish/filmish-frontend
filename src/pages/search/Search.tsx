@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router';
 import { searchApi } from '../../api/header/searchApi';
 import MovieCard from '../../components/movie/MovieCard';
 import { useAuthStore } from '../../store/authStore';
@@ -30,7 +30,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     this.setState({
       error,
-      errorInfo
+      errorInfo,
     });
   }
 
@@ -109,7 +109,7 @@ const SearchContent = () => {
     actors: [],
     directors: [],
     genreMovies: [],
-    keywordMovies: []
+    keywordMovies: [],
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,7 +123,7 @@ const SearchContent = () => {
           actors: [],
           directors: [],
           genreMovies: [],
-          keywordMovies: []
+          keywordMovies: [],
         });
         return;
       }
@@ -133,17 +133,17 @@ const SearchContent = () => {
 
       try {
         const response = await searchApi(keyword);
-        
+
         if (response && response.data) {
           // API 응답 구조 확인 및 데이터 설정
           const data = response.data as any;
-          
+
           setSearchResults({
             movies: data.movies || [],
             actors: data.actors || [],
             directors: data.directors || [],
             genreMovies: data.genreMovies || [],
-            keywordMovies: data.keywordMovies || []
+            keywordMovies: data.keywordMovies || [],
           });
         } else {
           setSearchResults({
@@ -151,7 +151,7 @@ const SearchContent = () => {
             actors: [],
             directors: [],
             genreMovies: [],
-            keywordMovies: []
+            keywordMovies: [],
           });
         }
       } catch (err) {
@@ -161,7 +161,7 @@ const SearchContent = () => {
           actors: [],
           directors: [],
           genreMovies: [],
-          keywordMovies: []
+          keywordMovies: [],
         });
       } finally {
         setIsLoading(false);
@@ -172,15 +172,10 @@ const SearchContent = () => {
   }, [keyword]);
 
   // 모든 영화 결과를 합침
-  const allMovies = [
-    ...searchResults.movies,
-    ...searchResults.genreMovies
-  ];
+  const allMovies = [...searchResults.movies, ...searchResults.genreMovies];
 
   // 중복 제거 (id 기준)
-  const uniqueMovies = allMovies.filter((movie, index, self) =>
-    index === self.findIndex((m) => m.id === movie.id)
-  );
+  const uniqueMovies = allMovies.filter((movie, index, self) => index === self.findIndex((m) => m.id === movie.id));
 
   // 더보기 페이지로 이동하는 함수
   const handleMoreClick = (type: string) => {
@@ -190,13 +185,11 @@ const SearchContent = () => {
   return (
     <div className="container mx-auto px-4 pt-10 pb-12">
       <h1 className="text-3xl font-bold mb-8">통합 검색</h1>
-      
+
       {/* 검색어 표시 */}
       {keyword && (
         <div className="mb-6">
-          <h2 className="text-xl font-semibold">
-            "{keyword}" 검색 결과
-          </h2>
+          <h2 className="text-xl font-semibold">"{keyword}" 검색 결과</h2>
         </div>
       )}
 
@@ -208,55 +201,54 @@ const SearchContent = () => {
       )}
 
       {/* 오류 상태 */}
-      {error && (
-        <div className="text-red-500 text-center py-8">{error}</div>
-      )}
+      {error && <div className="text-red-500 text-center py-8">{error}</div>}
 
       {/* 검색 결과 없음 */}
-      {!isLoading && !error && keyword && 
-       uniqueMovies.length === 0 && 
-       searchResults.actors.length === 0 && 
-       searchResults.directors.length === 0 && 
-       searchResults.keywordMovies.length === 0 && (
-        <div className="text-center py-12 text-gray-400">
-          검색 결과가 없습니다. 다른 키워드로 검색해보세요.
-        </div>
-      )}
+      {!isLoading &&
+        !error &&
+        keyword &&
+        uniqueMovies.length === 0 &&
+        searchResults.actors.length === 0 &&
+        searchResults.directors.length === 0 &&
+        searchResults.keywordMovies.length === 0 && (
+          <div className="text-center py-12 text-gray-400">검색 결과가 없습니다. 다른 키워드로 검색해보세요.</div>
+        )}
 
       {/* 영화 검색 결과 */}
       {uniqueMovies.length > 0 && (
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">
-              영화 ({uniqueMovies.length}개)
-            </h3>
-            {uniqueMovies.length > 5 && (
-              <button 
+            <h3 className="text-lg font-semibold">영화 ({uniqueMovies.length}개)</h3>
+            {/* {uniqueMovies.length > 5 && (
+              <button
                 onClick={() => handleMoreClick('movies')}
-                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
-              >
+                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors">
                 더보기 <ChevronRight size={16} className="ml-1" />
               </button>
-            )}
+            )} */}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {uniqueMovies.slice(0, 5).map((movie) => (
-              <MovieCard
-                key={movie.id}
-                movie={{
-                  id: parseInt(movie.id),
-                  title: movie.title,
-                  posterPath: movie.poster || '/no-poster.png',
-                  rating: movie.rate || 0,
-                  likes: 0,
-                  genres: movie.genres || [],
-                  runningTime: movie.runningTime || 0,
-                  pubDate: movie.pubDate || '',
-                }}
-                isLoggedIn={isLoggedIn}
-                iconType="star"
-              />
-            ))}
+            {uniqueMovies.map((movie) => {
+              console.log(movie);
+              return (
+                <MovieCard
+                  key={movie.id}
+                  movie={{
+                    id: parseInt(movie.id),
+                    title: movie.title,
+                    posterPath: movie.poster || '/no-poster.png',
+                    rating: movie.rate || 0,
+                    likes: 0,
+                    genres: movie.genres || [],
+                    runningTime: movie.runningTime || 0,
+                    pubDate: movie.pubDate || '',
+                  }}
+                  isLiked={movie.like}
+                  onLike={() => {}}
+                  iconType="star"
+                />
+              );
+            })}
           </div>
         </div>
       )}
@@ -265,25 +257,22 @@ const SearchContent = () => {
       {searchResults.actors && searchResults.actors.length > 0 && (
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">
-              배우 ({searchResults.actors.length}개)
-            </h3>
+            <h3 className="text-lg font-semibold">배우 ({searchResults.actors.length}개)</h3>
             {searchResults.actors.length > 5 && (
-              <button 
+              <button
                 onClick={() => handleMoreClick('actors')}
-                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
-              >
+                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors">
                 더보기 <ChevronRight size={16} className="ml-1" />
               </button>
             )}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-6">
             {searchResults.actors.slice(0, 5).map((actor) => (
-              <div key={actor.id} className="flex flex-col items-center">
+              <Link key={actor.id} to={`/movie-talk/${actor.id}`} className="flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full overflow-hidden mb-2 bg-gray-700">
-                  <img 
-                    src={actor.image || '/no-poster-long.png'} 
-                    alt={actor.name} 
+                  <img
+                    src={actor.image || '/no-poster-long.png'}
+                    alt={actor.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
@@ -304,7 +293,7 @@ const SearchContent = () => {
                     </p>
                   )}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -314,14 +303,11 @@ const SearchContent = () => {
       {searchResults.directors && searchResults.directors.length > 0 && (
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">
-              감독 ({searchResults.directors.length}개)
-            </h3>
+            <h3 className="text-lg font-semibold">감독 ({searchResults.directors.length}개)</h3>
             {searchResults.directors.length > 5 && (
-              <button 
+              <button
                 onClick={() => handleMoreClick('directors')}
-                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
-              >
+                className="flex items-center text-blue-500 hover:text-blue-600 transition-colors">
                 더보기 <ChevronRight size={16} className="ml-1" />
               </button>
             )}
@@ -330,9 +316,9 @@ const SearchContent = () => {
             {searchResults.directors.slice(0, 5).map((director) => (
               <div key={director.id} className="flex flex-col items-center">
                 <div className="w-32 h-32 rounded-full overflow-hidden mb-2 bg-gray-700">
-                  <img 
-                    src={director.image || '/no-poster-long.png'} 
-                    alt={director.name} 
+                  <img
+                    src={director.image || '/no-poster-long.png'}
+                    alt={director.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
@@ -342,9 +328,7 @@ const SearchContent = () => {
                 </div>
                 <div className="text-center">
                   <h4 className="font-semibold text-white">{director.name}</h4>
-                  <p className="text-sm text-gray-400">
-                    {director.filmography ? director.filmography.length : 0} 작품
-                  </p>
+                  <p className="text-sm text-gray-400">{director.filmography ? director.filmography.length : 0} 작품</p>
                   {director.filmography && director.filmography.length > 0 && (
                     <p className="text-xs text-gray-500 mt-1">
                       {director.filmography.slice(0, 2).join(', ')}
@@ -361,9 +345,7 @@ const SearchContent = () => {
       {/* 키워드 검색 결과 */}
       {searchResults.keywordMovies && searchResults.keywordMovies.length > 0 && (
         <div className="mb-12">
-          <h3 className="text-lg font-semibold mb-4">
-            키워드 검색 결과
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">키워드 검색 결과</h3>
           {searchResults.keywordMovies.map((group, index) => (
             <div key={index} className="mb-8">
               <div className="flex justify-between items-center mb-4">
@@ -371,10 +353,9 @@ const SearchContent = () => {
                   "{group.name}" 관련 영화 ({group.movies.length}개)
                 </h4>
                 {group.movies.length > 5 && (
-                  <button 
+                  <button
                     onClick={() => handleMoreClick(`keyword-${group.name}`)}
-                    className="flex items-center text-blue-500 hover:text-blue-600 transition-colors"
-                  >
+                    className="flex items-center text-blue-500 hover:text-blue-600 transition-colors">
                     더보기 <ChevronRight size={16} className="ml-1" />
                   </button>
                 )}
@@ -404,11 +385,7 @@ const SearchContent = () => {
       )}
 
       {/* 초기 상태 */}
-      {!isLoading && !error && !keyword && (
-        <div className="text-center py-12 text-gray-400">
-          검색어를 입력하세요.
-        </div>
-      )}
+      {!isLoading && !error && !keyword && <div className="text-center py-12 text-gray-400">검색어를 입력하세요.</div>}
     </div>
   );
 };
@@ -422,4 +399,4 @@ const Search = () => {
   );
 };
 
-export default Search; 
+export default Search;

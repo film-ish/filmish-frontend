@@ -19,13 +19,15 @@ const MovieReviewsPage = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div>리뷰 {reviews?.pages.flat().length}개</div>
-          <Button
-            shape="rounded-full"
-            onClick={() => {
-              setShowReviewForm(true);
-            }}>
-            리뷰 작성하기
-          </Button>
+          {!showReviewForm && (
+            <Button
+              shape="rounded-full"
+              onClick={() => {
+                setShowReviewForm(true);
+              }}>
+              리뷰 작성하기
+            </Button>
+          )}
         </div>
 
         {showReviewForm && (

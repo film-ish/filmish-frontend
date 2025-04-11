@@ -9,8 +9,6 @@ import { useAuthStore } from '../../store/authStore.ts';
 import { isLikedCommercialMovies } from '../../api/commercial/commercialApi.ts';
 // 상업 영화 좋아요 API 함수 임포트
 
-
-
 // Login 컴포넌트 정의
 const Login = () => {
   // 페이지 이동을 위한 navigate 함수 초기화

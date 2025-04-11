@@ -42,36 +42,40 @@ const QnaPage = () => {
   const qnaListQuery = useInfiniteQuery({
     queryKey: ['qna-list', user.id],
     queryFn: async ({ pageParam }) => {
-      const response = await userService.getMyQnaList(user.id, pageParam);
+      const response = await userService.getMyQnaList(user.id, pageParam, 100);
+      console.log('response', response);
       return response.data;
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages, lastPageParam) => {
-      return lastPageParam + 1;
+      if (!lastPage || !lastPage.content || lastPage.content.length === 0) return undefined;
+      return lastPage.nextPage;
     },
-    staleTime: 1 * 1000,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     enabled: user.id === 0 || !!user.id,
     placeholderData: {
       pages: [
         {
-          qna: [],
+          content: [],
+          nextPage: 0,
         },
       ],
     },
   });
 
   return (
-    <>
-      <h1 className="text-2xl font-bold text-white mb-8">Q&A</h1>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold text-white">Q&A</h1>
       <div className="grid grid-cols-1 gap-6">
         {qnaListQuery.data?.pages.map((page) => {
           return page.content?.map((qna) => {
-            console.log(qna);
             return (
               <Link
                 to={`/movie-talk/${qna.makerId}`}
                 key={qna.qnaId}
-                className="flex flex-col gap-4 p-4 bg-gray-7 rounded-lg hover:bg-gray-6 transition-colors">
+                className="flex flex-col gap-4 p-4 bg-gray-6 rounded-lg hover:bg-gray-5/30 transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-4">
                     <div className="text-white font-medium">
@@ -91,19 +95,19 @@ const QnaPage = () => {
                     </div>
                   </div>
 
-                  <IconButton
+                  {/* <IconButton
                     onClick={(e) => {
                       e.stopPropagation();
                     }}>
                     <MoreHorizontal size={20} className="text-gray-400" />
-                  </IconButton>
+                  </IconButton> */}
                 </div>
               </Link>
             );
           });
         })}
       </div>
-    </>
+    </div>
   );
 };
 

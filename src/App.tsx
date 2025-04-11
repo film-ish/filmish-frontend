@@ -7,6 +7,7 @@ import { idbQueryPersister } from './lib/queryPersister';
 
 // 라우팅 설정 파일 임포트
 import AppRoutes from './router';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // React Query 클라이언트 인스턴스 생성
 const queryClient = new QueryClient({
@@ -39,7 +40,6 @@ persistQueryClient({
   // 오류 발생 시 캐시를 무시하고 새로 데이터를 가져오도록 설정
   dehydrateOptions: {
     shouldDehydrateQuery: (query) => {
-
       if (Array.isArray(query.queryKey) && query.queryKey[0] === 'recommendations') {
         return false;
       }
@@ -61,6 +61,7 @@ function App() {
   return (
     // QueryClientProvider를 사용하여 앱 전체에 QueryClient 인스턴스 제공
     <QueryClientProvider client={queryClient}>
+      <ScrollToTop />
       {/* 라우팅 컴포넌트 렌더링 */}
       <AppRoutes />
     </QueryClientProvider>
