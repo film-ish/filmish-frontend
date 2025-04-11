@@ -41,7 +41,7 @@ const MovieCard = ({ width = 225, movie, iconType = 'star', isLiked, onLike }: M
       </div>
 
       <div className="flex items-center justify-between text-label-xl">
-        <div className="font-semibold text-white">{title}</div>
+        <div className="font-semibold truncate text-white">{title}</div>
         <div className="flex items-center gap-1 text-label-md font-light text-gray-4">
           {iconType === 'heart' ? (
             <>

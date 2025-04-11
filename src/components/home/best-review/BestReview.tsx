@@ -49,7 +49,6 @@ const BestReview = ({ reviews, movies }: BestReviewProps) => {
           {/* 왼쪽 리뷰 목록 */}
           <div className="flex items-center justify-between gap-3 mr-4 px-4 py-4 rounded-xl border border-gray-1 bg-white/20 backdrop-blur-xl">
             <h2 className="text-2xl font-light tracking-tight">BEST REVIEW</h2>
-            <ChevronDown className="w-6 h-6" />
           </div>
           <div className="flex-1 mt-4 mr-4">
             <div className="h-full flex flex-col justify-between gap-4">
