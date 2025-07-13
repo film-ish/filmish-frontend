@@ -46,12 +46,14 @@ export const idbQueryPersister: Persister = {
       }
 
       const result: Record<string, unknown> = {};
-      for (const key in obj) {
-        if (obj[key] instanceof Promise) {
+      // 타입 안전성을 위해 obj를 Record<string, unknown>로 타입 단언
+      const objRecord = obj as Record<string, unknown>;
+      for (const key in objRecord) {
+        if (objRecord[key] instanceof Promise) {
           // Promise 객체는 제외
           continue;
         }
-        result[key] = removePromises(obj[key]);
+        result[key] = removePromises(objRecord[key]);
       }
       return result;
     };

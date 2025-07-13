@@ -24,7 +24,7 @@ export interface UserState {
 export const useUserStore = create<UserState>()(
   // persist 미들웨어를 적용하여 상태를 영구 저장소에 저장합니다.
   persist(
-    // set 함수를 인자로 받는 콜백 함수입니다. set 함수는 상태를 업데이트하는 데 사용됩니다.
+    // set 함수를 인자로 받는 콜백 함수입니다. set은 Zustand가 제공하는 상태 업데이트 함수
     (set) => ({
       // --- 초기 상태 정의 ---
       id: null, // 초기 사용자 ID는 null

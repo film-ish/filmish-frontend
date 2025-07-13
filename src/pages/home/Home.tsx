@@ -10,6 +10,7 @@ import { useAuthStore } from '../../store/authStore';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../router/routes';
 
+
 const Home = () => {
   // 로그인 상태 확인
   const accessToken = useAuthStore((state) => state.accessToken);
