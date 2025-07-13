@@ -1,36 +1,33 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Film, Upload } from 'lucide-react';
-import { signup, checkEmail, checkNickname } from '../../api/join/signupApi';
+import { Film } from 'lucide-react';
+import { signup, checkEmail, checkNickname } from '../../api/signup/signupApi';
 
 type FormState = {
   email: string;
   password: string;
+  confirmPassword: string;
   nickname: string;
   birth: string;
-  image: File | null;
 };
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<FormState>({
     email: '',
     password: '',
+    confirmPassword: '',
     nickname: '',
     birth: '',
-    image: null,
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [emailChecked, setEmailChecked] = useState<boolean | null>(null);
   const [nicknameChecked, setNicknameChecked] = useState<boolean | null>(null);
-  const [imageChecked, setImageChecked] = useState<boolean | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [nicknameError, setNicknameError] = useState<string | null>(null);
-  const [checkImageError, setCheckImageError] = useState<string | null>(null);
-  const [error, setError] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,9 +35,26 @@ const SignUp = () => {
       ...prev,
       [name]: value,
     }));
+
+    // 비밀번호 확인 검증
+    if (name === 'confirmPassword') {
+      if (value !== formData.password) {
+        setPasswordError('비밀번호가 일치하지 않습니다.');
+      } else {
+        setPasswordError(null);
+      }
+    }
+    
+    if (name === 'password') {
+      if (formData.confirmPassword && value !== formData.confirmPassword) {
+        setPasswordError('비밀번호가 일치하지 않습니다.');
+      } else {
+        setPasswordError(null);
+      }
+    }
   };
 
-  const handleEmailCheckOnFocus = async () => {
+  const handleEmailCheckOnFocus = async () => { 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email) return;
     if (!emailRegex.test(formData.email)) {
@@ -85,56 +99,6 @@ const SignUp = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      const isValidType = allowedTypes.includes(file.type);
-      const isValidSize = file.size <= 1024 * 1024; // 1MB
-
-      if (!isValidType) {
-        setCheckImageError('JPG/PNG/JPEG 형식의 이미지만 업로드 가능합니다.');
-        return;
-      }
-
-      const isValid = checkImageSize(file);
-      if (!isValid) return;
-
-      setFormData((prev) => ({
-        ...prev,
-        image: file, // Base64 형식의 이미지 데이터
-      }));
-
-      // 이미지 파일 미리보기 생성
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setImagePreview(result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleImageClick = () => {
-    // 파일 입력 클릭 트리거
-    fileInputRef.current?.click();
-  };
-
-  const checkImageSize = (file: File): boolean => {
-    const maxSizeBytes = 1024 * 1024;
-
-    if (file.size > maxSizeBytes) {
-      setCheckImageError('이미지 크기는 1MB 이하로 업로드해주세요.');
-      setImageChecked(false);
-      return false;
-    }
-
-    setCheckImageError('');
-    setImageChecked(true);
-    return true;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -146,12 +110,15 @@ const SignUp = () => {
     data.append('nickname', formData.nickname);
     data.append('birth', formData.birth);
 
-    if (formData.image) {
-      data.append('image', formData.image);
-    }
 
     if (emailChecked !== true || nicknameChecked !== true) {
       setError('이메일과 닉네임 중복 확인을 완료해주세요.');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다.');
       setLoading(false);
       return;
     }
@@ -190,11 +157,6 @@ const SignUp = () => {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {/* {error && (
-            <div className="text-red-500 text-sm text-center bg-red-100/10 p-2 rounded-lg">
-              {error}
-            </div>
-          )} */}
           <div className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
@@ -229,8 +191,25 @@ const SignUp = () => {
                 className="mt-1 block w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 value={formData.password}
                 onChange={handleChange}
-                //onBlur={handleNicknameCheckOnFocus}
               />
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1">
+                비밀번호 확인
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                placeholder="••••••••"
+                className="mt-1 block w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
+              {passwordError && <div className="text-red-500 text-sm mt-1">{passwordError}</div>}
             </div>
 
             <div>
@@ -246,6 +225,8 @@ const SignUp = () => {
                 className="mt-1 block w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 value={formData.nickname}
                 onChange={handleChange}
+                onFocus={handleNicknameCheckOnFocus}
+                onBlur={handleNicknameCheckOnFocus}
               />
               {nicknameError && <div className="text-red-500 text-sm mt-1">{nicknameError}</div>}
             </div>
@@ -263,73 +244,18 @@ const SignUp = () => {
                 value={formData.birth}
                 max={new Date().toISOString().split('T')[0]}
                 onChange={handleChange}
-                onFocus={handleNicknameCheckOnFocus}
-                onBlur={handleNicknameCheckOnFocus}
               />
             </div>
-
-            {/* 이미지 업로드 필드 수정 */}
-            <div>
-              <label htmlFor="image" className="block text-sm font-medium text-gray-300 mb-1">
-                프로필 이미지
-              </label>
-
-              {/* 숨겨진 파일 입력 */}
-              <input
-                ref={fileInputRef}
-                id="image-file"
-                name="image-file"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-
-              {/* 이미지 업로드 UI */}
-              <div
-                onClick={handleImageClick}
-                className="mt-1 flex flex-col items-center justify-center w-full h-32 px-4 py-3 bg-gray-800/50 border border-gray-700 border-dashed rounded-xl text-gray-400 cursor-pointer hover:bg-gray-700/30 transition-all duration-200">
-                {imagePreview ? (
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <img
-                      src={imagePreview}
-                      alt="프로필 미리보기"
-                      className="max-h-full max-w-full object-contain rounded-lg"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity duration-200 rounded-lg">
-                      <p className="text-white text-sm">이미지 변경</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center">
-                    <Upload className="w-8 h-8 mb-2" />
-                    <p className="text-sm text-center">이미지를 업로드하려면 클릭하세요</p>
-                    <p className="text-xs text-gray-500 mt-1">JPG, PNG 파일 지원</p>
-                  </div>
-                )}
-              </div>
-            </div>
-            {checkImageError && <p className="text-sm text-rose-cloud mt-1">{checkImageError}</p>}
-            <p className="text-xs text-gray-500 mt-1">JPG, PNG 파일 지원 (최대 1MB)</p>
           </div>
 
           <div>
             <button
               type="submit"
-              disabled={loading || !emailChecked || !nicknameChecked}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-rose-cloud hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02] ${loading || !emailChecked || !nicknameChecked ? 'opacity-70 cursor-not-allowed' : ''}`}>
+              disabled={loading || !emailChecked || !nicknameChecked || formData.password !== formData.confirmPassword}
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-rose-cloud hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02] ${loading || !emailChecked || !nicknameChecked || formData.password !== formData.confirmPassword ? 'opacity-70 cursor-not-allowed' : ''}`}>
               {loading ? '처리 중...' : '확인'}
             </button>
           </div>
-
-          {/* <div>
-            <button
-              type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-rose-cloud hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-[1.02]"
-            >
-              확인
-            </button>
-          </div> */}
 
           <div className="text-center">
             <button

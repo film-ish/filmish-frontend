@@ -1,6 +1,5 @@
 import { apiClient } from '../instance/client';
 
-// const signup = async (formData: {   email: string, password: string, nickname: string,birth: string, image: string }) => {
 const signup = async (formData: FormData) => {
   const response = await apiClient.post('/users', formData, {
     headers: {

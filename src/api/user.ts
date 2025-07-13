@@ -2,7 +2,7 @@ import { apiClient } from './instance/client';
 
 export const userService = {
   async validateNickname(nickname: string) {
-    const { data } = apiClient.get(`/users?nickname=${nickname}`);
+    const { data } = await apiClient.get(`/users?nickname=${nickname}`);
     return data;
   },
 
@@ -34,34 +34,34 @@ export const userService = {
     return data;
   },
 
-  async getMyRatings(userId: number, page: number, size?: number = 20) {
+  async getMyRatings(userId: number, page: number, size: number = 20) {
     const { data } = await apiClient.get(`/users/${userId}/ratings?pageNum=${page}&pageSize=${size}`);
     console.log(data);
     return data;
   },
 
-  async getMyReviewList(userId: number, page: number, size?: number = 10) {
+  async getMyReviewList(userId: number, page: number, size: number = 10) {
     const { data } = await apiClient.get(`/users/${userId}/reviews?pageNum=${page}&pageSize=${size}`);
     return data;
   },
 
-  async getMyQnaList(userId: number, page: number, size?: number = 10) {
+  async getMyQnaList(userId: number, page: number, size: number = 10) {
     const { data } = await apiClient.get(`/users/${userId}/qna?pageNum=${page}&pageSize=${size}`);
     return data;
   },
 
-  async getMyReviewCommentList(userId: number, page: number, size?: number = 10) {
+  async getMyReviewCommentList(userId: number, page: number, size: number = 10) {
     const { data } = await apiClient.get(`/users/${userId}/reviews/comments?pageNum=${page}&pageSize=${size}`);
     console.log(data);
     return data;
   },
 
-  async getMyQnaCommentList(userId: number, page: number, size?: number = 10) {
+  async getMyQnaCommentList(userId: number, page: number, size: number = 10) {
     const { data } = await apiClient.get(`/users/${userId}/qna/comments?pageNum=${page}&pageSize=${size}`);
     return data;
   },
 
-  async getMyLikeList(userId: number, page: number, size?: number = 10) {
+  async getMyLikeList(userId: number, page: number, size: number = 10) {
     const { data } = await apiClient.get(`/users/${userId}/likes?pageNum=${page}&pageSize=${size}`);
     return data;
   },
